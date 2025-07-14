@@ -1,85 +1,124 @@
-# This file recreates the bash script from the kubernetes-the-hard-way repository but using PowerShell syntax
-# This is from tutorial 9: Bootstrapping the Kubernetes Worker Nodes - https://github.com/ivanfioravanti/kubernetes-the-hard-way-on-azure/blob/master/docs/09-bootstrapping-kubernetes-workers.md
-# In this lab you will bootstrap two Kubernetes worker nodes. The following components will be installed on each node: runc, container networking plugins, cri-containerd, kubelet, and kube-proxy.
+# Tutorial Step 09: Bootstrapping the Kubernetes Worker Nodes
+# Original Tutorial: https://github.com/ivanfioravanti/kubernetes-the-hard-way-on-azure/blob/master/docs/09-bootstrapping-kubernetes-workers.md
+# 
+# Description: Bootstrap two Kubernetes worker nodes with runc, container networking plugins, 
+# cri-containerd, kubelet, and kube-proxy.
+#
+# Prerequisites:
+# - Worker VMs deployed and accessible via SSH (Step 03)
+# - Certificate Authority and certificates created (Step 04)
+# - Kubernetes configuration files generated (Step 05)
+# - Data encryption config created (Step 06)
+# - etcd cluster bootstrapped (Step 07)
+# - Control plane bootstrapped (Step 08)
 
-# This script coordinates the Kubernetes worker nodes installation on all worker nodes from your Windows machine
+param(
+    [string]$KubernetesVersion = "v1.26.3",
+    [string]$CriToolsVersion = "v1.26.1",
+    [string]$RuncVersion = "v1.1.5",
+    [string]$CniPluginsVersion = "v1.2.0",
+    [string]$ContainerdVersion = "v1.7.0"
+)
 
-# Start transcript to capture all output
-$outputFile = "C:\repos\kthw\scripts\09\09-execution-output.txt"
-Start-Transcript -Path $outputFile -Force
+$workers = @("worker-0", "worker-1")
 
-Write-Host "=========================================="
-Write-Host "Bootstrapping Kubernetes Worker Nodes"
-Write-Host "=========================================="
+Write-Host "=============================================" -ForegroundColor Cyan
+Write-Host "Tutorial Step 09: Kubernetes Worker Nodes" -ForegroundColor Cyan
+Write-Host "=============================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Define worker instances
-$workerInstances = @("worker-0", "worker-1")
-$workerIPs = @("10.240.0.20", "10.240.0.21")
-$podCIDRs = @("10.200.0.0/24", "10.200.1.0/24")
+# Helper functions
+function Get-WorkerPublicIP($workerName) {
+    return az network public-ip show -g kubernetes -n "$workerName-pip" --query "ipAddress" -o tsv
+}
 
-Write-Host "This script will install and configure Kubernetes worker nodes."
-Write-Host "The following components will be installed on each worker:"
-Write-Host "1. OS dependencies (socat, conntrack, ipset)"
-Write-Host "2. Container runtime (containerd)"
-Write-Host "3. Container networking plugins (CNI)"
-Write-Host "4. Kubernetes components (kubelet, kube-proxy)"
-Write-Host "5. runc and runsc (gVisor) runtimes"
+function New-RemoteConfigFile($publicIP, $content, $remotePath) {
+    $tempFile = [System.IO.Path]::GetTempFileName()
+    $content | Out-File -FilePath $tempFile -Encoding UTF8
+    scp $tempFile kuberoot@$publicIP`:/tmp/config_temp 2>$null
+    ssh kuberoot@$publicIP "sudo mv /tmp/config_temp $remotePath"
+    Remove-Item $tempFile
+}
+
+# Step 1: Install OS Dependencies
+Write-Host "Step 1: Installing OS dependencies on worker nodes..." -ForegroundColor Yellow
+foreach ($worker in $workers) {
+    $publicIP = Get-WorkerPublicIP $worker
+    Write-Host "  Processing $worker ($publicIP)..." -ForegroundColor Cyan
+    
+    # Install required OS packages
+    ssh kuberoot@$publicIP "sudo apt-get update >/dev/null 2>&1 && sudo apt-get -y install socat conntrack ipset >/dev/null 2>&1"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "    ✅ ${worker}: OS dependencies installed" -ForegroundColor Green
+    } else {
+        Write-Host "    ❌ ${worker}: OS dependency installation failed" -ForegroundColor Red
+        exit 1
+    }
+}
+
+# Step 2: Download and Install Worker Binaries
 Write-Host ""
-
-# Create the Kubernetes worker nodes installation script that will be executed on each worker
-$workerInstallScript = @'
-#!/bin/bash
-set -e
-
-echo "Starting Kubernetes worker node installation on $(hostname)..."
-
-# Install OS dependencies
-echo "Installing OS dependencies..."
-sudo apt-get update
-sudo apt-get -y install socat conntrack ipset
-
-# Download and Install Worker Binaries
-echo "Downloading Kubernetes worker binaries..."
-wget -q --show-progress --https-only --timestamping \
-  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.26.1/crictl-v1.26.1-linux-amd64.tar.gz \
+Write-Host "Step 2: Downloading and installing worker binaries..." -ForegroundColor Yellow
+foreach ($worker in $workers) {
+    $publicIP = Get-WorkerPublicIP $worker
+    Write-Host "  Processing $worker ($publicIP)..." -ForegroundColor Cyan
+    
+    # Download worker binaries
+    ssh kuberoot@$publicIP @"
+cd /tmp &&
+wget -q --https-only --timestamping \
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/$CriToolsVersion/crictl-$CriToolsVersion-linux-amd64.tar.gz \
   https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc \
-  https://github.com/opencontainers/runc/releases/download/v1.1.5/runc.amd64 \
-  https://github.com/containernetworking/plugins/releases/download/v1.2.0/cni-plugins-linux-amd64-v1.2.0.tgz \
-  https://github.com/containerd/containerd/releases/download/v1.7.0/containerd-1.7.0-linux-amd64.tar.gz \
-  https://storage.googleapis.com/kubernetes-release/release/v1.26.3/bin/linux/amd64/kubectl \
-  https://storage.googleapis.com/kubernetes-release/release/v1.26.3/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.26.3/bin/linux/amd64/kubelet
-
-# Create the installation directories
-echo "Creating installation directories..."
-sudo mkdir -p \
-  /etc/cni/net.d \
-  /opt/cni/bin \
-  /var/lib/kubelet \
-  /var/lib/kube-proxy \
-  /var/lib/kubernetes \
-  /var/run/kubernetes
-
-# Install the worker binaries
-echo "Installing worker binaries..."
-mkdir containerd
-sudo mv runc.amd64 runc
-chmod +x kubectl kube-proxy kubelet runc runsc
-sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/
-sudo tar -xvf crictl-v1.26.1-linux-amd64.tar.gz -C /usr/local/bin/
-sudo tar -xvf cni-plugins-linux-amd64-v1.2.0.tgz -C /opt/cni/bin/
-sudo tar -xvf containerd-1.7.0-linux-amd64.tar.gz -C containerd
+  https://github.com/opencontainers/runc/releases/download/$RuncVersion/runc.amd64 \
+  https://github.com/containernetworking/plugins/releases/download/$CniPluginsVersion/cni-plugins-linux-amd64-$CniPluginsVersion.tgz \
+  https://github.com/containerd/containerd/releases/download/$ContainerdVersion/containerd-$ContainerdVersion-linux-amd64.tar.gz \
+  https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kubectl \
+  https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kube-proxy \
+  https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kubelet
+"@
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "    ✅ ${worker}: Binaries downloaded" -ForegroundColor Green
+    } else {
+        Write-Host "    ❌ ${worker}: Binary download failed" -ForegroundColor Red
+        exit 1
+    }
+    
+    # Create installation directories and install binaries
+    ssh kuberoot@$publicIP @"
+sudo mkdir -p /etc/cni/net.d /opt/cni/bin /var/lib/kubelet /var/lib/kube-proxy /var/lib/kubernetes /var/run/kubernetes &&
+cd /tmp &&
+mkdir -p containerd &&
+sudo mv runc.amd64 runc &&
+chmod +x kubectl kube-proxy kubelet runc runsc &&
+sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/ &&
+sudo tar -xf crictl-$CriToolsVersion-linux-amd64.tar.gz -C /usr/local/bin/ 2>/dev/null &&
+sudo tar -xf cni-plugins-linux-amd64-$CniPluginsVersion.tgz -C /opt/cni/bin/ 2>/dev/null &&
+sudo tar -xf containerd-$ContainerdVersion-linux-amd64.tar.gz -C containerd 2>/dev/null &&
 sudo mv containerd/bin/* /bin/
+"@
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "    ✅ ${worker}: Binaries installed" -ForegroundColor Green
+    } else {
+        Write-Host "    ❌ ${worker}: Binary installation failed" -ForegroundColor Red
+        exit 1
+    }
+}
 
-# Get POD_CIDR from Azure VM tags
-echo "Retrieving POD_CIDR from Azure VM tags..."
-POD_CIDR="$(echo $(curl --silent -H Metadata:true "http://169.254.169.254/metadata/instance/compute/tags?api-version=2017-08-01&format=text" | sed 's/\;/\n/g' | grep pod-cidr) | cut -d : -f2)"
-echo "POD_CIDR: $POD_CIDR"
-
-# Configure CNI Networking
-echo "Configuring CNI networking..."
-cat > 10-bridge.conf <<EOF
+# Step 3: Configure CNI Networking
+Write-Host ""
+Write-Host "Step 3: Configuring CNI networking..." -ForegroundColor Yellow
+foreach ($worker in $workers) {
+    $publicIP = Get-WorkerPublicIP $worker
+    Write-Host "  Configuring CNI on $worker..." -ForegroundColor Cyan
+    
+    # Get POD_CIDR for this worker node
+    $podCidr = ssh kuberoot@$publicIP "curl --silent -H Metadata:true 'http://169.254.169.254/metadata/instance/compute/tags?api-version=2017-08-01&format=text' | sed 's/\;/\n/g' | grep pod-cidr | cut -d : -f2"
+    
+    # Create bridge network config
+    $bridgeConfig = @"
 {
     "cniVersion": "0.4.0",
     "name": "bridge",
@@ -90,28 +129,41 @@ cat > 10-bridge.conf <<EOF
     "ipam": {
         "type": "host-local",
         "ranges": [
-          [{"subnet": "$POD_CIDR"}]
+          [{"subnet": "$podCidr"}]
         ],
         "routes": [{"dst": "0.0.0.0/0"}]
     }
 }
-EOF
-
-cat > 99-loopback.conf <<EOF
+"@
+    
+    # Create loopback config
+    $loopbackConfig = @"
 {
     "cniVersion": "0.4.0",
     "name": "lo",
     "type": "loopback"
 }
-EOF
+"@
+    
+    New-RemoteConfigFile $publicIP $bridgeConfig "/etc/cni/net.d/10-bridge.conf"
+    New-RemoteConfigFile $publicIP $loopbackConfig "/etc/cni/net.d/99-loopback.conf"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "    ✅ ${worker}: CNI networking configured" -ForegroundColor Green
+    } else {
+        Write-Host "    ❌ ${worker}: CNI configuration failed" -ForegroundColor Red
+    }
+}
 
-sudo mv 10-bridge.conf 99-loopback.conf /etc/cni/net.d/
-
-# Configure containerd
-echo "Configuring containerd..."
-sudo mkdir -p /etc/containerd/
-
-cat > config.toml <<EOF
+# Step 4: Configure containerd
+Write-Host ""
+Write-Host "Step 4: Configuring containerd..." -ForegroundColor Yellow
+foreach ($worker in $workers) {
+    $publicIP = Get-WorkerPublicIP $worker
+    Write-Host "  Configuring containerd on $worker..." -ForegroundColor Cyan
+    
+    # Create containerd configuration
+    $containerdConfig = @"
 [plugins]
   [plugins.cri.containerd]
     snapshotter = "overlayfs"
@@ -127,12 +179,10 @@ cat > config.toml <<EOF
       runtime_type = "io.containerd.runtime.v1.linux"
       runtime_engine = "/usr/local/bin/runsc"
       runtime_root = "/run/containerd/runsc"
-EOF
-
-sudo mv config.toml /etc/containerd/
-
-# Create the containerd.service systemd unit file
-cat > containerd.service <<EOF
+"@
+    
+    # Create containerd systemd service
+    $containerdService = @"
 [Unit]
 Description=containerd container runtime
 Documentation=https://containerd.io
@@ -144,37 +194,41 @@ ExecStart=/bin/containerd
 
 Delegate=yes
 KillMode=process
-# Having non-zero Limit*s causes performance problems due to accounting overhead
-# in the kernel. We recommend using cgroups to do container-local accounting.
 LimitNPROC=infinity
 LimitCORE=infinity
 LimitNOFILE=infinity
-# Comment TasksMax if your systemd version does not supports it.
-# Only systemd 226 and above support this version.
 TasksMax=infinity
 
 [Install]
 WantedBy=multi-user.target
-EOF
+"@
+    
+    ssh kuberoot@$publicIP "sudo mkdir -p /etc/containerd/" 2>$null
+    New-RemoteConfigFile $publicIP $containerdConfig "/etc/containerd/config.toml"
+    New-RemoteConfigFile $publicIP $containerdService "/etc/systemd/system/containerd.service"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "    ✅ ${worker}: containerd configured" -ForegroundColor Green
+    } else {
+        Write-Host "    ❌ ${worker}: containerd configuration failed" -ForegroundColor Red
+    }
+}
 
-# Configure the Kubelet
-echo "Configuring Kubelet..."
-HOSTNAME=$(hostname -s)
-
-# Check if required files exist
-if [ -f "$HOSTNAME-key.pem" ] && [ -f "$HOSTNAME.pem" ] && [ -f "$HOSTNAME.kubeconfig" ] && [ -f "ca.pem" ]; then
-    sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
-    sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
-    sudo mv ca.pem /var/lib/kubernetes/
-    echo "Kubelet certificates and config moved successfully"
-else
-    echo "ERROR: Required kubelet files not found"
-    ls -la ${HOSTNAME}*.pem ${HOSTNAME}.kubeconfig ca.pem 2>/dev/null || echo "Files missing"
-    exit 1
-fi
-
-# Create the kubelet-config.yaml configuration file
-cat > kubelet-config.yaml <<EOF
+# Step 5: Configure Kubelet
+Write-Host ""
+Write-Host "Step 5: Configuring Kubelet..." -ForegroundColor Yellow
+foreach ($worker in $workers) {
+    $publicIP = Get-WorkerPublicIP $worker
+    Write-Host "  Configuring Kubelet on $worker..." -ForegroundColor Cyan
+    
+    # Move certificates and kubeconfig
+    ssh kuberoot@$publicIP "sudo mv $worker-key.pem $worker.pem /var/lib/kubelet/ && sudo mv $worker.kubeconfig /var/lib/kubelet/kubeconfig && sudo mv ca.pem /var/lib/kubernetes/"
+    
+    # Get POD_CIDR for this worker
+    $podCidr = ssh kuberoot@$publicIP "curl --silent -H Metadata:true 'http://169.254.169.254/metadata/instance/compute/tags?api-version=2017-08-01&format=text' | sed 's/\;/\n/g' | grep pod-cidr | cut -d : -f2"
+    
+    # Create kubelet configuration
+    $kubeletConfig = @"
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
 authentication:
@@ -189,17 +243,15 @@ authorization:
 clusterDomain: "cluster.local"
 clusterDNS:
   - "10.32.0.10"
-podCIDR: "$POD_CIDR"
+podCIDR: "$podCidr"
 resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
-tlsCertFile: "/var/lib/kubelet/$HOSTNAME.pem"
-tlsPrivateKeyFile: "/var/lib/kubelet/$HOSTNAME-key.pem"
-EOF
-
-sudo mv kubelet-config.yaml /var/lib/kubelet/
-
-# Create the kubelet.service systemd unit file
-cat > kubelet.service <<EOF
+tlsCertFile: "/var/lib/kubelet/$worker.pem"
+tlsPrivateKeyFile: "/var/lib/kubelet/$worker-key.pem"
+"@
+    
+    # Create kubelet systemd service
+    $kubeletService = @"
 [Unit]
 Description=Kubernetes Kubelet
 Documentation=https://github.com/kubernetes/kubernetes
@@ -207,172 +259,134 @@ After=containerd.service
 Requires=containerd.service
 
 [Service]
-ExecStart=/usr/local/bin/kubelet \\
-  --config=/var/lib/kubelet/kubelet-config.yaml \\
-  --container-runtime=remote \\
-  --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
-  --kubeconfig=/var/lib/kubelet/kubeconfig \\
-  --register-node=true \\
+ExecStart=/usr/local/bin/kubelet \
+  --config=/var/lib/kubelet/kubelet-config.yaml \
+  --container-runtime=remote \
+  --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
+  --kubeconfig=/var/lib/kubelet/kubeconfig \
+  --register-node=true \
   --v=2
 Restart=on-failure
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-EOF
+"@
+    
+    New-RemoteConfigFile $publicIP $kubeletConfig "/var/lib/kubelet/kubelet-config.yaml"
+    New-RemoteConfigFile $publicIP $kubeletService "/etc/systemd/system/kubelet.service"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "    ✅ ${worker}: Kubelet configured" -ForegroundColor Green
+    } else {
+        Write-Host "    ❌ ${worker}: Kubelet configuration failed" -ForegroundColor Red
+    }
+}
 
-# Configure the Kubernetes Proxy
-echo "Configuring Kubernetes Proxy..."
-if [ -f "kube-proxy.kubeconfig" ]; then
-    sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
-    echo "kube-proxy.kubeconfig moved successfully"
-else
-    echo "ERROR: kube-proxy.kubeconfig not found"
-    exit 1
-fi
-
-# Create the kube-proxy-config.yaml configuration file
-cat > kube-proxy-config.yaml <<EOF
+# Step 6: Configure Kube-Proxy
+Write-Host ""
+Write-Host "Step 6: Configuring Kube-Proxy..." -ForegroundColor Yellow
+foreach ($worker in $workers) {
+    $publicIP = Get-WorkerPublicIP $worker
+    Write-Host "  Configuring Kube-Proxy on $worker..." -ForegroundColor Cyan
+    
+    # Move kube-proxy kubeconfig
+    ssh kuberoot@$publicIP "sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig"
+    
+    # Create kube-proxy configuration
+    $kubeProxyConfig = @"
 kind: KubeProxyConfiguration
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 clientConnection:
   kubeconfig: "/var/lib/kube-proxy/kubeconfig"
 mode: "iptables"
 clusterCIDR: "10.200.0.0/16"
-EOF
-
-sudo mv kube-proxy-config.yaml /var/lib/kube-proxy/
-
-# Create the kube-proxy.service systemd unit file
-cat > kube-proxy.service <<EOF
+"@
+    
+    # Create kube-proxy systemd service
+    $kubeProxyService = @"
 [Unit]
 Description=Kubernetes Kube Proxy
 Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
-ExecStart=/usr/local/bin/kube-proxy \\
+ExecStart=/usr/local/bin/kube-proxy \
   --config=/var/lib/kube-proxy/kube-proxy-config.yaml
 Restart=on-failure
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-EOF
+"@
+    
+    New-RemoteConfigFile $publicIP $kubeProxyConfig "/var/lib/kube-proxy/kube-proxy-config.yaml"
+    New-RemoteConfigFile $publicIP $kubeProxyService "/etc/systemd/system/kube-proxy.service"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "    ✅ ${worker}: Kube-Proxy configured" -ForegroundColor Green
+    } else {
+        Write-Host "    ❌ ${worker}: Kube-Proxy configuration failed" -ForegroundColor Red
+    }
+}
 
-# Install and start the Worker Services
-echo "Installing and starting worker services..."
-sudo mv containerd.service kubelet.service kube-proxy.service /etc/systemd/system/
-
-sudo systemctl daemon-reload
-sudo systemctl enable containerd kubelet kube-proxy
-sudo systemctl start containerd kubelet kube-proxy
-
-# Wait for services to start
-echo "Waiting for services to initialize..."
-sleep 10
-
-# Check service status
-echo "Checking service status..."
-echo "=== containerd status ==="
-sudo systemctl status containerd --no-pager -l
-echo ""
-echo "=== kubelet status ==="
-sudo systemctl status kubelet --no-pager -l
-echo ""
-echo "=== kube-proxy status ==="
-sudo systemctl status kube-proxy --no-pager -l
-
-echo "Kubernetes worker node installation completed on $(hostname)!"
-'@
-
-# Save the installation script to a temporary file with Unix line endings
-$scriptPath = "C:\repos\kthw\scripts\09\install-kubernetes-worker.sh"
-# Write with UTF8 encoding and convert to Unix line endings
-$workerInstallScript -replace "`r`n", "`n" | Out-File -FilePath $scriptPath -Encoding UTF8 -NoNewline
-# Add final newline
-"`n" | Out-File -FilePath $scriptPath -Encoding UTF8 -Append -NoNewline
-
-Write-Host "Created Kubernetes worker nodes installation script: $scriptPath"
+# Step 7: Start Worker Services
 Write-Host ""
+Write-Host "Step 7: Starting worker services..." -ForegroundColor Yellow
+foreach ($worker in $workers) {
+    $publicIP = Get-WorkerPublicIP $worker
+    Write-Host "  Starting services on $worker..." -ForegroundColor Cyan
+    
+    # Start and enable services
+    ssh kuberoot@$publicIP "sudo systemctl daemon-reload && sudo systemctl enable containerd kubelet kube-proxy >/dev/null 2>&1 && sudo systemctl start containerd kubelet kube-proxy"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "    ✅ ${worker}: Services started" -ForegroundColor Green
+    } else {
+        Write-Host "    ❌ ${worker}: Service startup failed" -ForegroundColor Red
+    }
+    
+    # Wait for services to initialize
+    Write-Host "    Waiting for services to initialize..." -ForegroundColor Yellow
+    Start-Sleep -Seconds 10
+    
+    # Check service status
+    $status = ssh kuberoot@$publicIP "sudo systemctl is-active containerd kubelet kube-proxy"
+    $activeCount = ($status -split "`n" | Where-Object { $_ -eq "active" }).Count
+    
+    if ($activeCount -eq 3) {
+        Write-Host "    ✅ ${worker}: All services active (3/3)" -ForegroundColor Green
+    } else {
+        Write-Host "    ⚠️ ${worker}: $activeCount/3 services active" -ForegroundColor Yellow
+    }
+}
 
-# Execute the script on each worker instance
-foreach ($i in 0..($workerInstances.Length - 1)) {
-    $instance = $workerInstances[$i]
-    $internalIP = $workerIPs[$i]
-    $podCIDR = $podCIDRs[$i]
-    
-    Write-Host "=========================================="
-    Write-Host "Configuring Kubernetes Worker Node on $instance (IP: $internalIP)"
-    Write-Host "Pod CIDR: $podCIDR"
-    Write-Host "=========================================="
-    
-    # Get the public IP address for SSH connection
-    $publicIpAddress = az network public-ip show -g kubernetes -n "$instance-pip" --query "ipAddress" -o tsv
-    
-    Write-Host "Public IP for $instance : $publicIpAddress"
-    
-    # Copy required files to the worker
-    Write-Host "Copying required files to $instance..."
-    
-    # Copy certificates, configs, and installation script
-    scp -o StrictHostKeyChecking=no C:\repos\kthw\certs\ca.pem "kuberoot@${publicIpAddress}:~/"
-    scp -o StrictHostKeyChecking=no "C:\repos\kthw\certs\$instance-key.pem" "kuberoot@${publicIpAddress}:~/"
-    scp -o StrictHostKeyChecking=no "C:\repos\kthw\certs\$instance.pem" "kuberoot@${publicIpAddress}:~/"
-    scp -o StrictHostKeyChecking=no "C:\repos\kthw\configs\$instance.kubeconfig" "kuberoot@${publicIpAddress}:~/"
-    scp -o StrictHostKeyChecking=no C:\repos\kthw\configs\kube-proxy.kubeconfig "kuberoot@${publicIpAddress}:~/"
-    scp -o StrictHostKeyChecking=no $scriptPath "kuberoot@${publicIpAddress}:~/"
-    
-    # Execute the installation script on the worker
-    Write-Host "Executing Kubernetes worker node installation on $instance..."
-    try {
-        ssh -o StrictHostKeyChecking=no "kuberoot@$publicIpAddress" "chmod +x install-kubernetes-worker.sh && ./install-kubernetes-worker.sh"
-        Write-Host "$instance Kubernetes worker node installation completed successfully!"
-    }
-    catch {
-        Write-Host "ERROR: Failed to install Kubernetes worker node on $instance"
-        Write-Host "Error: $_"
-    }
+# Step 8: Verification
+Write-Host ""
+Write-Host "Step 8: Verifying worker node registration..." -ForegroundColor Yellow
+
+# Wait for node registration
+Write-Host "  Waiting for nodes to register..." -ForegroundColor Cyan
+Start-Sleep -Seconds 30
+
+# Get controller IP and check node registration
+$controllerIP = az network public-ip show -g kubernetes -n "controller-0-pip" --query "ipAddress" -o tsv
+Write-Host "  Checking node registration from controller-0..." -ForegroundColor Cyan
+
+$nodeList = ssh kuberoot@$controllerIP "kubectl get nodes --kubeconfig admin.kubeconfig"
+Write-Host $nodeList -ForegroundColor White
+
+# Check if both workers are ready
+if ($nodeList -match "worker-0.*Ready" -and $nodeList -match "worker-1.*Ready") {
     Write-Host ""
+    Write-Host "✅ Both worker nodes successfully registered and ready!" -ForegroundColor Green
+} else {
+    Write-Host ""
+    Write-Host "⚠️ Worker nodes may not be fully ready yet. Check status above." -ForegroundColor Yellow
 }
 
-Write-Host "=========================================="
-Write-Host "Verifying Kubernetes Worker Nodes"
-Write-Host "=========================================="
-
-# Verify the Kubernetes worker nodes from the first controller
-$firstController = "controller-0"
-$firstPublicIP = az network public-ip show -g kubernetes -n "$firstController-pip" --query "ipAddress" -o tsv
-
-Write-Host "Verifying Kubernetes worker nodes from $firstController..."
-Write-Host "Connecting to $firstController (Public IP: $firstPublicIP)"
-
-Write-Host "Listing registered Kubernetes nodes..."
-ssh -o StrictHostKeyChecking=no "kuberoot@$firstPublicIP" "kubectl get nodes --kubeconfig admin.kubeconfig"
-
 Write-Host ""
-Write-Host "Getting detailed node information..."
-ssh -o StrictHostKeyChecking=no "kuberoot@$firstPublicIP" "kubectl get nodes -o wide --kubeconfig admin.kubeconfig"
-
+Write-Host "===============================================" -ForegroundColor Cyan
+Write-Host "✅ Kubernetes Worker Nodes Setup Complete" -ForegroundColor Green
+Write-Host "===============================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "=========================================="
-Write-Host "Kubernetes Worker Nodes Bootstrap Complete!"
-Write-Host "=========================================="
-Write-Host ""
-Write-Host "Successfully configured Kubernetes worker nodes:"
-foreach ($i in 0..($workerInstances.Length - 1)) {
-    $instance = $workerInstances[$i]
-    $ip = $workerIPs[$i]
-    $podCIDR = $podCIDRs[$i]
-    Write-Host "- $instance ($ip) - Pod CIDR: $podCIDR"
-}
-Write-Host ""
-Write-Host "Next step: Configuring kubectl for Remote Access"
-Write-Host ""
-
-# Cleanup temporary script
-Remove-Item $scriptPath -Force
-Write-Host "Cleaned up temporary installation script."
-
-# Stop transcript
-Stop-Transcript
-Write-Host "`nExecution log saved to: $outputFile"
+Write-Host "🎯 Next Step: Tutorial Step 10 - Configuring kubectl for Remote Access" -ForegroundColor Yellow

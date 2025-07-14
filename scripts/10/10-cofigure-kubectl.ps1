@@ -1,215 +1,170 @@
-# This file recreates the bash script from the kubernetes-the-hard-way repository but using PowerShell syntax
-# This is from tutorial 10: Configuring kubectl for Remote Access - https://github.com/ivanfioravanti/kubernetes-the-hard-way-on-azure/blob/master/docs/10-configuring-kubectl.md
-# In this lab you will generate a kubeconfig file for the kubectl command line utility based on the admin user credentials.
+# Tutorial Step 10: Configuring kubectl for Remote Access
+# URL: https://github.com/ivanfioravanti/kubernetes-the-hard-way-on-azure/blob/master/docs/10-configuring-kubectl.md
+# Description: Generate a kubeconfig file for kubectl command line utility based on admin user credentials
 
-# This script configures kubectl for remote access to the Kubernetes cluster from your Windows machine
-
-# Start transcript to capture all output
-$outputFile = "C:\repos\kthw\scripts\10\10-execution-output.txt"
-Start-Transcript -Path $outputFile -Force
-
-Write-Host "=========================================="
-Write-Host "Configuring kubectl for Remote Access"
-Write-Host "=========================================="
+Write-Host "===============================================" -ForegroundColor Green
+Write-Host "Tutorial Step 10: Configuring kubectl for Remote Access" -ForegroundColor Green  
+Write-Host "===============================================" -ForegroundColor Green
 Write-Host ""
 
-Write-Host "This script will configure kubectl to access the Kubernetes cluster remotely."
-Write-Host "The following actions will be performed:"
-Write-Host "1. Retrieve the Kubernetes public load balancer IP address"
-Write-Host "2. Configure kubectl cluster settings"
-Write-Host "3. Configure kubectl admin user credentials"
-Write-Host "4. Set kubectl context"
-Write-Host "5. Verify cluster access and health"
-Write-Host ""
-
-# Ensure we're in the correct directory with certificates
-$certsPath = "C:\repos\kthw\certs"
-if (-not (Test-Path $certsPath)) {
-    Write-Host "ERROR: Certificates directory not found at $certsPath"
-    Stop-Transcript
+# Ensure we're in the correct directory (where certificates are located)
+$certsPath = "c:\repos\kthw\certs"
+if (!(Test-Path $certsPath)) {
+    Write-Error "Certificates directory not found at $certsPath"
+    Write-Error "Please ensure you've completed the previous steps and certificates exist"
     exit 1
 }
 
-# Change to certs directory to access the certificate files
 Set-Location $certsPath
-Write-Host "Working from certificates directory: $certsPath"
+Write-Host "Working directory: $(Get-Location)" -ForegroundColor Yellow
 Write-Host ""
 
-Write-Host "=========================================="
-Write-Host "Retrieving Kubernetes Public IP Address"
-Write-Host "=========================================="
+# Step 1: Retrieve the Kubernetes API Server Public IP
+Write-Host "Step 1: Retrieving Kubernetes API Server public IP address..." -ForegroundColor Cyan
 
-# Retrieve the kubernetes-the-hard-way static IP address
-Write-Host "Getting the public IP address of the Kubernetes load balancer..."
 try {
-    $kubernetesPublicAddress = az network public-ip show -g kubernetes -n kubernetes-pip --query ipAddress -o tsv
-    if (-not $kubernetesPublicAddress) {
+    $KUBERNETES_PUBLIC_ADDRESS = az network public-ip show -g kubernetes -n kubernetes-pip --query ipAddress -o tsv
+    if ($LASTEXITCODE -ne 0) {
         throw "Failed to retrieve public IP address"
     }
-    Write-Host "Kubernetes public IP address: $kubernetesPublicAddress"
+    Write-Host "  ✅ Kubernetes API Server IP: $KUBERNETES_PUBLIC_ADDRESS" -ForegroundColor Green
 }
 catch {
-    Write-Host "ERROR: Failed to retrieve Kubernetes public IP address"
-    Write-Host "Error: $_"
-    Stop-Transcript
+    Write-Error "Failed to retrieve Kubernetes public IP address: $_"
+    Write-Host "Troubleshooting:" -ForegroundColor Yellow
+    Write-Host "  - Ensure Azure CLI is authenticated: az login" -ForegroundColor Yellow
+    Write-Host "  - Verify resource group 'kubernetes' exists" -ForegroundColor Yellow
+    Write-Host "  - Check if public IP 'kubernetes-pip' exists" -ForegroundColor Yellow
     exit 1
 }
 
 Write-Host ""
-Write-Host "=========================================="
-Write-Host "Configuring kubectl"
-Write-Host "=========================================="
 
-# Verify required certificate files exist
-$requiredFiles = @("ca.pem", "admin.pem", "admin-key.pem")
-foreach ($file in $requiredFiles) {
-    if (-not (Test-Path $file)) {
-        Write-Host "ERROR: Required certificate file not found: $file"
-        Stop-Transcript
-        exit 1
+# Step 2: Configure kubectl cluster settings
+Write-Host "Step 2: Configuring kubectl cluster settings..." -ForegroundColor Cyan
+
+try {
+    kubectl config set-cluster kubernetes-the-hard-way `
+        --certificate-authority=ca.pem `
+        --embed-certs=true `
+        --server=https://${KUBERNETES_PUBLIC_ADDRESS}:6443
+    
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to set cluster configuration"
+    }
+    Write-Host "  ✅ Cluster configuration set successfully" -ForegroundColor Green
+}
+catch {
+    Write-Error "Failed to configure cluster: $_"
+    exit 1
+}
+
+# Step 3: Configure kubectl user credentials
+Write-Host "Step 3: Configuring kubectl admin user credentials..." -ForegroundColor Cyan
+
+try {
+    kubectl config set-credentials admin `
+        --client-certificate=admin.pem `
+        --client-key=admin-key.pem
+    
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to set user credentials"
+    }
+    Write-Host "  ✅ Admin user credentials configured" -ForegroundColor Green
+}
+catch {
+    Write-Error "Failed to configure admin credentials: $_"
+    exit 1
+}
+
+# Step 4: Configure kubectl context
+Write-Host "Step 4: Configuring kubectl context..." -ForegroundColor Cyan
+
+try {
+    kubectl config set-context kubernetes-the-hard-way `
+        --cluster=kubernetes-the-hard-way `
+        --user=admin
+    
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to set context"
+    }
+    Write-Host "  ✅ Context 'kubernetes-the-hard-way' created" -ForegroundColor Green
+}
+catch {
+    Write-Error "Failed to set context: $_"
+    exit 1
+}
+
+# Step 5: Switch to the new context
+Write-Host "Step 5: Switching to the kubernetes-the-hard-way context..." -ForegroundColor Cyan
+
+try {
+    kubectl config use-context kubernetes-the-hard-way
+    
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to switch context"
+    }
+    Write-Host "  ✅ Successfully switched to 'kubernetes-the-hard-way' context" -ForegroundColor Green
+}
+catch {
+    Write-Error "Failed to switch context: $_"
+    exit 1
+}
+
+Write-Host ""
+
+# Step 6: Verify cluster connectivity and health
+Write-Host "Step 6: Verifying cluster connectivity..." -ForegroundColor Cyan
+
+Write-Host "  Checking component status..." -ForegroundColor Yellow
+try {
+    kubectl get componentstatuses
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warning "Component status check failed - this is expected in newer Kubernetes versions"
+        Write-Host "  ℹ️  componentstatuses API is deprecated in Kubernetes v1.26+" -ForegroundColor Blue
+    } else {
+        Write-Host "  ✅ Component status retrieved successfully" -ForegroundColor Green
     }
 }
-Write-Host "✓ All required certificate files found"
-Write-Host ""
+catch {
+    Write-Warning "Component status check failed: $_"
+    Write-Host "  ℹ️  This is expected in Kubernetes v1.26+ where componentstatuses is deprecated" -ForegroundColor Blue
+}
 
-# Generate a kubeconfig file suitable for authenticating as the admin user
-Write-Host "Setting cluster configuration..."
+Write-Host ""
+Write-Host "  Checking node status..." -ForegroundColor Yellow
 try {
-    $clusterResult = kubectl config set-cluster kubernetes-the-hard-way --certificate-authority=ca.pem --embed-certs=true --server="https://$kubernetesPublicAddress`:6443"
-    Write-Host "✓ Cluster configuration set successfully"
-    Write-Host "   $clusterResult"
+    kubectl get nodes
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to retrieve node status"
+    }
+    Write-Host "  ✅ Node status retrieved successfully" -ForegroundColor Green
 }
 catch {
-    Write-Host "ERROR: Failed to set cluster configuration"
-    Write-Host "Error: $_"
-    Stop-Transcript
+    Write-Error "Failed to check node status: $_"
+    Write-Host "This indicates a connectivity or authentication issue" -ForegroundColor Red
     exit 1
 }
 
 Write-Host ""
-Write-Host "Setting admin user credentials..."
-try {
-    $credentialsResult = kubectl config set-credentials admin --client-certificate=admin.pem --client-key=admin-key.pem
-    Write-Host "✓ Admin credentials set successfully"
-    Write-Host "   $credentialsResult"
-}
-catch {
-    Write-Host "ERROR: Failed to set admin credentials"
-    Write-Host "Error: $_"
-    Stop-Transcript
-    exit 1
-}
+
+# Step 7: Display current kubectl configuration
+Write-Host "Step 7: Current kubectl configuration summary..." -ForegroundColor Cyan
+Write-Host "  Current context:" -ForegroundColor Yellow
+kubectl config current-context
+
+Write-Host "  Cluster info:" -ForegroundColor Yellow
+kubectl cluster-info
 
 Write-Host ""
-Write-Host "Setting kubectl context..."
-try {
-    $contextResult = kubectl config set-context kubernetes-the-hard-way --cluster=kubernetes-the-hard-way --user=admin
-    Write-Host "✓ Context set successfully"
-    Write-Host "   $contextResult"
-}
-catch {
-    Write-Host "ERROR: Failed to set context"
-    Write-Host "Error: $_"
-    Stop-Transcript
-    exit 1
-}
-
+Write-Host "===============================================" -ForegroundColor Green
+Write-Host "✅ kubectl Remote Access Configuration Complete" -ForegroundColor Green
+Write-Host "===============================================" -ForegroundColor Green
 Write-Host ""
-Write-Host "Switching to kubernetes-the-hard-way context..."
-try {
-    $useContextResult = kubectl config use-context kubernetes-the-hard-way
-    Write-Host "✓ Context switched successfully"
-    Write-Host "   $useContextResult"
-}
-catch {
-    Write-Host "ERROR: Failed to switch context"
-    Write-Host "Error: $_"
-    Stop-Transcript
-    exit 1
-}
-
+Write-Host "🎯 Next Step: Tutorial Step 11 - Provisioning Pod Network Routes" -ForegroundColor Blue
 Write-Host ""
-Write-Host "=========================================="
-Write-Host "Verifying Kubernetes Cluster Access"
-Write-Host "=========================================="
-
-# Check the health of the remote Kubernetes cluster
-Write-Host "Checking cluster component health..."
-try {
-    $componentStatus = kubectl get componentstatuses
-    Write-Host "✓ Cluster components status:"
-    Write-Host $componentStatus
-}
-catch {
-    Write-Host "ERROR: Failed to get component status"
-    Write-Host "Error: $_"
-}
-
-Write-Host ""
-Write-Host "Listing cluster nodes..."
-try {
-    $nodesStatus = kubectl get nodes
-    Write-Host "✓ Cluster nodes:"
-    Write-Host $nodesStatus
-}
-catch {
-    Write-Host "ERROR: Failed to get nodes status"
-    Write-Host "Error: $_"
-}
-
-Write-Host ""
-Write-Host "Getting detailed cluster information..."
-try {
-    $clusterInfo = kubectl cluster-info
-    Write-Host "✓ Cluster information:"
-    Write-Host $clusterInfo
-}
-catch {
-    Write-Host "⚠ Failed to get cluster info (this may be expected)"
-}
-
-Write-Host ""
-Write-Host "Verifying current kubectl context..."
-try {
-    $currentContext = kubectl config current-context
-    Write-Host "✓ Current kubectl context: $currentContext"
-}
-catch {
-    Write-Host "ERROR: Failed to get current context"
-}
-
-Write-Host ""
-Write-Host "Displaying kubeconfig view..."
-try {
-    $kubeconfigView = kubectl config view --minify
-    Write-Host "✓ Current kubeconfig configuration:"
-    Write-Host $kubeconfigView
-}
-catch {
-    Write-Host "⚠ Failed to display kubeconfig view"
-}
-
-Write-Host ""
-Write-Host "=========================================="
-Write-Host "kubectl Configuration Complete!"
-Write-Host "=========================================="
-Write-Host ""
-Write-Host "✓ kubectl has been successfully configured for remote access"
-Write-Host "✓ Cluster endpoint: https://$kubernetesPublicAddress`:6443"
-Write-Host "✓ Current context: kubernetes-the-hard-way"
-Write-Host "✓ Admin user credentials configured"
-Write-Host ""
-Write-Host "You can now use kubectl commands to manage your Kubernetes cluster:"
-Write-Host "  kubectl get nodes"
-Write-Host "  kubectl get pods --all-namespaces"
-Write-Host "  kubectl get componentstatuses"
-Write-Host ""
-Write-Host "Next step: Provisioning Pod Network Routes"
-Write-Host ""
-
-# Return to original directory
-Set-Location "C:\repos\kthw"
-
-# Stop transcript
-Stop-Transcript
-Write-Host "`nExecution log saved to: $outputFile"
+Write-Host "You can now manage your Kubernetes cluster remotely using kubectl!" -ForegroundColor Green
+Write-Host "Example commands to try:" -ForegroundColor Yellow
+Write-Host "  kubectl get nodes" -ForegroundColor White
+Write-Host "  kubectl get pods --all-namespaces" -ForegroundColor White
+Write-Host "  kubectl cluster-info" -ForegroundColor White
