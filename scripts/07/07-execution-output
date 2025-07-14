@@ -1,0 +1,1688 @@
+PS C:\repos\kthw> C:\repos\kthw\scripts\07\07-bootstrapping-etcd.ps1
+==========================================
+Bootstrapping etcd Cluster
+==========================================
+
+This script will install and configure etcd on all controller nodes.
+The following steps will be performed on each controller:
+1. Download and install etcd binaries
+2. Configure etcd server
+3. Create and start etcd systemd service
+4. Verify cluster membership
+
+Created etcd installation script: C:\repos\kthw\scripts\07\install-etcd.sh
+
+==========================================
+Configuring etcd on controller-0 (IP: 10.240.0.10)
+==========================================
+Public IP for controller-0 : 20.161.74.83
+Copying installation script to controller-0...
+install-etcd.sh                                                                                                             100% 2478    36.1KB/s   00:00
+Executing etcd installation on controller-0...
+Starting etcd installation on controller-0...
+Downloading etcd binaries...
+
+     0K .......... .......... .......... .......... ..........  0% 8.42M 2s
+    50K .......... .......... .......... .......... ..........  0% 23.9M 1s
+   100K .......... .......... .......... .......... ..........  0% 12.9M 1s
+   150K .......... .......... .......... .......... ..........  1% 77.2M 1s
+   200K .......... .......... .......... .......... ..........  1% 46.6M 1s
+   250K .......... .......... .......... .......... ..........  1% 17.3M 1s
+   300K .......... .......... .......... .......... ..........  2% 68.2M 1s
+   350K .......... .......... .......... .......... ..........  2%  134M 1s
+   400K .......... .......... .......... .......... ..........  2% 72.9M 1s
+   450K .......... .......... .......... .......... ..........  3%  100M 1s
+   500K .......... .......... .......... .......... ..........  3%  122M 0s
+   550K .......... .......... .......... .......... ..........  3% 19.3M 1s
+   600K .......... .......... .......... .......... ..........  4% 85.5M 0s
+   650K .......... .......... .......... .......... ..........  4%  246M 0s
+   700K .......... .......... .......... .......... ..........  4%  131M 0s
+   750K .......... .......... .......... .......... ..........  5%  285M 0s
+   800K .......... .......... .......... .......... ..........  5%  200M 0s
+   850K .......... .......... .......... .......... ..........  5%  180M 0s
+   900K .......... .......... .......... .......... ..........  6%  219M 0s
+   950K .......... .......... .......... .......... ..........  6%  193M 0s
+  1000K .......... .......... .......... .......... ..........  6%  243M 0s
+  1050K .......... .......... .......... .......... ..........  7%  137M 0s
+  1100K .......... .......... .......... .......... ..........  7%  268M 0s
+  1150K .......... .......... .......... .......... ..........  7%  118M 0s
+  1200K .......... .......... .......... .......... ..........  8% 22.9M 0s
+  1250K .......... .......... .......... .......... ..........  8%  127M 0s
+  1300K .......... .......... .......... .......... ..........  8%  444M 0s
+  1350K .......... .......... .......... .......... ..........  9%  164M 0s
+  1400K .......... .......... .......... .......... ..........  9%  274M 0s
+  1450K .......... .......... .......... .......... ..........  9%  492M 0s
+  1500K .......... .......... .......... .......... .......... 10%  255M 0s
+  1550K .......... .......... .......... .......... .......... 10%  417M 0s
+  1600K .......... .......... .......... .......... .......... 10% 87.0M 0s
+  1650K .......... .......... .......... .......... .......... 11% 68.0M 0s
+  1700K .......... .......... .......... .......... .......... 11%  465M 0s
+  1750K .......... .......... .......... .......... .......... 11%  452M 0s
+  1800K .......... .......... .......... .......... .......... 12%  235M 0s
+  1850K .......... .......... .......... .......... .......... 12%  133M 0s
+  1900K .......... .......... .......... .......... .......... 12% 64.3M 0s
+  1950K .......... .......... .......... .......... .......... 13%  402M 0s
+  2000K .......... .......... .......... .......... .......... 13%  485M 0s
+  2050K .......... .......... .......... .......... .......... 13%  497M 0s
+  2100K .......... .......... .......... .......... .......... 14%  501M 0s
+  2150K .......... .......... .......... .......... .......... 14%  438M 0s
+  2200K .......... .......... .......... .......... .......... 14%  498M 0s
+  2250K .......... .......... .......... .......... .......... 15%  508M 0s
+  2300K .......... .......... .......... .......... .......... 15%  497M 0s
+  2350K .......... .......... .......... .......... .......... 15%  166M 0s
+  2400K .......... .......... .......... .......... .......... 16% 48.7M 0s
+  2450K .......... .......... .......... .......... .......... 16%  133M 0s
+  2500K .......... .......... .......... .......... .......... 16%  487M 0s
+  2550K .......... .......... .......... .......... .......... 17%  448M 0s
+  2600K .......... .......... .......... .......... .......... 17%  206M 0s
+  2650K .......... .......... .......... .......... .......... 17% 57.7M 0s
+  2700K .......... .......... .......... .......... .......... 18%  178M 0s
+  2750K .......... .......... .......... .......... .......... 18%  392M 0s
+  2800K .......... .......... .......... .......... .......... 18%  493M 0s
+  2850K .......... .......... .......... .......... .......... 19%  500M 0s
+  2900K .......... .......... .......... .......... .......... 19%  209M 0s
+  2950K .......... .......... .......... .......... .......... 19%  429M 0s
+  3000K .......... .......... .......... .......... .......... 20%  503M 0s
+  3050K .......... .......... .......... .......... .......... 20%  510M 0s
+  3100K .......... .......... .......... .......... .......... 20% 54.0M 0s
+  3150K .......... .......... .......... .......... .......... 21% 41.8M 0s
+  3200K .......... .......... .......... .......... .......... 21%  450M 0s
+  3250K .......... .......... .......... .......... .......... 21%  187M 0s
+  3300K .......... .......... .......... .......... .......... 22%  480M 0s
+  3350K .......... .......... .......... .......... .......... 22%  452M 0s
+  3400K .......... .......... .......... .......... .......... 22%  491M 0s
+  3450K .......... .......... .......... .......... .......... 23%  210M 0s
+  3500K .......... .......... .......... .......... .......... 23% 86.3M 0s
+  3550K .......... .......... .......... .......... .......... 23% 43.2M 0s
+  3600K .......... .......... .......... .......... .......... 24%  414M 0s
+  3650K .......... .......... .......... .......... .......... 24%  172M 0s
+  3700K .......... .......... .......... .......... .......... 24% 84.3M 0s
+  3750K .......... .......... .......... .......... .......... 25%  441M 0s
+  3800K .......... .......... .......... .......... .......... 25%  493M 0s
+  3850K .......... .......... .......... .......... .......... 25%  189M 0s
+  3900K .......... .......... .......... .......... .......... 25%  464M 0s
+  3950K .......... .......... .......... .......... .......... 26%  423M 0s
+  4000K .......... .......... .......... .......... .......... 26%  202M 0s
+  4050K .......... .......... .......... .......... .......... 26%  452M 0s
+  4100K .......... .......... .......... .......... .......... 27%  480M 0s
+  4150K .......... .......... .......... .......... .......... 27%  453M 0s
+  4200K .......... .......... .......... .......... .......... 27%  126M 0s
+  4250K .......... .......... .......... .......... .......... 28% 47.1M 0s
+  4300K .......... .......... .......... .......... .......... 28% 63.9M 0s
+  4350K .......... .......... .......... .......... .......... 28%  169M 0s
+  4400K .......... .......... .......... .......... .......... 29%  472M 0s
+  4450K .......... .......... .......... .......... .......... 29%  490M 0s
+  4500K .......... .......... .......... .......... .......... 29%  471M 0s
+  4550K .......... .......... .......... .......... .......... 30%  187M 0s
+  4600K .......... .......... .......... .......... .......... 30%  218M 0s
+  4650K .......... .......... .......... .......... .......... 30% 46.5M 0s
+  4700K .......... .......... .......... .......... .......... 31% 91.2M 0s
+  4750K .......... .......... .......... .......... .......... 31%  122M 0s
+  4800K .......... .......... .......... .......... .......... 31%  118M 0s
+  4850K .......... .......... .......... .......... .......... 32%  493M 0s
+  4900K .......... .......... .......... .......... .......... 32%  489M 0s
+  4950K .......... .......... .......... .......... .......... 32%  193M 0s
+  5000K .......... .......... .......... .......... .......... 33%  421M 0s
+  5050K .......... .......... .......... .......... .......... 33%  458M 0s
+  5100K .......... .......... .......... .......... .......... 33%  500M 0s
+  5150K .......... .......... .......... .......... .......... 34%  188M 0s
+  5200K .......... .......... .......... .......... .......... 34%  491M 0s
+  5250K .......... .......... .......... .......... .......... 34%  500M 0s
+  5300K .......... .......... .......... .......... .......... 35%  173M 0s
+  5350K .......... .......... .......... .......... .......... 35% 43.3M 0s
+  5400K .......... .......... .......... .......... .......... 35% 46.8M 0s
+  5450K .......... .......... .......... .......... .......... 36%  361M 0s
+  5500K .......... .......... .......... .......... .......... 36%  483M 0s
+  5550K .......... .......... .......... .......... .......... 36%  304M 0s
+  5600K .......... .......... .......... .......... .......... 37%  326M 0s
+  5650K .......... .......... .......... .......... .......... 37%  446M 0s
+  5700K .......... .......... .......... .......... .......... 37%  411M 0s
+  5750K .......... .......... .......... .......... .......... 38% 55.6M 0s
+  5800K .......... .......... .......... .......... .......... 38%  139M 0s
+  5850K .......... .......... .......... .......... .......... 38%  479M 0s
+  5900K .......... .......... .......... .......... .......... 39%  451M 0s
+  5950K .......... .......... .......... .......... .......... 39%  435M 0s
+  6000K .......... .......... .......... .......... .......... 39%  510M 0s
+  6050K .......... .......... .......... .......... .......... 40%  479M 0s
+  6100K .......... .......... .......... .......... .......... 40%  236M 0s
+  6150K .......... .......... .......... .......... .......... 40% 70.7M 0s
+  6200K .......... .......... .......... .......... .......... 41% 53.0M 0s
+  6250K .......... .......... .......... .......... .......... 41%  482M 0s
+  6300K .......... .......... .......... .......... .......... 41%  488M 0s
+  6350K .......... .......... .......... .......... .......... 42%  409M 0s
+  6400K .......... .......... .......... .......... .......... 42%  478M 0s
+  6450K .......... .......... .......... .......... .......... 42% 74.3M 0s
+  6500K .......... .......... .......... .......... .......... 43%  470M 0s
+  6550K .......... .......... .......... .......... .......... 43%  292M 0s
+  6600K .......... .......... .......... .......... .......... 43%  436M 0s
+  6650K .......... .......... .......... .......... .......... 44%  239M 0s
+  6700K .......... .......... .......... .......... .......... 44%  474M 0s
+  6750K .......... .......... .......... .......... .......... 44%  409M 0s
+  6800K .......... .......... .......... .......... .......... 45%  191M 0s
+  6850K .......... .......... .......... .......... .......... 45%  482M 0s
+  6900K .......... .......... .......... .......... .......... 45%  496M 0s
+  6950K .......... .......... .......... .......... .......... 46%  211M 0s
+  7000K .......... .......... .......... .......... .......... 46% 68.6M 0s
+  7050K .......... .......... .......... .......... .......... 46% 65.1M 0s
+  7100K .......... .......... .......... .......... .......... 47%  111M 0s
+  7150K .......... .......... .......... .......... .......... 47%  393M 0s
+  7200K .......... .......... .......... .......... .......... 47%  490M 0s
+  7250K .......... .......... .......... .......... .......... 48%  487M 0s
+  7300K .......... .......... .......... .......... .......... 48%  438M 0s
+  7350K .......... .......... .......... .......... .......... 48%  496M 0s
+  7400K .......... .......... .......... .......... .......... 49%  493M 0s
+  7450K .......... .......... .......... .......... .......... 49%  436M 0s
+  7500K .......... .......... .......... .......... .......... 49%  539M 0s
+  7550K .......... .......... .......... .......... .......... 50%  410M 0s
+  7600K .......... .......... .......... .......... .......... 50% 67.5M 0s
+  7650K .......... .......... .......... .......... .......... 50% 69.6M 0s
+  7700K .......... .......... .......... .......... .......... 50%  435M 0s
+  7750K .......... .......... .......... .......... .......... 51%  438M 0s
+  7800K .......... .......... .......... .......... .......... 51%  477M 0s
+  7850K .......... .......... .......... .......... .......... 51%  495M 0s
+  7900K .......... .......... .......... .......... .......... 52%  495M 0s
+  7950K .......... .......... .......... .......... .......... 52% 95.0M 0s
+  8000K .......... .......... .......... .......... .......... 52%  118M 0s
+  8050K .......... .......... .......... .......... .......... 53%  497M 0s
+  8100K .......... .......... .......... .......... .......... 53%  434M 0s
+  8150K .......... .......... .......... .......... .......... 53%  444M 0s
+  8200K .......... .......... .......... .......... .......... 54%  506M 0s
+  8250K .......... .......... .......... .......... .......... 54%  455M 0s
+  8300K .......... .......... .......... .......... .......... 54%  474M 0s
+  8350K .......... .......... .......... .......... .......... 55%  403M 0s
+  8400K .......... .......... .......... .......... .......... 55%  487M 0s
+  8450K .......... .......... .......... .......... .......... 55%  497M 0s
+  8500K .......... .......... .......... .......... .......... 56%  489M 0s
+  8550K .......... .......... .......... .......... .......... 56%  148M 0s
+  8600K .......... .......... .......... .......... .......... 56% 70.7M 0s
+  8650K .......... .......... .......... .......... .......... 57% 64.4M 0s
+  8700K .......... .......... .......... .......... .......... 57%  468M 0s
+  8750K .......... .......... .......... .......... .......... 57%  406M 0s
+  8800K .......... .......... .......... .......... .......... 58%  166M 0s
+  8850K .......... .......... .......... .......... .......... 58%  155M 0s
+  8900K .......... .......... .......... .......... .......... 58%  477M 0s
+  8950K .......... .......... .......... .......... .......... 59%  438M 0s
+  9000K .......... .......... .......... .......... .......... 59%  484M 0s
+  9050K .......... .......... .......... .......... .......... 59%  487M 0s
+  9100K .......... .......... .......... .......... .......... 60%  437M 0s
+  9150K .......... .......... .......... .......... .......... 60%  411M 0s
+  9200K .......... .......... .......... .......... .......... 60%  491M 0s
+  9250K .......... .......... .......... .......... .......... 61%  492M 0s
+  9300K .......... .......... .......... .......... .......... 61%  485M 0s
+  9350K .......... .......... .......... .......... .......... 61%  436M 0s
+  9400K .......... .......... .......... .......... .......... 62%  495M 0s
+  9450K .......... .......... .......... .......... .......... 62%  501M 0s
+  9500K .......... .......... .......... .......... .......... 62%  469M 0s
+  9550K .......... .......... .......... .......... .......... 63%  322M 0s
+  9600K .......... .......... .......... .......... .......... 63% 74.4M 0s
+  9650K .......... .......... .......... .......... .......... 63% 73.6M 0s
+  9700K .......... .......... .......... .......... .......... 64% 74.1M 0s
+  9750K .......... .......... .......... .......... .......... 64%  187M 0s
+  9800K .......... .......... .......... .......... .......... 64%  477M 0s
+  9850K .......... .......... .......... .......... .......... 65%  487M 0s
+  9900K .......... .......... .......... .......... .......... 65%  501M 0s
+  9950K .......... .......... .......... .......... .......... 65%  403M 0s
+ 10000K .......... .......... .......... .......... .......... 66%  457M 0s
+ 10050K .......... .......... .......... .......... .......... 66%  495M 0s
+ 10100K .......... .......... .......... .......... .......... 66%  381M 0s
+ 10150K .......Installing etcd binaries...
+etcd-v3.4.24-linux-amd64/
+etcd-v3.4.24-linux-amd64/READMEv2-etcdctl.md
+etcd-v3.4.24-linux-amd64/etcdctl
+... .......... .......... .......... .......... 67% 65.6M 0s
+ 10200K .......... .......... .......... .......... .......... 67% 1.99M 0s
+ 10250K .......... .......... .......... .......... .......... 67% 98.8M 0s
+ 10300K .......... .......... .......... .......... .......... 68%  425M 0s
+ 10350K .......... .......... .......... .......... .......... 68%  104M 0s
+ 10400K .......... .......... .......... .......... .......... 68%  439M 0s
+ 10450K .......... .......... .......... .......... .......... 69%  432M 0s
+ 10500K .......... .......... .......... .......... .......... 69%  115M 0s
+ 10550K .......... .......... .......... .......... .......... 69%  391M 0s
+ 10600K .......... .......... .......... .......... .......... 70%  433M 0s
+ 10650K .......... .......... .......... .......... .......... 70%  133M 0s
+ 10700K .......... .......... .......... .......... .......... 70%  437M 0s
+ 10750K .......... .......... .......... .......... .......... 71%  356M 0s
+ 10800K .......... .......... .......... .......... .......... 71%  399M 0s
+ 10850K .......... .......... .......... .......... .......... 71%  152M 0s
+ 10900K .......... .......... .......... .......... .......... 72%  401M 0s
+ 10950K .......... .......... .......... .......... .......... 72%  447M 0s
+ 11000K .......... .......... .......... .......... .......... 72%  448M 0s
+ 11050K .......... .......... .......... .......... .......... 73%  133M 0s
+ 11100K .......... .......... .......... .......... .......... 73%  435M 0s
+ 11150K .......... .......... .......... .......... .......... 73%  455M 0s
+ 11200K .......... .......... .......... .......... .......... 74% 94.6M 0s
+ 11250K .......... .......... .......... .......... .......... 74%  114M 0s
+ 11300K .......... .......... .......... .......... .......... 74%  447M 0s
+ 11350K .......... .......... .......... .......... .......... 75%  187M 0s
+ 11400K .......... .......... .......... .......... .......... 75%  414M 0s
+ 11450K .......... .......... .......... .......... .......... 75%  366M 0s
+ 11500K .......... .......... .......... .......... .......... 75%  443M 0s
+ 11550K .......... .......... .......... .......... .......... 76% 38.2M 0s
+ 11600K .......... .......... .......... .......... .......... 76%  400M 0s
+ 11650K .......... .......... .......... .......... .......... 76%  398M 0s
+ 11700K .......... .......... .......... .......... .......... 77%  432M 0s
+ 11750K .......... .......... .......... .......... .......... 77%  450M 0s
+ 11800K .......... .......... .......... .......... .......... 77%  441M 0s
+ 11850K .......... .......... .......... .......... .......... 78%  365M 0s
+ 11900K .......... .......... .......... .......... .......... 78%  125M 0s
+ 11950K .......... .......... .......... .......... .......... 78% 64.7M 0s
+ 12000K .......... .......... .......... .......... .......... 79%  280M 0s
+ 12050K .......... .......... .......... .......... .......... 79%  394M 0s
+ 12100K .......... .......... .......... .......... .......... 79%  441M 0s
+ 12150K .......... .......... .......... .......... .......... 80%  390M 0s
+ 12200K .......... .......... .......... .......... .......... 80%  449M 0s
+ 12250K .......... .......... .......... .......... .......... 80% 23.3M 0s
+ 12300K .......... .......... .......... .......... .......... 81%  271M 0s
+ 12350K .......... .......... .......... .......... .......... 81%  203M 0s
+ 12400K .......... .......... .......... .......... .......... 81% 89.1M 0s
+ 12450K .......... .......... .......... .......... .......... 82%  508M 0s
+ 12500K .......... .......... .......... .......... .......... 82%  527M 0s
+ 12550K .......... .......... .......... .......... .......... 82%  172M 0s
+ 12600K .......... .......... .......... .......... .......... 83%  463M 0s
+ 12650K .......... .......... .......... .......... .......... 83%  540M 0s
+ 12700K .......... .......... .......... .......... .......... 83% 44.1M 0s
+ 12750K .......... .......... .......... .......... .......... 84%  176M 0s
+ 12800K .......... .......... .......... .......... .......... 84%  106M 0s
+ 12850K .......... .......... .......... .......... .......... 84%  498M 0s
+ 12900K .......... .......... .......... .......... .......... 85%  511M 0s
+ 12950K .......... .......... .......... .......... .......... 85%  107M 0s
+ 13000K .......... .......... .......... .......... .......... 85%  182M 0s
+ 13050K .......... .......... .......... .......... .......... 86%  498M 0s
+ 13100K .......... .......... .......... .......... .......... 86%  491M 0s
+ 13150K .......... .......... .......... .......... .......... 86%  197M 0s
+ 13200K .......... .......... .......... .......... .......... 87%  491M 0s
+ 13250K .......... .......... .......... .......... .......... 87%  438M 0s
+ 13300K .......... .......... .......... .......... .......... 87%  500M 0s
+ 13350K .......... .......... .......... .......... .......... 88% 63.8M 0s
+ 13400K .......... .......... .......... .......... .......... 88% 88.9M 0s
+ 13450K .......... .......... .......... .......... .......... 88%  486M 0s
+ 13500K .......... .......... .......... .......... .......... 89%  497M 0s
+ 13550K .......... .......... .......... .......... .......... 89%  203M 0s
+ 13600K .......... .......... .......... .......... .......... 89%  404M 0s
+ 13650K .......... .......... .......... .......... .......... 90%  501M 0s
+ 13700K .......... .......... .......... .......... .......... 90% 96.8M 0s
+ 13750K .......... .......... .......... .......... .......... 90% 72.5M 0s
+ 13800K .......... .......... .......... .......... .......... 91%  179M 0s
+ 13850K .......... .......... .......... .......... .......... 91%  488M 0s
+ 13900K .......... .......... .......... .......... .......... 91%  490M 0s
+ 13950K .......... .......... .......... .......... .......... 92%  201M 0s
+ 14000K .......... .......... .......... .......... .......... 92%  396M 0s
+ 14050K .......... .......... .......... .......... .......... 92% 66.2M 0s
+ 14100K .......... .......... .......... .......... .......... 93% 72.7M 0s
+ 14150K .......... .......... .......... .......... .......... 93%  304M 0s
+ 14200K .......... .......... .......... .......... .......... 93%  439M 0s
+ 14250K .......... .......... .......... .......... .......... 94%  503M 0s
+ 14300K .......... .......... .......... .......... .......... 94%  495M 0s
+ 14350K .......... .......... .......... .......... .......... 94%  487M 0s
+ 14400K .......... .......... .......... .......... .......... 95%  112M 0s
+ 14450K .......... .......... .......... .......... .......... 95% 99.2M 0s
+ 14500K .......... .......... .......... .......... .......... 95%  469M 0s
+ 14550K .......... .......... .......... .......... .......... 96%  444M 0s
+ 14600K .......... .......... .......... .......... .......... 96%  443M 0s
+ 14650K .......... .......... .......... .......... .......... 96%  478M 0s
+ 14700K .......... .......... .......... .......... .......... 97%  497M 0s
+ 14750K .......... .......... .......... .......... .......... 97%  502M 0s
+ 14800K .......... .......... .......... .......... .......... 97%  396M 0s
+ 14850K .......... .......... .......... .......... .......... 98%  491M 0s
+ 14900K .......... .......... .......... .......... .......... 98%  494M 0s
+ 14950K .......... .......... .......... .......... .......... 98%  494M 0s
+ 15000K .......... .......... .......... .......... .......... 99%  223M 0s
+ 15050K .......... .......... .......... .......... .......... 99% 74.9M 0s
+ 15100K .......... .......... .......... .......... .......... 99% 73.3M 0s
+ 15150K .......... .......... .......... .......... ........  100%  153M=0.1setcd-v3.4.24-linux-amd64/README-etcdctl.md
+etcd-v3.4.24-linux-amd64/Documentation/
+etcd-v3.4.24-linux-amd64/Documentation/demo.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/experimental_apis.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/interacting_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/local_cluster.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/rpc.swagger.json
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/v3lock.swagger.json
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/v3election.swagger.json
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/api_reference_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/api_concurrency_reference_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/grpc_naming.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/limit.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/api_grpc_gateway.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-2-0-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-3-watch-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-1-0-alpha-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-storage-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-2-0-rc-memory-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-3-demo-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/README.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-2-0-rc-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-2-0-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-3-watch-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-1-0-alpha-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-storage-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-2-0-rc-memory-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-3-demo-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/README.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-2-0-rc-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/clustering.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/upgrade_2_2.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/upgrade_2_3.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/authentication.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/metrics.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/auth_api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/api_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/platforms/
+etcd-v3.4.24-linux-amd64/Documentation/v2/platforms/freebsd.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/proxy.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/upgrade_2_1.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/glossary.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/security.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/tuning.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/admin_guide.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/etcd_alert.rules.yml
+etcd-v3.4.24-linux-amd64/Documentation/v2/runtime-reconf-design.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/libraries-and-tools.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/other_apis.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/faq.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/etcd_alert.rules
+etcd-v3.4.24-linux-amd64/Documentation/v2/reporting_bugs.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/docker_guide.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/members_api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/production-users.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/backward_compatibility.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/rfc/
+etcd-v3.4.24-linux-amd64/Documentation/v2/rfc/v3api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/dev/
+etcd-v3.4.24-linux-amd64/Documentation/v2/dev/release.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/README.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/discovery_protocol.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/04_to_2_snapshot_migration.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/errorcode.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/internal-protocol-versioning.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/runtime-configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/branch_management.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/release.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/discovery_protocol.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/logging.md
+etcd-v3.4.24-linux-amd64/Documentation/metrics/
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.12
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.13
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.9
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.0
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.10
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.6
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.7
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.3
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.4
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.12
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.8
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.1
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.13
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.17
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.15
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.6
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.4
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.22
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.5
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.7
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.0
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.10
+etcd-v3.4.24-linux-amd64/Documentation/metrics/latest
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.0
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.16
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.14
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.20
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.14
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.20
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.2
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.4
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.8
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.3
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.23
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.19
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.5
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.18
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.1
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.9
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.5
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.1
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.11
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.18
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.21
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.7
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.2
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.19
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.8
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.10
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.3
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.17
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.9
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.11
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.15
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.2
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.6
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.24
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.16
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.25
+etcd-v3.4.24-linux-amd64/Documentation/metrics.md
+etcd-v3.4.24-linux-amd64/Documentation/platforms/
+etcd-v3.4.24-linux-amd64/Documentation/platforms/freebsd.md
+etcd-v3.4.24-linux-amd64/Documentation/platforms/container-linux-systemd.md
+etcd-v3.4.24-linux-amd64/Documentation/platforms/aws.md
+etcd-v3.4.24-linux-amd64/Documentation/dl_build.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/
+etcd-v3.4.24-linux-amd64/Documentation/learning/data_model.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-07.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-11.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-04.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-01.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-02.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-05.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-13.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-10.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-06.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-03.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-08.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-03.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-01.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-06.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-02.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-05.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-09.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/etcd.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-08.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-04.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-12.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-07.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-09.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/glossary.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/design-auth-v3.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/design-learner.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/design-client.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/api.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/why.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/api_guarantees.md
+etcd-v3.4.24-linux-amd64/Documentation/docs.md
+etcd-v3.4.24-linux-amd64/Documentation/triage/
+etcd-v3.4.24-linux-amd64/Documentation/triage/issues.md
+etcd-v3.4.24-linux-amd64/Documentation/triage/PRs.md
+etcd-v3.4.24-linux-amd64/Documentation/integrations.md
+etcd-v3.4.24-linux-amd64/Documentation/tuning.md
+etcd-v3.4.24-linux-amd64/Documentation/faq.md
+etcd-v3.4.24-linux-amd64/Documentation/reporting_bugs.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/supported-platform.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/clustering.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/etcd-sample-grafana.png
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/recovery.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/etcd3_alert.rules.yml
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/gateway.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/authentication.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/v2-migration.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/versioning.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/hardware.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/grpc_proxy.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/security.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/performance.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/etcd3_alert.rules
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/runtime-reconf-design.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/monitoring.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/maintenance.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/container.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/grafana.json
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/runtime-configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/failures.md
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/mixin.libsonnet
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/README.md
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/test.yaml
+etcd-v3.4.24-linux-amd64/Documentation/production-users.md
+etcd-v3.4.24-linux-amd64/Documentation/rfc/
+etcd-v3.4.24-linux-amd64/Documentation/rfc/v3api.md
+etcd-v3.4.24-linux-amd64/Documentation/README.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_0.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_5.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrading-etcd.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_1.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_2.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_3.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_4.md
+etcd-v3.4.24-linux-amd64/Documentation/branch_management.md
+etcd-v3.4.24-linux-amd64/README.md
+etcd-v3.4.24-linux-amd64/etcd
+Configuring etcd server...
+cp: cannot stat 'ca.pem': No such file or directory
+cp: cannot stat 'kubernetes-key.pem': No such file or directory
+cp: cannot stat 'kubernetes.pem': No such file or directory
+controller-0 etcd installation completed!
+
+==========================================
+Configuring etcd on controller-1 (IP: 10.240.0.11)
+==========================================
+Public IP for controller-1 : 20.186.17.67
+Copying installation script to controller-1...
+install-etcd.sh                                                                                                             100% 2478    35.6KB/s   00:00
+Executing etcd installation on controller-1...
+Starting etcd installation on controller-1...
+Downloading etcd binaries...
+
+     0K .......... .......... .......... .......... ..........  0% 8.62M 2s
+    50K .......... .......... .......... .......... ..........  0% 22.6M 1s
+   100K .......... .......... .......... .......... ..........  0% 13.2M 1s
+   150K .......... .......... .......... .......... ..........  1% 46.8M 1s
+   200K .......... .......... .......... .......... ..........  1%  104M 1s
+   250K .......... .......... .......... .......... ..........  1% 15.7M 1s
+   300K .......... .......... .......... .......... ..........  2% 48.6M 1s
+   350K .......... .......... .......... .......... ..........  2% 18.0M 1s
+   400K .......... .......... .......... .......... ..........  2%  240M 1s
+   450K .......... .......... .......... .......... ..........  3%  269M 1s
+   500K .......... .......... .......... .......... ..........  3%  160M 1s
+   550K .......... .......... .......... .......... ..........  3% 43.7M 1s
+   600K .......... .......... .......... .......... ..........  4% 80.4M 0s
+   650K .......... .......... .......... .......... ..........  4%  151M 0s
+   700K .......... .......... .......... .......... ..........  4%  102M 0s
+   750K .......... .......... .......... .......... ..........  5% 21.1M 0s
+   800K .......... .......... .......... .......... ..........  5%  201M 0s
+   850K .......... .......... .......... .......... ..........  5%  214M 0s
+   900K .......... .......... .......... .......... ..........  6% 27.3M 0s
+   950K .......... .......... .......... .......... ..........  6%  145M 0s
+  1000K .......... .......... .......... .......... ..........  6% 48.2M 0s
+  1050K .......... .......... .......... .......... ..........  7%  293M 0s
+  1100K .......... .......... .......... .......... ..........  7%  332M 0s
+  1150K .......... .......... .......... .......... ..........  7%  287M 0s
+  1200K .......... .......... .......... .......... ..........  8%  349M 0s
+  1250K .......... .......... .......... .......... ..........  8%  359M 0s
+  1300K .......... .......... .......... .......... ..........  8%  354M 0s
+  1350K .......... .......... .......... .......... ..........  9%  321M 0s
+  1400K .......... .......... .......... .......... ..........  9% 66.1M 0s
+  1450K .......... .......... .......... .......... ..........  9% 37.0M 0s
+  1500K .......... .......... .......... .......... .......... 10%  234M 0s
+  1550K .......... .......... .......... .......... .......... 10%  267M 0s
+  1600K .......... .......... .......... .......... .......... 10%  353M 0s
+  1650K .......... .......... .......... .......... .......... 11%  320M 0s
+  1700K .......... .......... .......... .......... .......... 11%  194M 0s
+  1750K .......... .......... .......... .......... .......... 11% 46.5M 0s
+  1800K .......... .......... .......... .......... .......... 12% 84.2M 0s
+  1850K .......... .......... .......... .......... .......... 12%  292M 0s
+  1900K .......... .......... .......... .......... .......... 12%  290M 0s
+  1950K .......... .......... .......... .......... .......... 13%  142M 0s
+  2000K .......... .......... .......... .......... .......... 13% 82.6M 0s
+  2050K .......... .......... .......... .......... .......... 13%  330M 0s
+  2100K .......... .......... .......... .......... .......... 14%  243M 0s
+  2150K .......... .......... .......... .......... .......... 14%  186M 0s
+  2200K .......... .......... .......... .......... .......... 14%  312M 0s
+  2250K .......... .......... .......... .......... .......... 15%  214M 0s
+  2300K .......... .......... .......... .......... .......... 15%  312M 0s
+  2350K .......... .......... .......... .......... .......... 15% 35.1M 0s
+  2400K .......... .......... .......... .......... .......... 16% 81.7M 0s
+  2450K .......... .......... .......... .......... .......... 16%  157M 0s
+  2500K .......... .......... .......... .......... .......... 16%  235M 0s
+  2550K .......... .......... .......... .......... .......... 17%  338M 0s
+  2600K .......... .......... .......... .......... .......... 17%  276M 0s
+  2650K .......... .......... .......... .......... .......... 17% 63.6M 0s
+  2700K .......... .......... .......... .......... .......... 18% 28.5M 0s
+  2750K .......... .......... .......... .......... .......... 18%  184M 0s
+  2800K .......... .......... .......... .......... .......... 18%  298M 0s
+  2850K .......... .......... .......... .......... .......... 19%  308M 0s
+  2900K .......... .......... .......... .......... .......... 19% 70.4M 0s
+  2950K .......... .......... .......... .......... .......... 19% 50.9M 0s
+  3000K .......... .......... .......... .......... .......... 20%  150M 0s
+  3050K .......... .......... .......... .......... .......... 20% 80.1M 0s
+  3100K .......... .......... .......... .......... .......... 20% 96.4M 0s
+  3150K .......... .......... .......... .......... .......... 21%  160M 0s
+  3200K .......... .......... .......... .......... .......... 21%  286M 0s
+  3250K .......... .......... .......... .......... .......... 21%  299M 0s
+  3300K .......... .......... .......... .......... .......... 22%  290M 0s
+  3350K .......... .......... .......... .......... .......... 22%  344M 0s
+  3400K .......... .......... .......... .......... .......... 22% 55.9M 0s
+  3450K .......... .......... .......... .......... .......... 23% 34.4M 0s
+  3500K .......... .......... .......... .......... .......... 23%  279M 0s
+  3550K .......... .......... .......... .......... .......... 23%  322M 0s
+  3600K .......... .......... .......... .......... .......... 24%  169M 0s
+  3650K .......... .......... .......... .......... .......... 24%  289M 0s
+  3700K .......... .......... .......... .......... .......... 24% 39.3M 0s
+  3750K .......... .......... .......... .......... .......... 25%  303M 0s
+  3800K .......... .......... .......... .......... .......... 25%  269M 0s
+  3850K .......... .......... .......... .......... .......... 25%  158M 0s
+  3900K .......... .......... .......... .......... .......... 25%  151M 0s
+  3950K .......... .......... .......... .......... .......... 26% 35.8M 0s
+  4000K .......... .......... .......... .......... .......... 26%  132M 0s
+  4050K .......... .......... .......... .......... .......... 26% 50.1M 0s
+  4100K .......... .......... .......... .......... .......... 27%  227M 0s
+  4150K .......... .......... .......... .......... .......... 27%  229M 0s
+  4200K .......... .......... .......... .......... .......... 27%  271M 0s
+  4250K .......... .......... .......... .......... .......... 28%  258M 0s
+  4300K .......... .......... .......... .......... .......... 28%  284M 0s
+  4350K .......... .......... .......... .......... .......... 28% 64.6M 0s
+  4400K .......... .......... .......... .......... .......... 29% 44.7M 0s
+  4450K .......... .......... .......... .......... .......... 29%  211M 0s
+  4500K .......... .......... .......... .......... .......... 29% 49.2M 0s
+  4550K .......... .......... .......... .......... .......... 30%  181M 0s
+  4600K .......... .......... .......... .......... .......... 30%  266M 0s
+  4650K .......... .......... .......... .......... .......... 30%  288M 0s
+  4700K .......... .......... .......... .......... .......... 31%  360M 0s
+  4750K .......... .......... .......... .......... .......... 31%  290M 0s
+  4800K .......... .......... .......... .......... .......... 31%  104M 0s
+  4850K .......... .......... .......... .......... .......... 32% 36.2M 0s
+  4900K .......... .......... .......... .......... .......... 32%  270M 0s
+  4950K .......... .......... .......... .......... .......... 32%  102M 0s
+  5000K .......... .......... .......... .......... .......... 33%  267M 0s
+  5050K .......... .......... .......... .......... .......... 33%  265M 0s
+  5100K .......... .......... .......... .......... .......... 33%  252M 0s
+  5150K .......... .......... .......... .......... .......... 34%  247M 0s
+  5200K .......... .......... .......... .......... .......... 34%  338M 0s
+  5250K .......... .......... .......... .......... .......... 34%  336M 0s
+  5300K .......... .......... .......... .......... .......... 35%  243M 0s
+  5350K .......... .......... .......... .......... .......... 35%  313M 0s
+  5400K .......... .......... .......... .......... .......... 35%  334M 0s
+  5450K .......... .......... .......... .......... .......... 36% 84.6M 0s
+  5500K .......... .......... .......... .......... .......... 36% 48.6M 0s
+  5550K .......... .......... .......... .......... .......... 36% 44.7M 0s
+  5600K .......... .......... .......... .......... .......... 37%  315M 0s
+  5650K .......... .......... .......... .......... .......... 37%  324M 0s
+  5700K .......... .......... .......... .......... .......... 37%  201M 0s
+  5750K .......... .......... .......... .......... .......... 38%  213M 0s
+  5800K .......... .......... .......... .......... .......... 38%  259M 0s
+  5850K .......... .......... .......... .......... .......... 38%  234M 0s
+  5900K .......... .......... .......... .......... .......... 39%  232M 0s
+  5950K .......... .......... .......... .......... .......... 39% 37.9M 0s
+  6000K .......... .......... .......... .......... .......... 39% 36.3M 0s
+  6050K .......... .......... .......... .......... .......... 40%  146M 0s
+  6100K .......... .......... .......... .......... .......... 40%  156M 0s
+  6150K .......... .......... .......... .......... .......... 40%  324M 0s
+  6200K .......... .......... .......... .......... .......... 41%  303M 0s
+  6250K .......... .......... .......... .......... .......... 41%  284M 0s
+  6300K .......... .......... .......... .......... .......... 41%  273M 0s
+  6350K .......... .......... .......... .......... .......... 42% 85.6M 0s
+  6400K .......... .......... .......... .......... .......... 42% 27.1M 0s
+  6450K .......... .......... .......... .......... .......... 42%  119M 0s
+  6500K .......... .......... .......... .......... .......... 43%  278M 0s
+  6550K .......... .......... .......... .......... .......... 43%  102M 0s
+  6600K .......... .......... .......... .......... .......... 43% 82.9M 0s
+  6650K .......... .......... .......... .......... .......... 44%  247M 0s
+  6700K .......... .......... .......... .......... .......... 44%  210M 0s
+  6750K .......... .......... .......... .......... .......... 44%  221M 0s
+  6800K .......... .......... .......... .......... .......... 45%  305M 0s
+  6850K .......... .......... .......... .......... .......... 45%  324M 0s
+  6900K .......... .......... .......... .......... .......... 45% 83.4M 0s
+  6950K .......... .......... .......... .......... .......... 46% 41.0M 0s
+  7000K .......... .......... .......... .......... .......... 46% 79.8M 0s
+  7050K .......... .......... .......... .......... .......... 46%  121M 0s
+  7100K .......... .......... .......... .......... .......... 47%  273M 0s
+  7150K .......... .......... .......... .......... .......... 47%  225M 0s
+  7200K .......... .......... .......... .......... .......... 47%  289M 0s
+  7250K .......... .......... .......... .......... .......... 48%  328M 0s
+  7300K .......... .......... .......... .......... .......... 48%  245M 0s
+  7350K .......... .......... .......... .......... .......... 48%  232M 0s
+  7400K .......... .......... .......... .......... .......... 49%  130M 0s
+  7450K .......... .......... .......... .......... .......... 49% 40.3M 0s
+  7500K .......... .......... .......... .......... .......... 49% 49.1M 0s
+  7550K .......... .......... .......... .......... .......... 50%  321M 0s
+  7600K .......... .......... .......... .......... .......... 50%  287M 0s
+  7650K .......... .......... .......... .......... .......... 50%  229M 0s
+  7700K .......... .......... .......... .......... .......... 50% 54.7M 0s
+  7750K .......... .......... .......... .......... .......... 51%  110M 0s
+  7800K .......... .......... .......... .......... .......... 51%  296M 0s
+  7850K .......... .......... .......... .......... .......... 51%  268M 0s
+  7900K .......... .......... .......... .......... .......... 52%  287M 0s
+  7950K .......... .......... .......... .......... .......... 52%  109M 0s
+  8000K .......... .......... .......... .......... .......... 52% 36.2M 0s
+  8050K .......... .......... .......... .......... .......... 53%  286M 0s
+  8100K .......... .......... .......... .......... .......... 53%  335M 0s
+  8150K .......... .......... .......... .......... .......... 53% 91.4M 0s
+  8200K .......... .......... .......... .......... .......... 54%  133M 0s
+  8250K .......... .......... .......... .......... .......... 54%  329M 0s
+  8300K .......... .......... .......... .......... .......... 54%  132M 0s
+  8350K .......... .......... .......... .......... .......... 55%  312M 0s
+  8400K .......... .......... .......... .......... .......... 55%  177M 0s
+  8450K .......... .......... .......... .......... .......... 55%  272M 0s
+  8500K .......... .......... .......... .......... .......... 56% 49.0M 0s
+  8550K .......... .......... .......... .......... .......... 56% 47.5M 0s
+  8600K .......... .......... .......... .......... .......... 56%  218M 0s
+  8650K .......... .......... .......... .......... .......... 57%  271M 0s
+  8700K .......... .......... .......... .......... .......... 57%  302M 0s
+  8750K .......... .......... .......... .......... .......... 57%  261M 0s
+  8800K .......... .......... .......... .......... .......... 58%  299M 0s
+  8850K .......... .......... .......... .......... .......... 58% 50.4M 0s
+  8900K .......... .......... .......... .......... .......... 58% 53.3M 0s
+  8950K .......... .......... .......... .......... .......... 59%  295M 0s
+  9000K .......... .......... .......... .......... .......... 59% 60.6M 0s
+  9050K .......... .......... .......... .......... .......... 59%  201M 0s
+  9100K .......... .......... .......... .......... .......... 60%  231M 0s
+  9150K .......... .......... .......... .......... .......... 60%  297M 0s
+  9200K .......... .......... .......... .......... .......... 60%  332M 0s
+  9250K .......... .......... .......... .......... .......... 61%  314M 0s
+  9300K .......... .......... .......... .......... .......... 61%  272M 0s
+  9350K .......... .......... .......... .......... .......... 61%  227M 0s
+  9400K .......... .......... .......... .......... .......... 62% 35.4M 0s
+  9450K .......... .......... .......... .......... .......... 62% 89.3M 0s
+  9500K .......... .......... .......... .......... .......... 62%  137M 0s
+  9550K .......... .......... .......... .......... .......... 63%  321M 0s
+  9600K .......... .......... .......... .......... .......... 63% 61.3M 0s
+  9650K .......... .......... .......... .......... .......... 63% 37.2M 0s
+  9700K .......... .......... .......... .......... .......... 64%  106M 0s
+  9750K .......... .......... .......... .......... .......... 64%  105M 0s
+  9800K .......... .......... .......... .......... .......... 64%  215M 0s
+  9850K .......... .......... .......... .......... .......... 65%  309M 0s
+  9900K .......... .......... .......... .......... .......... 65%  163M 0s
+  9950K .......... .......... .......... .......... .......... 65%  229M 0s
+ 10000K .......... .......... .......... .......... .......... 66%  344M 0s
+ 10050K .......... .......... .......... .......... .......... 66%  181M 0s
+ 10100K .......... .......... .......... .......... .......... 66%  331M 0s
+ 10150K .......... .......... .......... .......... .......... 67% 28.7M 0s
+ 10200K .......... .......... .......... .......... .......... 67% 67.0M 0s
+ 10250K .......... .......... .......... .......... .......... 67%  325M 0s
+ 10300K .......... .......... .......... .......... .......... 68%  286M 0s
+ 10350K .......... .......... .......... .......... .......... 68%  272M 0s
+ 10400K .......... .......... .......... .......... .......... 68% 92.3M 0s
+ 10450K .......... .......... .......... .......... .......... 69% 70.5M 0s
+ 10500K .......... .......... .......... .......... .......... 69%  329M 0s
+ 10550K .......... .......... .......... .......... .......... 69%  188M 0s
+ 10600K .......... .......... .......... .......... .......... 70%  293M 0s
+ 10650K .......... .......... .......... .......... .......... 70%  172M 0s
+ 10700K .......... .......... .......... .......... .......... 70% 34.0M 0s
+ 10750K .......... .......... .......... .......... .......... 71%  273M 0s
+ 10800K .......... .......... .......... .......... .......... 71%  309M 0s
+ 10850K .......... .......... .......... .......... .......... 71%  328M 0s
+ 10900K .......... .......... .......... .......... .......... 72% 98.8M 0s
+ 10950K .......... .......... .......... .......... .......... 72% 90.3M 0s
+ 11000K .......... .......... .......... .......... .......... 72%  200M 0s
+ 11050K .......... .......... .......... .......... .......... 73%  296M 0s
+ 11100K .......... .......... .......... .......... .......... 73%  346M 0s
+ 11150K .......... .......... .......... .......... .......... 73%  286M 0s
+ 11200K .......... .......... .......... .......... .......... 74%  271M 0s
+ 11250K .......... .......... .......... .......... .......... 74%  337M 0s
+ 11300K .......... .......... .......... .......... .......... 74% 40.1M 0s
+ 11350K .......... .......... .......... .......... .......... 75% 44.0M 0s
+ 11400K .......... .......... .......... .......... .......... 75%  156M 0s
+ 11450K .......... .......... .......... .......... .......... 75%  277M 0s
+ 11500K .......... .......... .......... .......... .......... 75%  320M 0s
+ 11550K .......... .......... .......... .......... .......... 76%  216M 0s
+ 11600K .......... .......... .......... .......... .......... 76%  330M 0s
+ 11650K .......... .......... .......... .......... .......... 76%  326M 0s
+ 11700K .......... .......... .......... .......... .......... 77%  338M 0s
+ 11750K .......... .......... .......... .......... .......... 77%  303M 0s
+ 11800K .......... .......... .......... .......... .......... 77%  326M 0s
+ 11850K .......... .......... .......... .......... .......... 78% 66.9M 0s
+ 11900K .......... .......... .......... .......... .......... 78% 40.5M 0s
+ 11950K .......... .......... .......... .......... .......... 78%  111M 0s
+ 12000K .......... .......... .......... .......... .......... 79%  342M 0s
+ 12050K .......... ......Installing etcd binaries...
+etcd-v3.4.24-linux-amd64/
+etcd-v3.4.24-linux-amd64/READMEv2-etcdctl.md
+etcd-v3.4.24-linux-amd64/etcdctl
+.... .......... .......... .......... 79% 25.6M 0s
+ 12100K .......... .......... .......... .......... .......... 79%  113M 0s
+ 12150K .......... .......... .......... .......... .......... 80%  310M 0s
+ 12200K .......... .......... .......... .......... .......... 80% 71.6M 0s
+ 12250K .......... .......... .......... .......... .......... 80%  219M 0s
+ 12300K .......... .......... .......... .......... .......... 81%  350M 0s
+ 12350K .......... .......... .......... .......... .......... 81%  157M 0s
+ 12400K .......... .......... .......... .......... .......... 81%  307M 0s
+ 12450K .......... .......... .......... .......... .......... 82%  272M 0s
+ 12500K .......... .......... .......... .......... .......... 82%  310M 0s
+ 12550K .......... .......... .......... .......... .......... 82%  303M 0s
+ 12600K .......... .......... .......... .......... .......... 83% 43.1M 0s
+ 12650K .......... .......... .......... .......... .......... 83% 55.5M 0s
+ 12700K .......... .......... .......... .......... .......... 83%  291M 0s
+ 12750K .......... .......... .......... .......... .......... 84%  283M 0s
+ 12800K .......... .......... .......... .......... .......... 84%  341M 0s
+ 12850K .......... .......... .......... .......... .......... 84%  353M 0s
+ 12900K .......... .......... .......... .......... .......... 85%  315M 0s
+ 12950K .......... .......... .......... .......... .......... 85%  325M 0s
+ 13000K .......... .......... .......... .......... .......... 85%  107M 0s
+ 13050K .......... .......... .......... .......... .......... 86% 49.9M 0s
+ 13100K .......... .......... .......... .......... .......... 86%  173M 0s
+ 13150K .......... .......... .......... .......... .......... 86%  296M 0s
+ 13200K .......... .......... .......... .......... .......... 87%  364M 0s
+ 13250K .......... .......... .......... .......... .......... 87% 53.3M 0s
+ 13300K .......... .......... .......... .......... .......... 87%  265M 0s
+ 13350K .......... .......... .......... .......... .......... 88%  196M 0s
+ 13400K .......... .......... .......... .......... .......... 88%  239M 0s
+ 13450K .......... .......... .......... .......... .......... 88%  319M 0s
+ 13500K .......... .......... .......... .......... .......... 89%  234M 0s
+ 13550K .......... .......... .......... .......... .......... 89%  166M 0s
+ 13600K .......... .......... .......... .......... .......... 89% 52.1M 0s
+ 13650K .......... .......... .......... .......... .......... 90% 77.7M 0s
+ 13700K .......... .......... .......... .......... .......... 90%  318M 0s
+ 13750K .......... .......... .......... .......... .......... 90%  364M 0s
+ 13800K .......... .......... .......... .......... .......... 91% 65.8M 0s
+ 13850K .......... .......... .......... .......... .......... 91%  321M 0s
+ 13900K .......... .......... .......... .......... .......... 91%  289M 0s
+ 13950K .......... .......... .......... .......... .......... 92%  306M 0s
+ 14000K .......... .......... .......... .......... .......... 92%  227M 0s
+ 14050K .......... .......... .......... .......... .......... 92%  294M 0s
+ 14100K .......... .......... .......... .......... .......... 93%  248M 0s
+ 14150K .......... .......... .......... .......... .......... 93%  256M 0s
+ 14200K .......... .......... .......... .......... .......... 93% 18.6M 0s
+ 14250K .......... .......... .......... .......... .......... 94%  209M 0s
+ 14300K .......... .......... .......... .......... .......... 94%  182M 0s
+ 14350K .......... .......... .......... .......... .......... 94%  293M 0s
+ 14400K .......... .......... .......... .......... .......... 95%  264M 0s
+ 14450K .......... .......... .......... .......... .......... 95%  329M 0s
+ 14500K .......... .......... .......... .......... .......... 95%  260M 0s
+ 14550K .......... .......... .......... .......... .......... 96%  251M 0s
+ 14600K .......... .......... .......... .......... .......... 96% 39.5M 0s
+ 14650K .......... .......... .......... .......... .......... 96%  274M 0s
+ 14700K .......... .......... .......... .......... .......... 97%  261M 0s
+ 14750K .......... .......... .......... .......... .......... 97%  309M 0s
+ 14800K .......... .......... .......... .......... .......... 97%  267M 0s
+ 14850K .......... .......... .......... .......... .......... 98% 50.5M 0s
+ 14900K .......... .......... .......... .......... .......... 98%  104M 0s
+ 14950K .......... .......... .......... .......... .......... 98%  277M 0s
+ 15000K .......... .......... .......... .......... .......... 99%  318M 0s
+ 15050K .......... .......... .......... .......... .......... 99%  296M 0s
+ 15100K .......... .......... .......... .......... .......... 99%  106M 0s
+ 15150K .......... .......... .......... .......... ........  100% 54.9M=0.1setcd-v3.4.24-linux-amd64/README-etcdctl.md
+etcd-v3.4.24-linux-amd64/Documentation/
+etcd-v3.4.24-linux-amd64/Documentation/demo.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/experimental_apis.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/interacting_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/local_cluster.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/rpc.swagger.json
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/v3lock.swagger.json
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/v3election.swagger.json
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/api_reference_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/api_concurrency_reference_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/grpc_naming.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/limit.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/api_grpc_gateway.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-2-0-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-3-watch-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-1-0-alpha-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-storage-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-2-0-rc-memory-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-3-demo-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/README.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-2-0-rc-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-2-0-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-3-watch-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-1-0-alpha-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-storage-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-2-0-rc-memory-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-3-demo-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/README.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-2-0-rc-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/clustering.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/upgrade_2_2.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/upgrade_2_3.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/authentication.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/metrics.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/auth_api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/api_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/platforms/
+etcd-v3.4.24-linux-amd64/Documentation/v2/platforms/freebsd.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/proxy.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/upgrade_2_1.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/glossary.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/security.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/tuning.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/admin_guide.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/etcd_alert.rules.yml
+etcd-v3.4.24-linux-amd64/Documentation/v2/runtime-reconf-design.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/libraries-and-tools.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/other_apis.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/faq.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/etcd_alert.rules
+etcd-v3.4.24-linux-amd64/Documentation/v2/reporting_bugs.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/docker_guide.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/members_api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/production-users.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/backward_compatibility.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/rfc/
+etcd-v3.4.24-linux-amd64/Documentation/v2/rfc/v3api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/dev/
+etcd-v3.4.24-linux-amd64/Documentation/v2/dev/release.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/README.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/discovery_protocol.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/04_to_2_snapshot_migration.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/errorcode.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/internal-protocol-versioning.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/runtime-configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/branch_management.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/release.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/discovery_protocol.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/logging.md
+etcd-v3.4.24-linux-amd64/Documentation/metrics/
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.12
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.13
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.9
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.0
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.10
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.6
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.7
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.3
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.4
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.12
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.8
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.1
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.13
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.17
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.15
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.6
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.4
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.22
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.5
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.7
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.0
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.10
+etcd-v3.4.24-linux-amd64/Documentation/metrics/latest
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.0
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.16
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.14
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.20
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.14
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.20
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.2
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.4
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.8
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.3
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.23
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.19
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.5
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.18
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.1
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.9
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.5
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.1
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.11
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.18
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.21
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.7
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.2
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.19
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.8
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.10
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.3
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.17
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.9
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.11
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.15
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.2
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.6
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.24
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.16
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.25
+etcd-v3.4.24-linux-amd64/Documentation/metrics.md
+etcd-v3.4.24-linux-amd64/Documentation/platforms/
+etcd-v3.4.24-linux-amd64/Documentation/platforms/freebsd.md
+etcd-v3.4.24-linux-amd64/Documentation/platforms/container-linux-systemd.md
+etcd-v3.4.24-linux-amd64/Documentation/platforms/aws.md
+etcd-v3.4.24-linux-amd64/Documentation/dl_build.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/
+etcd-v3.4.24-linux-amd64/Documentation/learning/data_model.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-07.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-11.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-04.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-01.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-02.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-05.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-13.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-10.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-06.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-03.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-08.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-03.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-01.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-06.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-02.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-05.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-09.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/etcd.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-08.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-04.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-12.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-07.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-09.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/glossary.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/design-auth-v3.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/design-learner.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/design-client.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/api.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/why.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/api_guarantees.md
+etcd-v3.4.24-linux-amd64/Documentation/docs.md
+etcd-v3.4.24-linux-amd64/Documentation/triage/
+etcd-v3.4.24-linux-amd64/Documentation/triage/issues.md
+etcd-v3.4.24-linux-amd64/Documentation/triage/PRs.md
+etcd-v3.4.24-linux-amd64/Documentation/integrations.md
+etcd-v3.4.24-linux-amd64/Documentation/tuning.md
+etcd-v3.4.24-linux-amd64/Documentation/faq.md
+etcd-v3.4.24-linux-amd64/Documentation/reporting_bugs.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/supported-platform.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/clustering.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/etcd-sample-grafana.png
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/recovery.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/etcd3_alert.rules.yml
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/gateway.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/authentication.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/v2-migration.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/versioning.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/hardware.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/grpc_proxy.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/security.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/performance.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/etcd3_alert.rules
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/runtime-reconf-design.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/monitoring.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/maintenance.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/container.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/grafana.json
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/runtime-configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/failures.md
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/mixin.libsonnet
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/README.md
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/test.yaml
+etcd-v3.4.24-linux-amd64/Documentation/production-users.md
+etcd-v3.4.24-linux-amd64/Documentation/rfc/
+etcd-v3.4.24-linux-amd64/Documentation/rfc/v3api.md
+etcd-v3.4.24-linux-amd64/Documentation/README.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_0.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_5.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrading-etcd.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_1.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_2.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_3.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_4.md
+etcd-v3.4.24-linux-amd64/Documentation/branch_management.md
+etcd-v3.4.24-linux-amd64/README.md
+etcd-v3.4.24-linux-amd64/etcd
+Configuring etcd server...
+cp: cannot stat 'ca.pem': No such file or directory
+cp: cannot stat 'kubernetes-key.pem': No such file or directory
+cp: cannot stat 'kubernetes.pem': No such file or directory
+controller-1 etcd installation completed!
+
+==========================================
+Configuring etcd on controller-2 (IP: 10.240.0.12)
+==========================================
+Public IP for controller-2 : 20.109.1.80
+Copying installation script to controller-2...
+install-etcd.sh                                                                                                             100% 2478    35.6KB/s   00:00
+Executing etcd installation on controller-2...
+Starting etcd installation on controller-2...
+Downloading etcd binaries...
+
+     0K .......... .......... .......... .......... ..........  0% 7.77M 2s
+    50K .......... .......... .......... .......... ..........  0% 35.4M 1s
+   100K .......... .......... .......... .......... ..........  0% 11.0M 1s
+   150K .......... .......... .......... .......... ..........  1% 46.6M 1s
+   200K .......... .......... .......... .......... ..........  1% 95.4M 1s
+   250K .......... .......... .......... .......... ..........  1% 16.0M 1s
+   300K .......... .......... .......... .......... ..........  2% 41.5M 1s
+   350K .......... .......... .......... .......... ..........  2%  425M 1s
+   400K .......... .......... .......... .......... ..........  2% 58.6M 1s
+   450K .......... .......... .......... .......... ..........  3% 88.2M 1s
+   500K .......... .......... .......... .......... ..........  3%  136M 1s
+   550K .......... .......... .......... .......... ..........  3% 21.9M 1s
+   600K .......... .......... .......... .......... ..........  4%  202M 0s
+   650K .......... .......... .......... .......... ..........  4% 46.2M 0s
+   700K .......... .......... .......... .......... ..........  4%  119M 0s
+   750K .......... .......... .......... .......... ..........  5%  131M 0s
+   800K .......... .......... .......... .......... ..........  5%  113M 0s
+   850K .......... .......... .......... .......... ..........  5%  265M 0s
+   900K .......... .......... .......... .......... ..........  6% 67.5M 0s
+   950K .......... .......... .......... .......... ..........  6%  227M 0s
+  1000K .......... .......... .......... .......... ..........  6%  174M 0s
+  1050K .......... .......... .......... .......... ..........  7% 35.3M 0s
+  1100K .......... .......... .......... .......... ..........  7% 82.7M 0s
+  1150K .......... .......... .......... .......... ..........  7%  388M 0s
+  1200K .......... .......... .......... .......... ..........  8% 93.1M 0s
+  1250K .......... .......... .......... .......... ..........  8%  445M 0s
+  1300K .......... .......... .......... .......... ..........  8%  288M 0s
+  1350K .......... .......... .......... .......... ..........  9%  262M 0s
+  1400K .......... .......... .......... .......... ..........  9%  239M 0s
+  1450K .......... .......... .......... .......... ..........  9%  441M 0s
+  1500K .......... .......... .......... .......... .......... 10%  302M 0s
+  1550K .......... .......... .......... .......... .......... 10%  154M 0s
+  1600K .......... .......... .......... .......... .......... 10% 50.8M 0s
+  1650K .......... .......... .......... .......... .......... 11% 92.0M 0s
+  1700K .......... .......... .......... .......... .......... 11%  120M 0s
+  1750K .......... .......... .......... .......... .......... 11%  280M 0s
+  1800K .......... .......... .......... .......... .......... 12%  321M 0s
+  1850K .......... .......... .......... .......... .......... 12% 39.7M 0s
+  1900K .......... .......... .......... .......... .......... 12%  189M 0s
+  1950K .......... .......... .......... .......... .......... 13%  172M 0s
+  2000K .......... .......... .......... .......... .......... 13%  429M 0s
+  2050K .......... .......... .......... .......... .......... 13%  453M 0s
+  2100K .......... .......... .......... .......... .......... 14% 52.6M 0s
+  2150K .......... .......... .......... .......... .......... 14%  146M 0s
+  2200K .......... .......... .......... .......... .......... 14%  431M 0s
+  2250K .......... .......... .......... .......... .......... 15%  128M 0s
+  2300K .......... .......... .......... .......... .......... 15%  305M 0s
+  2350K .......... .......... .......... .......... .......... 15% 85.4M 0s
+  2400K .......... .......... .......... .......... .......... 16% 50.0M 0s
+  2450K .......... .......... .......... .......... .......... 16%  174M 0s
+  2500K .......... .......... .......... .......... .......... 16%  429M 0s
+  2550K .......... .......... .......... .......... .......... 17% 43.9M 0s
+  2600K .......... .......... .......... .......... .......... 17%  374M 0s
+  2650K .......... .......... .......... .......... .......... 17%  440M 0s
+  2700K .......... .......... .......... .......... .......... 18%  286M 0s
+  2750K .......... .......... .......... .......... .......... 18%  229M 0s
+  2800K .......... .......... .......... .......... .......... 18%  414M 0s
+  2850K .......... .......... .......... .......... .......... 19%  465M 0s
+  2900K .......... .......... .......... .......... .......... 19%  434M 0s
+  2950K .......... .......... .......... .......... .......... 19%  123M 0s
+  3000K .......... .......... .......... .......... .......... 20% 33.0M 0s
+  3050K .......... .......... .......... .......... .......... 20%  109M 0s
+  3100K .......... .......... .......... .......... .......... 20%  419M 0s
+  3150K .......... .......... .......... .......... .......... 21%  372M 0s
+  3200K .......... .......... .......... .......... .......... 21%  203M 0s
+  3250K .......... .......... .......... .......... .......... 21%  415M 0s
+  3300K .......... .......... .......... .......... .......... 22%  441M 0s
+  3350K .......... .......... .......... .......... .......... 22% 52.6M 0s
+  3400K .......... .......... .......... .......... .......... 22%  130M 0s
+  3450K .......... .......... .......... .......... .......... 23%  176M 0s
+  3500K .......... .......... .......... .......... .......... 23%  427M 0s
+  3550K .......... .......... .......... .......... .......... 23%  327M 0s
+  3600K .......... .......... .......... .......... .......... 24%  100M 0s
+  3650K .......... .......... .......... .......... .......... 24% 48.8M 0s
+  3700K .......... .......... .......... .......... .......... 24%  418M 0s
+  3750K .......... .......... .......... .......... .......... 25%  395M 0s
+  3800K .......... .......... .......... .......... .......... 25%  460M 0s
+  3850K .......... .......... .......... .......... .......... 25%  223M 0s
+  3900K .......... .......... .......... .......... .......... 25%  332M 0s
+  3950K .......... .......... .......... .......... .......... 26% 49.3M 0s
+  4000K .......... .......... .......... .......... .......... 26%  375M 0s
+  4050K .......... .......... .......... .......... .......... 26%  264M 0s
+  4100K .......... .......... .......... .......... .......... 27%  279M 0s
+  4150K .......... .......... .......... .......... .......... 27%  469M 0s
+  4200K .......... .......... .......... .......... .......... 27%  404M 0s
+  4250K .......... .......... .......... .......... .......... 28%  476M 0s
+  4300K .......... .......... .......... .......... .......... 28%  479M 0s
+  4350K .......... .......... .......... .......... .......... 28%  172M 0s
+  4400K .......... .......... .......... .......... .......... 29% 41.8M 0s
+  4450K .......... .......... .......... .......... .......... 29% 95.3M 0s
+  4500K .......... .......... .......... .......... .......... 29% 83.4M 0s
+  4550K .......... .......... .......... .......... .......... 30%  270M 0s
+  4600K .......... .......... .......... .......... .......... 30%  398M 0s
+  4650K .......... .......... .......... .......... .......... 30%  458M 0s
+  4700K .......... .......... .......... .......... .......... 31%  434M 0s
+  4750K .......... .......... .......... .......... .......... 31%  347M 0s
+  4800K .......... .......... .......... .......... .......... 31%  359M 0s
+  4850K .......... .......... .......... .......... .......... 32%  444M 0s
+  4900K .......... .......... .......... .......... .......... 32%  457M 0s
+  4950K .......... .......... .......... .......... .......... 32%  181M 0s
+  5000K .......... .......... .......... .......... .......... 33%  334M 0s
+  5050K .......... .......... .......... .......... .......... 33%  101M 0s
+  5100K .......... .......... .......... .......... .......... 33% 52.2M 0s
+  5150K .......... .......... .......... .......... .......... 34% 42.3M 0s
+  5200K .......... .......... .......... .......... .......... 34%  348M 0s
+  5250K .......... .......... .......... .......... .......... 34%  380M 0s
+  5300K .......... .......... .......... .......... .......... 35%  126M 0s
+  5350K .......... .......... .......... .......... .......... 35%  256M 0s
+  5400K .......... .......... .......... .......... .......... 35%  323M 0s
+  5450K .......... .......... .......... .......... .......... 36%  441M 0s
+  5500K .......... .......... .......... .......... .......... 36%  425M 0s
+  5550K .......... .......... .......... .......... .......... 36%  414M 0s
+  5600K .......... .......... .......... .......... .......... 37% 73.9M 0s
+  5650K .......... .......... .......... .......... .......... 37% 47.0M 0s
+  5700K .......... .......... .......... .......... .......... 37% 48.4M 0s
+  5750K .......... .......... .......... .......... .......... 38%  389M 0s
+  5800K .......... .......... .......... .......... .......... 38%  453M 0s
+  5850K .......... .......... .......... .......... .......... 38%  415M 0s
+  5900K .......... .......... .......... .......... .......... 39%  329M 0s
+  5950K .......... .......... .......... .......... .......... 39%  359M 0s
+  6000K .......... .......... .......... .......... .......... 39%  405M 0s
+  6050K .......... .......... .......... .......... .......... 40%  320M 0s
+  6100K .......... .......... .......... .......... .......... 40%  453M 0s
+  6150K .......... .......... .......... .......... .......... 40%  411M 0s
+  6200K .......... .......... .......... .......... .......... 41%  441M 0s
+  6250K .......... .......... .......... .......... .......... 41%  445M 0s
+  6300K .......... .......... .......... .......... .......... 41%  460M 0s
+  6350K .......... .......... .......... .......... .......... 42% 46.4M 0s
+  6400K .......... .......... .......... .......... .......... 42% 47.2M 0s
+  6450K .......... .......... .......... .......... .......... 42%  408M 0s
+  6500K .......... .......... .......... .......... .......... 43%  457M 0s
+  6550K .......... .......... .......... .......... .......... 43%  330M 0s
+  6600K .......... .......... .......... .......... .......... 43%  324M 0s
+  6650K .......... .......... .......... .......... .......... 44%  434M 0s
+  6700K .......... .......... .......... .......... .......... 44%  440M 0s
+  6750K .......... .......... .......... .......... .......... 44%  409M 0s
+  6800K .......... .......... .......... .......... .......... 45%  103M 0s
+  6850K .......... .......... .......... .......... .......... 45% 54.1M 0s
+  6900K .......... .......... .......... .......... .......... 45%  433M 0s
+  6950K .......... .......... .......... .......... .......... 46%  448M 0s
+  7000K .......... .......... .......... .......... .......... 46%  262M 0s
+  7050K .......... .......... .......... .......... .......... 46%  381M 0s
+  7100K .......... .......... .......... .......... .......... 47% 34.9M 0s
+  7150K .......... .......... .......... .......... .......... 47%  386M 0s
+  7200K .......... .......... .......... .......... .......... 47%  392M 0s
+  7250K .......... .......... .......... .......... .......... 48%  371M 0s
+  7300K .......... .......... .......... .......... .......... 48%  449M 0s
+  7350K .......... .......... .......... .......... .......... 48% 75.1M 0s
+  7400K .......... .......... .......... .......... .......... 49% 60.2M 0s
+  7450K .......... .......... .......... .......... .......... 49%  281M 0s
+  7500K .......... .......... .......... .......... .......... 49%  405M 0s
+  7550K .......... .......... .......... .......... .......... 50%  365M 0s
+  7600K .......... .......... .......... .......... .......... 50%  440M 0s
+  7650K .......... .......... .......... .......... .......... 50%  427M 0s
+  7700K .......... .......... .......... .......... .......... 50%  434M 0s
+  7750K .......... .......... .......... .......... .......... 51% 60.7M 0s
+  7800K .......... .......... .......... .......... .......... 51% 55.8M 0s
+  7850K .......... .......... .......... .......... .......... 51%  232M 0s
+  7900K .......... .......... .......... .......... .......... 52%  453M 0s
+  7950K .......... .......... .......... .......... .......... 52% 66.9M 0s
+  8000K .......... .......... .......... .......... .......... 52%  304M 0s
+  8050K .......... .......... .......... .......... .......... 53%  249M 0s
+  8100K .......... .......... .......... .......... .......... 53%  335M 0s
+  8150K .......... .......... .......... .......... .......... 53%  356M 0s
+  8200K .......... .......... .......... .......... .......... 54%  285M 0s
+  8250K .......... .......... .......... .......... .......... 54%  364M 0s
+  8300K .......... .......... .......... .......... .......... 54%  493M 0s
+  8350K .......... .......... .......... .......... .......... 55%  383M 0s
+  8400K .......... .......... .......... .......... .......... 55% 59.8M 0s
+  8450K .......... .......... .......... .......... .......... 55% 65.9M 0s
+  8500K .......... .......... .......... .......... .......... 56% 92.3M 0s
+  8550K .......... .......... .......... .......... .......... 56% 88.5M 0s
+  8600K .......... .......... .......... .......... .......... 56%  421M 0s
+  8650K .......... .......... .......... .......... .......... 57%  278M 0s
+  8700K .......... .......... .......... .......... .......... 57%  445M 0s
+  8750K .......... .......... .......... .......... .......... 57%  135M 0s
+  8800K .......... .......... .......... .......... .......... 58% 59.9M 0s
+  8850K .......... .......... .......... .......... .......... 58%  293M 0s
+  8900K .......... .......... .......... .......... .......... 58%  214M 0s
+  8950K .......... .......... .......... .......... .......... 59%  272M 0s
+  9000K .......... .......... .......... .......... .......... 59%  247M 0s
+  9050K .......... .......... .......... .......... .......... 59%  413M 0s
+  9100K .......... .......... .......... .......... .......... 60% 54.6M 0s
+  9150K .......... .......... .......... .......... .......... 60% 88.2M 0s
+  9200K .......... .......... .......... .......... .......... 60%  390M 0s
+  9250K .......... .......... .......... .......... .......... 61%  436M 0s
+  9300K .......... .......... .......... .......... .......... 61%  372M 0s
+  9350K .......... .......... .......... .......... .......... 61%  437M 0s
+  9400K .......... .......... .......... .......... .......... 62%  120M 0s
+  9450K .......... .......... .......... .......... .......... 62% 59.8M 0s
+  9500K .......... .......... .......... .......... .......... 62%  381M 0s
+  9550K .......... .......... .......... .......... .......... 63%  438M 0s
+  9600K .......... .......... .......... .......... .......... 63%  454M 0s
+  9650K .......... .......... .......... .......... .......... 63%  439M 0s
+  9700K .......... .......... .......... .......... .......... 64%  377M 0s
+  9750K .......... .......... .......... .......... .......... 64%  455M 0s
+  9800K .......... .......... .......... .......... .......... 64%  446M 0s
+  9850K .......... .......... .......... .......... .......... 65%  128M 0s
+  9900K .......... .......... .......... .......... .......... 65% 47.0M 0s
+  9950K .......... .......... .......... .......... .......... 65%  230M 0s
+ 10000K .......... .......... .......... .......... .......... 66%  369M 0s
+ 10050K .......... .......... .......... .......... .......... 66%  462M 0s
+ 10100K .......... .......... .......... .......... .......... 66%  455M 0s
+ 10150K .......... .......... .......... .......... .......... 67%  125M 0s
+ 10200K .......... .......... .......... .......... .......... 67% 70.9M 0s
+ 10250K .......... .......... .......... .......... .......... 67%  230M 0s
+ 10300K .......... .......... .......... .......... .......... 68%  146M 0s
+ 10350K .......... .......... .......... .......... .......... 68%  279M 0s
+ 10400K .......... .......... .......... .......... .......... 68%  379M 0s
+ 10450K .......... .......... .......... .......... .......... 69%  436M 0s
+ 10500K .......... .......... .......... .......... .......... 69% 55.9M 0s
+ 10550K .......... .......... .......... .......... .......... 69% 70.1M 0s
+ 10600K .......... .......... .......... .......... .......... 70%  266M 0s
+ 10650K .......... .......... .......... .......... .......... 70%  218M 0s
+ 10700K .......... .......... .......... .......... .......... 70% 73.5M 0s
+ 10750K .......... .......... .......... .......... .......... 71%  115M 0s
+ 10800K .......... .......... .......... .......... .......... 71%  402M 0s
+ 10850K .......... .......... .......... .......... .......... 71%  260M 0s
+ 10900K .......... .......... .......... .......... .......... 72%  388M 0s
+ 10950K .......... .......... .......... .......... .......... 72%  447M 0s
+ 11000K .......... .......... .......... .......... .......... 72%  446M 0s
+ 11050K .......... .......... .......... .......... .......... 73%  446M 0s
+ 11100K .......... .......... .......... .......... .......... 73%  169M 0s
+ 11150K .......... .......... .......... .......... .......... 73% 45.5M 0s
+ 11200K .......... .......... .......... .......... .......... 74% 77.9M 0s
+ 11250K .......... .......... .......... .......... .......... 74%  438M 0s
+ 11300K .......... .......... .......... .......... .......... 74%  361M 0s
+ 11350K .......... .......... .......... .......... .......... 75%  195M 0s
+ 11400K .......... .......... .......... .......... .......... 75%  415M 0s
+ 11450K .......... .......... .......... .......... .......... 75%  441M 0s
+ 11500K .......... .......... .......... .......... .......... 75%  375M 0s
+ 11550K .......... .......... .......... .......... .......... 76%  426M 0s
+ 11600K .......... .......... .......... .......... .......... 76%  381M 0s
+ 11650K .......... .......... .......... .......... .......... 76%  232M 0s
+ 11700K .......... .......... .......... .......... .......... 77% 41.8M 0s
+ 11750K .......... .......... .......... .......... .......... 77% 74.0M 0s
+ 11800K .......... .......... .......... .......... .......... 77%  379M 0s
+ 11850K .......... .......... .......... .......... .......... 78%  418M 0s
+ 11900K .......... .......... .......... .......... .......... 78%  374M 0s
+ 11950K .......... .......... .......... .......... .......... 78%  447M 0s
+ 12000K .......... .......... .......... .......... .......... 79%  141M 0s
+ 12050K .......... .......... .......... .......... .......... 79%  356M 0s
+ 12100K .......... .......... .......... .......... .......... 79%  142M 0s
+ 12150K .......... .......... .......... .......... .......... 80% 50.1M 0s
+ 12200K .......... .......... .......... .......... .......... 80%  110M 0s
+ 12250K .......... .......... .......... .......... .......... 80%  222M 0s
+ 12300K .......... .......... .......... .......... .......... 81% 78.5M 0s
+ 12350K .......... .......... .......... .......... .......... 81%  151M 0s
+ 12400K .......... .......... .......... .......... .......... 81%  427M 0s
+ 12450K .......... .......... .......... .......... .......... 82%  375M 0s
+ 12500K .......... .......... .......... .......... .......... 82%  397M 0s
+ 12550K .......... .......... .......... .......... .......... 82%  459M 0s
+ 12600K .......... .......... .......... .......... .......... 83%  437M 0s
+ 12650K .......... .......... .......... .......... .......... 83%  446M 0s
+ 12700K .......... .......... .......... .......... .......... 83%  377M 0s
+ 12750K .......... .......... .......... .......... .......... 84%  443M 0s
+ 12800K .......... .......... .......... .......... .......... 84%  451M 0s
+ 12850K .......... .......... .......... .......... .......... 84%  457M 0s
+ 12900K .......... .......... .......... .......... .......... 85% 68.9M 0s
+ 12950K .......... .......... .......... .......... .......... 85% 57.9M 0s
+ 13000K .......Installing etcd binaries...
+etcd-v3.4.24-linux-amd64/
+etcd-v3.4.24-linux-amd64/READMEv2-etcdctl.md
+etcd-v3.4.24-linux-amd64/etcdctl
+... .......... .......... .......... .......... 85%  122M 0s
+ 13050K .......... .......... .......... .......... .......... 86%  384M 0s
+ 13100K .......... .......... .......... .......... .......... 86%  361M 0s
+ 13150K .......... .......... .......... .......... .......... 86%  459M 0s
+ 13200K .......... .......... .......... .......... .......... 87%  418M 0s
+ 13250K .......... .......... .......... .......... .......... 87%  423M 0s
+ 13300K .......... .......... .......... .......... .......... 87%  394M 0s
+ 13350K .......... .......... .......... .......... .......... 88%  386M 0s
+ 13400K .......... .......... .......... .......... .......... 88%  438M 0s
+ 13450K .......... .......... .......... .......... .......... 88%  452M 0s
+ 13500K .......... .......... .......... .......... .......... 89% 45.1M 0s
+ 13550K .......... .......... .......... .......... .......... 89% 73.4M 0s
+ 13600K .......... .......... .......... .......... .......... 89%  300M 0s
+ 13650K .......... .......... .......... .......... .......... 90%  284M 0s
+ 13700K .......... .......... .......... .......... .......... 90% 76.9M 0s
+ 13750K .......... .......... .......... .......... .......... 90%  313M 0s
+ 13800K .......... .......... .......... .......... .......... 91%  271M 0s
+ 13850K .......... .......... .......... .......... .......... 91%  425M 0s
+ 13900K .......... .......... .......... .......... .......... 91%  374M 0s
+ 13950K .......... .......... .......... .......... .......... 92%  451M 0s
+ 14000K .......... .......... .......... .......... .......... 92%  444M 0s
+ 14050K .......... .......... .......... .......... .......... 92%  436M 0s
+ 14100K .......... .......... .......... .......... .......... 93%  256M 0s
+ 14150K .......... .......... .......... .......... .......... 93%  302M 0s
+ 14200K .......... .......... .......... .......... .......... 93% 62.4M 0s
+ 14250K .......... .......... .......... .......... .......... 94% 54.8M 0s
+ 14300K .......... .......... .......... .......... .......... 94% 92.7M 0s
+ 14350K .......... .......... .......... .......... .......... 94%  425M 0s
+ 14400K .......... .......... .......... .......... .......... 95%  452M 0s
+ 14450K .......... .......... .......... .......... .......... 95%  439M 0s
+ 14500K .......... .......... .......... .......... .......... 95%  393M 0s
+ 14550K .......... .......... .......... .......... .......... 96%  447M 0s
+ 14600K .......... .......... .......... .......... .......... 96%  460M 0s
+ 14650K .......... .......... .......... .......... .......... 96%  441M 0s
+ 14700K .......... .......... .......... .......... .......... 97% 64.8M 0s
+ 14750K .......... .......... .......... .......... .......... 97% 73.4M 0s
+ 14800K .......... .......... .......... .......... .......... 97%  430M 0s
+ 14850K .......... .......... .......... .......... .......... 98%  443M 0s
+ 14900K .......... .......... .......... .......... .......... 98%  407M 0s
+ 14950K .......... .......... .......... .......... .......... 98%  381M 0s
+ 15000K .......... .......... .......... .......... .......... 99%  436M 0s
+ 15050K .......... .......... .......... .......... .......... 99% 77.4M 0s
+ 15100K .......... .......... .......... .......... .......... 99%  105M 0s
+ 15150K .......... .......... .......... .......... ........  100%  434M=0.1setcd-v3.4.24-linux-amd64/README-etcdctl.md
+etcd-v3.4.24-linux-amd64/Documentation/
+etcd-v3.4.24-linux-amd64/Documentation/demo.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/experimental_apis.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/interacting_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/local_cluster.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/rpc.swagger.json
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/v3lock.swagger.json
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/apispec/swagger/v3election.swagger.json
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/api_reference_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/api_concurrency_reference_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/grpc_naming.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/limit.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-guide/api_grpc_gateway.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-2-0-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-3-watch-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-1-0-alpha-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-storage-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-2-0-rc-memory-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-3-demo-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/README.md
+etcd-v3.4.24-linux-amd64/Documentation/benchmarks/etcd-2-2-0-rc-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-2-0-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-3-watch-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-1-0-alpha-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-storage-memory-benchmark.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-2-0-rc-memory-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-3-demo-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/README.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/benchmarks/etcd-2-2-0-rc-benchmarks.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/clustering.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/upgrade_2_2.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/upgrade_2_3.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/authentication.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/metrics.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/auth_api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/api_v3.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/platforms/
+etcd-v3.4.24-linux-amd64/Documentation/v2/platforms/freebsd.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/proxy.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/upgrade_2_1.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/glossary.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/security.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/tuning.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/admin_guide.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/etcd_alert.rules.yml
+etcd-v3.4.24-linux-amd64/Documentation/v2/runtime-reconf-design.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/libraries-and-tools.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/other_apis.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/faq.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/etcd_alert.rules
+etcd-v3.4.24-linux-amd64/Documentation/v2/reporting_bugs.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/docker_guide.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/members_api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/production-users.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/backward_compatibility.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/rfc/
+etcd-v3.4.24-linux-amd64/Documentation/v2/rfc/v3api.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/dev/
+etcd-v3.4.24-linux-amd64/Documentation/v2/dev/release.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/README.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/discovery_protocol.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/04_to_2_snapshot_migration.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/errorcode.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/internal-protocol-versioning.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/runtime-configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/v2/branch_management.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/release.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/discovery_protocol.md
+etcd-v3.4.24-linux-amd64/Documentation/dev-internal/logging.md
+etcd-v3.4.24-linux-amd64/Documentation/metrics/
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.12
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.13
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.9
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.0
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.10
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.6
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.7
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.3
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.4
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.12
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.8
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.1
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.13
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.17
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.15
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.6
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.4
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.22
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.5
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.7
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.0
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.10
+etcd-v3.4.24-linux-amd64/Documentation/metrics/latest
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.0
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.16
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.14
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.20
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.14
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.20
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.2
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.4
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.8
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.3
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.23
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.19
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.5
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.18
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.1
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.9
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.5
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.1
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.11
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.18
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.21
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.7
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.2
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.19
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.8
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.3.10
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.3
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.17
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.9
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.11
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.15
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.2
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.6
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.24
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.1.16
+etcd-v3.4.24-linux-amd64/Documentation/metrics/v3.2.25
+etcd-v3.4.24-linux-amd64/Documentation/metrics.md
+etcd-v3.4.24-linux-amd64/Documentation/platforms/
+etcd-v3.4.24-linux-amd64/Documentation/platforms/freebsd.md
+etcd-v3.4.24-linux-amd64/Documentation/platforms/container-linux-systemd.md
+etcd-v3.4.24-linux-amd64/Documentation/platforms/aws.md
+etcd-v3.4.24-linux-amd64/Documentation/dl_build.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/
+etcd-v3.4.24-linux-amd64/Documentation/learning/data_model.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-07.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-11.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-04.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-01.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-02.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-05.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-13.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-10.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-06.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-03.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-08.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-03.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-01.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-06.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-02.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-05.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-09.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/etcd.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-08.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-04.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/server-learner-figure-12.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-07.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/img/client-balancer-figure-09.png
+etcd-v3.4.24-linux-amd64/Documentation/learning/glossary.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/design-auth-v3.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/design-learner.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/design-client.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/api.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/why.md
+etcd-v3.4.24-linux-amd64/Documentation/learning/api_guarantees.md
+etcd-v3.4.24-linux-amd64/Documentation/docs.md
+etcd-v3.4.24-linux-amd64/Documentation/triage/
+etcd-v3.4.24-linux-amd64/Documentation/triage/issues.md
+etcd-v3.4.24-linux-amd64/Documentation/triage/PRs.md
+etcd-v3.4.24-linux-amd64/Documentation/integrations.md
+etcd-v3.4.24-linux-amd64/Documentation/tuning.md
+etcd-v3.4.24-linux-amd64/Documentation/faq.md
+etcd-v3.4.24-linux-amd64/Documentation/reporting_bugs.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/supported-platform.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/clustering.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/etcd-sample-grafana.png
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/recovery.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/etcd3_alert.rules.yml
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/gateway.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/authentication.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/v2-migration.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/versioning.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/hardware.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/grpc_proxy.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/security.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/performance.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/etcd3_alert.rules
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/runtime-reconf-design.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/monitoring.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/maintenance.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/container.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/grafana.json
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/runtime-configuration.md
+etcd-v3.4.24-linux-amd64/Documentation/op-guide/failures.md
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/mixin.libsonnet
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/README.md
+etcd-v3.4.24-linux-amd64/Documentation/etcd-mixin/test.yaml
+etcd-v3.4.24-linux-amd64/Documentation/production-users.md
+etcd-v3.4.24-linux-amd64/Documentation/rfc/
+etcd-v3.4.24-linux-amd64/Documentation/rfc/v3api.md
+etcd-v3.4.24-linux-amd64/Documentation/README.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_0.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_5.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrading-etcd.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_1.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_2.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_3.md
+etcd-v3.4.24-linux-amd64/Documentation/upgrades/upgrade_3_4.md
+etcd-v3.4.24-linux-amd64/Documentation/branch_management.md
+etcd-v3.4.24-linux-amd64/README.md
+etcd-v3.4.24-linux-amd64/etcd
+Configuring etcd server...
+cp: cannot stat 'ca.pem': No such file or directory
+cp: cannot stat 'kubernetes-key.pem': No such file or directory
+cp: cannot stat 'kubernetes.pem': No such file or directory
+controller-2 etcd installation completed!
+
+==========================================
+Verifying etcd Cluster
+==========================================
+Verifying etcd cluster membership from controller-0...
+Connecting to controller-0 (Public IP: 20.161.74.83, Internal IP: 10.240.0.10)
+Running verification command...
+Error: open /etc/etcd/kubernetes.pem: no such file or directory
+
+==========================================
+etcd Cluster Bootstrap Complete!
+==========================================
+
+Expected output should show 3 etcd members:
+- controller-0 (10.240.0.10)
+- controller-1 (10.240.0.11)
+- controller-2 (10.240.0.12)
+
+Next step: Bootstrapping the Kubernetes Control Plane
+
+Cleaned up temporary installation script.
+PS C:\repos\kthw>

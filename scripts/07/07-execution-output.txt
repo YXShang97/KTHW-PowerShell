@@ -1,0 +1,87 @@
+**********************
+PowerShell transcript start
+Start time: 20250713170022
+Username: REDMOND\terronhyde
+RunAs User: REDMOND\terronhyde
+Configuration Name: 
+Machine: CPC-terro-9XC7H (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -noexit -command try { . "c:\Users\terronhyde\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+Process ID: 39244
+PSVersion: 7.5.2
+PSEdition: Core
+GitCommitId: 7.5.2
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is C:\repos\kthw\scripts\07\07-execution-output.txt
+==========================================
+Bootstrapping etcd Cluster
+==========================================
+
+This script will install and configure etcd on all controller nodes.
+The following steps will be performed on each controller:
+1. Download and install etcd binaries
+2. Configure etcd server
+3. Create and start etcd systemd service
+4. Verify cluster membership
+
+Created etcd installation script: C:\repos\kthw\scripts\07\install-etcd.sh
+
+==========================================
+Configuring etcd on controller-0 (IP: 10.240.0.10)
+==========================================
+Public IP for controller-0 : 20.161.74.83
+Copying installation script to controller-0...
+
+Executing etcd installation on controller-0...
+
+controller-0 etcd installation completed successfully!
+
+==========================================
+Configuring etcd on controller-1 (IP: 10.240.0.11)
+==========================================
+Public IP for controller-1 : 20.186.17.67
+Copying installation script to controller-1...
+
+Executing etcd installation on controller-1...
+
+controller-1 etcd installation completed successfully!
+
+==========================================
+Configuring etcd on controller-2 (IP: 10.240.0.12)
+==========================================
+Public IP for controller-2 : 20.109.1.80
+Copying installation script to controller-2...
+
+Executing etcd installation on controller-2...
+
+controller-2 etcd installation completed successfully!
+
+==========================================
+Verifying etcd Cluster
+==========================================
+Verifying etcd cluster membership from controller-0...
+Connecting to controller-0 (Public IP: 20.161.74.83, Internal IP: 10.240.0.10)
+Running verification command...
+
+
+==========================================
+etcd Cluster Bootstrap Complete!
+==========================================
+
+Expected output should show 3 etcd members:
+- controller-0 (10.240.0.10)
+- controller-1 (10.240.0.11)
+- controller-2 (10.240.0.12)
+
+Next step: Bootstrapping the Kubernetes Control Plane
+
+Cleaned up temporary installation script.
+**********************
+PowerShell transcript end
+End time: 20250713170244
+**********************

@@ -1,0 +1,103 @@
+**********************
+PowerShell transcript start
+Start time: 20250713180346
+Username: REDMOND\terronhyde
+RunAs User: REDMOND\terronhyde
+Configuration Name: 
+Machine: CPC-terro-9XC7H (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -noexit -command try { . "c:\Users\terronhyde\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+Process ID: 39244
+PSVersion: 7.5.2
+PSEdition: Core
+GitCommitId: 7.5.2
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is C:\repos\kthw\scripts\10\10-execution-output.txt
+==========================================
+Configuring kubectl for Remote Access
+==========================================
+
+This script will configure kubectl to access the Kubernetes cluster remotely.
+The following actions will be performed:
+1. Retrieve the Kubernetes public load balancer IP address
+2. Configure kubectl cluster settings
+3. Configure kubectl admin user credentials
+4. Set kubectl context
+5. Verify cluster access and health
+
+Working from certificates directory: C:\repos\kthw\certs
+
+==========================================
+Retrieving Kubernetes Public IP Address
+==========================================
+Getting the public IP address of the Kubernetes load balancer...
+Kubernetes public IP address: 20.186.16.114
+
+==========================================
+Configuring kubectl
+==========================================
+✓ All required certificate files found
+
+Setting cluster configuration...
+✓ Cluster configuration set successfully
+   Cluster "kubernetes-the-hard-way" set.
+
+Setting admin user credentials...
+✓ Admin credentials set successfully
+   User "admin" set.
+
+Setting kubectl context...
+✓ Context set successfully
+   Context "kubernetes-the-hard-way" created.
+
+Switching to kubernetes-the-hard-way context...
+✓ Context switched successfully
+   Switched to context "kubernetes-the-hard-way".
+
+==========================================
+Verifying Kubernetes Cluster Access
+==========================================
+Checking cluster component health...
+✓ Cluster components status:
+NAME                 STATUS    MESSAGE             ERROR scheduler            Healthy   ok                   controller-manager   Healthy   ok                   etcd-0               Healthy   {"health":"true"}    etcd-2               Healthy   {"health":"true"}    etcd-1               Healthy   {"health":"true"}
+
+Listing cluster nodes...
+✓ Cluster nodes:
+NAME       STATUS   ROLES    AGE   VERSION worker-0   Ready    <none>   32m   v1.26.3 worker-1   Ready    <none>   31m   v1.26.3
+
+Getting detailed cluster information...
+✓ Cluster information:
+Kubernetes control plane is running at https://20.186.16.114:6443  To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+Verifying current kubectl context...
+✓ Current kubectl context: kubernetes-the-hard-way
+
+Displaying kubeconfig view...
+✓ Current kubeconfig configuration:
+apiVersion: v1 clusters: - cluster:     certificate-authority-data: DATA+OMITTED     server: https://20.186.16.114:6443   name: kubernetes-the-hard-way contexts: - context:     cluster: kubernetes-the-hard-way     user: admin   name: kubernetes-the-hard-way current-context: kubernetes-the-hard-way kind: Config preferences: {} users: - name: admin   user:     client-certificate: ..\..\..\repos\kthw\certs\admin.pem     client-key: ..\..\..\repos\kthw\certs\admin-key.pem
+
+==========================================
+kubectl Configuration Complete!
+==========================================
+
+✓ kubectl has been successfully configured for remote access
+✓ Cluster endpoint: https://20.186.16.114:6443
+✓ Current context: kubernetes-the-hard-way
+✓ Admin user credentials configured
+
+You can now use kubectl commands to manage your Kubernetes cluster:
+  kubectl get nodes
+  kubectl get pods --all-namespaces
+  kubectl get componentstatuses
+
+Next step: Provisioning Pod Network Routes
+
+**********************
+PowerShell transcript end
+End time: 20250713180354
+**********************
