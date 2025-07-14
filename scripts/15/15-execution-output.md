@@ -59,22 +59,25 @@ Deleting resource group 'kubernetes' and all contained resources...
    Note: Deletion continues in background
 
 Step 3: Cleaning up certificate files...
-Found certificates directory: certs
-Removing 34 certificate files...
+Found certificates directory: C:\repos\kthw\certs
+Removing 38 certificate files...
 ✅ Certificate files removed successfully
 
 Step 4: Cleaning up kubeconfig files...
-Found configs directory: configs
+Found configs directory: C:\repos\kthw\configs
 Removing 6 kubeconfig files...
 ✅ Kubeconfig files removed successfully
 
 Step 5: Cleaning up CFSSL binaries...
-Found cfssl directory: cfssl
+Found cfssl directory: C:\repos\kthw\cfssl
 Removing 2 CFSSL binary files...
 ✅ CFSSL binaries removed successfully
 
 Step 6: Cleaning up kubectl context...
 Removing kubernetes-the-hard-way context from kubectl...
+deleted context kubernetes-the-hard-way from C:\Users\username\.kube\config
+deleted cluster kubernetes-the-hard-way from C:\Users\username\.kube\config
+Property "users.admin" unset.
 ✅ Kubectl context cleaned up
 
 ============================================================
@@ -96,6 +99,71 @@ Important Notes:
 🚀 Thank you for completing Kubernetes the Hard Way!
 You have successfully learned how to set up Kubernetes from scratch!
 ```
+
+## Post-Execution Validation Results
+
+After running the cleanup script, the following validation commands confirm complete removal:
+
+### Azure Resource Status Check
+```powershell
+PS C:\repos\kthw> az group list --query "[?name=='kubernetes'].{Name:name, ProvisioningState:properties.provisioningState}" --output table
+
+Name        ProvisioningState
+----------  -------------------
+kubernetes  Deleting
+```
+
+### Local File Cleanup Verification
+```powershell
+PS C:\repos\kthw> Get-ChildItem -Path "certs" | Measure-Object | Select-Object Count
+
+Count
+-----
+    0
+
+PS C:\repos\kthw> Get-ChildItem -Path "configs" | Measure-Object | Select-Object Count
+
+Count
+-----
+    0
+
+PS C:\repos\kthw> Get-ChildItem -Path "cfssl" | Measure-Object | Select-Object Count
+
+Count
+-----
+    0
+```
+
+### Directory Structure Verification
+```powershell
+PS C:\repos\kthw> Get-ChildItem -Directory | Select-Object Name
+
+Name
+----
+certs    # Empty directory
+cfssl    # Empty directory  
+configs  # Empty directory
+dev
+scripts
+ssh
+```
+
+### Kubectl Context Verification
+```powershell
+PS C:\repos\kthw> kubectl config get-contexts
+CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
+*         default   default   default
+
+# The kubernetes-the-hard-way context has been successfully removed
+```
+
+**✅ Validation Results Summary:**
+- Azure resource group is in "Deleting" state (will complete in background)
+- All 38 certificate files successfully removed from certs directory
+- All 6 kubeconfig files successfully removed from configs directory  
+- All 2 CFSSL binary files successfully removed from cfssl directory
+- kubectl context "kubernetes-the-hard-way" successfully removed
+- Directories remain but are empty and ready for future use
 
 ## What the Script Does
 
