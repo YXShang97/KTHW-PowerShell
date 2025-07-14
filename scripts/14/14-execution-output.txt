@@ -1,0 +1,182 @@
+**********************
+PowerShell transcript start
+Start time: 20250713200852
+Username: REDMOND\terronhyde
+RunAs User: REDMOND\terronhyde
+Configuration Name: 
+Machine: CPC-terro-9XC7H (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -Command & './14-dashboard-config.ps1'
+Process ID: 21012
+PSVersion: 7.5.2
+PSEdition: Core
+GitCommitId: 7.5.2
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is C:\repos\kthw\scripts\14\14-execution-output.txt
+==========================================
+Kubernetes Dashboard Configuration
+==========================================
+
+This script will deploy and configure the Kubernetes Dashboard with:
+1. Dashboard deployment from official manifests
+2. Service account creation for admin access
+3. Cluster role binding for full cluster access
+4. Token generation for dashboard authentication
+5. Dashboard access configuration and validation
+
+==========================================
+Pre-deployment Cluster Validation
+==========================================
+Validating cluster connectivity and status...
+✓ Cluster is accessible
+Cluster nodes:
+
+
+Checking cluster component status...
+
+
+Checking for existing dashboard installation...
+Error from server (NotFound): namespaces "kubernetes-dashboard" not found
+✓ No existing dashboard found - proceeding with fresh installation
+
+==========================================
+Kubernetes Dashboard Deployment
+==========================================
+Deploying Kubernetes Dashboard from official manifests...
+Dashboard manifest URL: https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+✓ Dashboard deployment successful
+
+Deployment results:
+  namespace/kubernetes-dashboard created
+  serviceaccount/kubernetes-dashboard created
+  service/kubernetes-dashboard created
+  secret/kubernetes-dashboard-certs created
+  secret/kubernetes-dashboard-csrf created
+  secret/kubernetes-dashboard-key-holder created
+  configmap/kubernetes-dashboard-settings created
+  role.rbac.authorization.k8s.io/kubernetes-dashboard created
+  clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard created
+  rolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+  clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+  deployment.apps/kubernetes-dashboard created
+  service/dashboard-metrics-scraper created
+  deployment.apps/dashboard-metrics-scraper created
+
+Waiting for dashboard pods to start...
+Dashboard pods status: 2/2 Running (Elapsed: 10s)
+Pod details:
+  dashboard-metrics-scraper-7bc864c59-p4zjq   1/1   Running   0     10s
+  kubernetes-dashboard-6c7ccbcf87-tzz6z       1/1   Running   0     11s
+✓ All dashboard pods are running
+
+==========================================
+Dashboard Service Account Configuration
+==========================================
+Creating dashboard admin service account...
+✓ Created service account manifest: C:\repos\kthw\scripts\14\dashboard-adminuser.yaml
+✓ Service account and cluster role binding created successfully
+Configuration results:
+  serviceaccount/admin-user created
+  clusterrolebinding.rbac.authorization.k8s.io/admin-user created
+
+==========================================
+Dashboard Access Token Generation
+==========================================
+Generating access token for dashboard authentication...
+✓ Access token generated successfully
+
+==========================================
+DASHBOARD ACCESS TOKEN
+==========================================
+Copy the following token for dashboard login:
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6IkZ6RGFXcmJqdmQ1YmVrYlNRZlNGd1NUTkkyUDdIZEhfQkpiQzhNcl9uRXMifQ.eyJhdWQiOlsiaHR0cHM6Ly8yMC4xMDkuMS44MDo2NDQzIl0sImV4cCI6MTc1MjQ1NTM1NCwiaWF0IjoxNzUyNDUxNzU0LCJpc3MiOiJodHRwczovLzIwLjEwOS4xLjgwOjY0NDMiLCJrdWJlcm5ldGVzLmlvIjp7Im5hbWVzcGFjZSI6Imt1YmVybmV0ZXMtZGFzaGJvYXJkIiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFkbWluLXVzZXIiLCJ1aWQiOiIyMzZkYTEwOC1mMGM5LTQ0YWYtYTQyYy04NzAwNjZmMjgxMmMifX0sIm5iZiI6MTc1MjQ1MTc1NCwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmVybmV0ZXMtZGFzaGJvYXJkOmFkbWluLXVzZXIifQ.sy0gXnDdb8P__zP9yx4g5lYY88RMReARYOvRN6N3GG495poQMlMFrS1huy5vrjhM_MGRiYkt6yY_Ef5kx5XtJKLjC4MjNPfCfbdzYhElJOuasObvKeyWoPg9dvJ7wO4OF5qlV-sMXwLsWNryd6KIQUZWqYD0AL1yD82HfP82BYmFhNru_U5QsNiaLmW4VEVByM7s2gRwDmvqmCwI4EeJ1hAmdgFigWJpPF1pw9wPArjz2TyJLVJawOKzLePvkBCakUf3Jn1McG9MiDamGvTS_EWA6eXzfds-E32NjliBIHmzuiySoQ9mvgRsCNy6-hwui3HdcchlcJVAUNrJJyEgGg
+
+==========================================
+✓ Token saved to: C:\repos\kthw\scripts\14\dashboard-token.txt
+
+==========================================
+Dashboard Service and Access Configuration
+==========================================
+Checking dashboard service configuration...
+Dashboard services:
+
+
+Dashboard endpoints:
+
+
+Starting kubectl proxy for dashboard access...
+Note: Proxy will run in background for testing dashboard connectivity
+✓ Kubectl proxy started (Job ID: 1)
+
+Dashboard URL: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+
+Testing dashboard connectivity...
+✓ Dashboard is accessible via proxy
+
+Stopping kubectl proxy...
+✓ Kubectl proxy stopped
+
+==========================================
+Dashboard Deployment Validation
+==========================================
+Final dashboard status verification...
+
+=== Dashboard Namespace ===
+
+
+=== Dashboard Pods ===
+
+
+=== Dashboard Services ===
+
+
+=== Dashboard Service Account ===
+
+
+=== Dashboard Cluster Role Binding ===
+
+
+=== Dashboard Deployments ===
+
+
+==========================================
+Dashboard Configuration Summary
+==========================================
+Dashboard configuration completed!
+Start time: 2025-07-13 20:08:52
+End time: 2025-07-13 20:09:29
+Total duration: 0.62 minutes
+
+✅ Dashboard deployment SUCCESSFUL
+   - 2/2 dashboard pods are running
+   - Service account and authentication configured
+   - Access token generated for dashboard login
+
+🌐 Dashboard Access Instructions:
+   1. Run: kubectl proxy
+   2. Open: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+   3. Select 'Token' authentication method
+   4. Use the access token from: C:\repos\kthw\scripts\14\dashboard-token.txt
+
+🔐 Security Notes:
+   - Admin user has cluster-admin privileges
+   - Token provides full cluster access
+   - Consider creating restricted users for production use
+
+Files created:
+- Dashboard manifest: C:\repos\kthw\scripts\14\dashboard-adminuser.yaml
+- Access token: C:\repos\kthw\scripts\14\dashboard-token.txt
+- Execution log: C:\repos\kthw\scripts\14\14-execution-output.txt
+
+Next step: Access the dashboard using kubectl proxy and the generated token
+Final step: Tutorial 15 - Cleaning Up the cluster resources
+**********************
+PowerShell transcript end
+End time: 20250713200930
+**********************

@@ -1,0 +1,92 @@
+**********************
+PowerShell transcript start
+Start time: 20250713173101
+Username: REDMOND\terronhyde
+RunAs User: REDMOND\terronhyde
+Configuration Name: 
+Machine: CPC-terro-9XC7H (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -noexit -command try { . "c:\Users\terronhyde\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+Process ID: 39244
+PSVersion: 7.5.2
+PSEdition: Core
+GitCommitId: 7.5.2
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is C:\repos\kthw\scripts\09\09-execution-output.txt
+==========================================
+Bootstrapping Kubernetes Worker Nodes
+==========================================
+
+This script will install and configure Kubernetes worker nodes.
+The following components will be installed on each worker:
+1. OS dependencies (socat, conntrack, ipset)
+2. Container runtime (containerd)
+3. Container networking plugins (CNI)
+4. Kubernetes components (kubelet, kube-proxy)
+5. runc and runsc (gVisor) runtimes
+
+Created Kubernetes worker nodes installation script: C:\repos\kthw\scripts\09\install-kubernetes-worker.sh
+
+==========================================
+Configuring Kubernetes Worker Node on worker-0 (IP: 10.240.0.20)
+Pod CIDR: 10.200.0.0/24
+==========================================
+Public IP for worker-0 : 20.55.241.176
+Copying required files to worker-0...
+
+
+
+
+
+
+Executing Kubernetes worker node installation on worker-0...
+
+worker-0 Kubernetes worker node installation completed successfully!
+
+==========================================
+Configuring Kubernetes Worker Node on worker-1 (IP: 10.240.0.21)
+Pod CIDR: 10.200.1.0/24
+==========================================
+Public IP for worker-1 : 40.67.137.245
+Copying required files to worker-1...
+
+
+
+
+
+
+Executing Kubernetes worker node installation on worker-1...
+
+worker-1 Kubernetes worker node installation completed successfully!
+
+==========================================
+Verifying Kubernetes Worker Nodes
+==========================================
+Verifying Kubernetes worker nodes from controller-0...
+Connecting to controller-0 (Public IP: 20.161.74.83)
+Listing registered Kubernetes nodes...
+
+
+Getting detailed node information...
+
+
+==========================================
+Kubernetes Worker Nodes Bootstrap Complete!
+==========================================
+
+Successfully configured Kubernetes worker nodes:
+- worker-0 (10.240.0.20) - Pod CIDR: 10.200.0.0/24
+- worker-1 (10.240.0.21) - Pod CIDR: 10.200.1.0/24
+
+Next step: Configuring kubectl for Remote Access
+
+Cleaned up temporary installation script.
+**********************
+PowerShell transcript end
+End time: 20250713173230
+**********************
