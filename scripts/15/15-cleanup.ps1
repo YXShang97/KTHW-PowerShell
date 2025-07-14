@@ -2,6 +2,14 @@
 # This script removes all resources created during the tutorial
 # Original tutorial: https://github.com/ivanfioravanti/kubernetes-the-hard-way-on-azure/blob/master/docs/15-cleanup.md
 
+[CmdletBinding()]
+param(
+    [switch]$Force,           # Skip user confirmation
+    [switch]$DryRun,          # Show what would be deleted without actually deleting
+    [switch]$Quiet,           # Minimal output
+    [switch]$SkipAzure        # Skip Azure resource deletion (useful for local-only cleanup)
+)
+
 Write-Host "Starting Kubernetes the Hard Way - Cleanup Process..." -ForegroundColor Red
 Write-Host ("=" * 60) -ForegroundColor Red
 Write-Host "⚠️  WARNING: This will delete ALL resources created during the tutorial!" -ForegroundColor Yellow
