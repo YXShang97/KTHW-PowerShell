@@ -15,8 +15,8 @@ Write-Host ""
 Write-Host "Step 1: Deploying CoreDNS cluster add-on..." -ForegroundColor Cyan
 
 try {
-    Write-Host "  Applying CoreDNS manifest from kubernetes-the-hard-way repository..." -ForegroundColor Yellow
-    kubectl apply -f https://storage.googleapis.com/kubernetes-the-hard-way/coredns-1.8.yaml
+    Write-Host "  Applying CoreDNS manifest..." -ForegroundColor Yellow
+    kubectl apply -f coredns.yaml
     
     if ($LASTEXITCODE -ne 0) {
         throw "Failed to apply CoreDNS manifest"

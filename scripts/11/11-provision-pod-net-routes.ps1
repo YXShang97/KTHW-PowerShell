@@ -28,7 +28,7 @@ foreach ($worker in $workerNodes) {
         }
         
         # Get Pod CIDR from VM tags
-        $podCIDR = az vm show -g kubernetes --name $worker --query "tags.podCidr" -o tsv
+        $podCIDR = az vm show -g kubernetes --name $worker --query "tags" -o tsv
         if ($LASTEXITCODE -ne 0) {
             throw "Failed to get Pod CIDR for $worker"
         }

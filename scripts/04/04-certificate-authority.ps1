@@ -27,7 +27,7 @@ if (-not (Test-Path $certsPath)) {
 Set-Location $certsPath
 
 # Set path to cfssl tools (local installation)
-$cfsslPath = Join-Path -Path $PSScriptRoot -ChildPath "..\..\cfssl"
+$cfsslPath = Join-Path -Path $PSScriptRoot -ChildPath "..\02\cfssl"
 $cfssl = Join-Path -Path $cfsslPath -ChildPath "cfssl.exe"
 $cfssljson = Join-Path -Path $cfsslPath -ChildPath "cfssljson.exe"
 

@@ -48,17 +48,8 @@ foreach ($controller in $controllers) {
     Write-Host "  Processing $controller ($publicIP)..." -ForegroundColor Cyan
     
     # Create directories and download binaries
-    ssh kuberoot@$publicIP @"
-sudo mkdir -p /etc/kubernetes/config &&
-cd /tmp &&
-wget -q --https-only --timestamping \
-  'https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kube-apiserver' \
-  'https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kube-controller-manager' \
-  'https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kube-scheduler' \
-  'https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kubectl' &&
-chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl &&
-sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
-"@
+    $command = "sudo mkdir -p /etc/kubernetes/config && cd /tmp && wget -q --https-only --timestamping 'https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kube-apiserver' 'https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kube-controller-manager' 'https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kube-scheduler' 'https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kubectl' && chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl && sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/"
+    ssh kuberoot@$publicIP $command
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "    ✅ ${controller}: Binaries installed" -ForegroundColor Green
@@ -77,13 +68,8 @@ foreach ($controller in $controllers) {
     Write-Host "  Configuring $controller ($internalIP)..." -ForegroundColor Cyan
     
     # Move certificates and kubeconfigs
-    ssh kuberoot@$publicIP @"
-sudo mkdir -p /var/lib/kubernetes/ &&
-sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
-         service-account-key.pem service-account.pem encryption-config.yaml \
-         kube-controller-manager.kubeconfig kube-scheduler.kubeconfig \
-         /var/lib/kubernetes/
-"@
+    $moveCommand = "sudo mkdir -p /var/lib/kubernetes/ && sudo mv ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem service-account-key.pem service-account.pem encryption-config.yaml kube-controller-manager.kubeconfig kube-scheduler.kubeconfig /var/lib/kubernetes/"
+    ssh kuberoot@$publicIP $moveCommand
     
     # Create API Server service
     $apiServerService = @"
@@ -189,13 +175,8 @@ WantedBy=multi-user.target
     $schedulerService | ssh kuberoot@$publicIP "cat > /tmp/kube-scheduler.service"
     
     # Install services
-    ssh kuberoot@$publicIP @"
-sudo mv /tmp/kube-scheduler.yaml /etc/kubernetes/config/ &&
-sudo mv /tmp/kube-*.service /etc/systemd/system/ &&
-sudo systemctl daemon-reload &&
-sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler &&
-sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
-"@
+    $installCommand = "sudo mv /tmp/kube-scheduler.yaml /etc/kubernetes/config/ && sudo mv /tmp/kube-*.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler && sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler"
+    ssh kuberoot@$publicIP $installCommand
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "    ✅ ${controller}: Services configured and started" -ForegroundColor Green
@@ -216,10 +197,8 @@ Write-Host "Step 3: Configuring RBAC for Kubelet Authorization..." -ForegroundCo
 $primaryIP = Get-ControllerPublicIP "controller-0"
 
 Write-Host "  Applying RBAC configuration..." -ForegroundColor Cyan
-ssh kuberoot@$primaryIP @"
-kubectl apply --kubeconfig admin.kubeconfig -f clusterrole.yaml &&
-kubectl apply --kubeconfig admin.kubeconfig -f clusterrolebinding.yaml
-"@
+$rbacCommand = "kubectl apply --kubeconfig admin.kubeconfig -f clusterrole.yaml && kubectl apply --kubeconfig admin.kubeconfig -f clusterrolebinding.yaml"
+ssh kuberoot@$primaryIP $rbacCommand
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "    ✅ RBAC configuration applied" -ForegroundColor Green

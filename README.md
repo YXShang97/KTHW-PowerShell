@@ -15,6 +15,41 @@ This repository contains a comprehensive PowerShell conversion of Kelsey Hightow
 - **Azure Integration**: Working with Azure CLI and cloud resources
 - **Troubleshooting**: Diagnosing and resolving common Kubernetes issues
 
+## 🔧 **Recent Improvements (v2.0)**
+
+Based on successful execution and lessons learned:
+
+### ✅ **Issues Resolved**
+- **Fixed containerd version compatibility** (v1.7.0 → v1.6.20)
+- **Added cgroups v2 support** for Ubuntu 22.04
+- **Improved cross-platform compatibility** with proper Unix line endings
+- **Enhanced error handling** with retry logic and validation
+- **Simplified command execution** following principle of simplicity
+
+### 🆕 **New Features**
+- **Common Functions Library**: Shared utilities for all scripts
+- **Validation Scripts**: Comprehensive cluster health checks
+- **Troubleshooting Tools**: Automated diagnostics and repair
+- **Script Templates**: Standardized patterns for new scripts
+- **Enhanced Repository Structure**: Better organization and maintainability
+
+## 📁 **Repository Structure**
+
+```
+KTHW-PowerShell/
+├── scripts/
+│   ├── 01-15/              # Tutorial step scripts
+│   ├── common/             # 🆕 Shared functions and utilities
+│   ├── templates/          # 🆕 PowerShell script templates
+│   ├── validation/         # 🆕 Cluster validation scripts
+│   └── troubleshooting/    # 🆕 Diagnostic and repair tools
+├── certs/                  # Generated certificates
+├── configs/                # Kubernetes configuration files
+├── .github/                # GitHub configuration and instructions
+├── EXECUTION-SUMMARY.md    # Complete execution results
+└── README.md               # This file
+```
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -36,13 +71,52 @@ Before starting this tutorial, ensure you have:
    cd KTHW-PowerShell
    ```
 
-2. **Follow the tutorial steps** in order (01 through 15)
+2. **Validate your environment**:
+   ```powershell
+   .\scripts\validation\Validate-Environment.ps1
+   ```
 
-3. **Each step includes**:
-   - PowerShell script for automation
-   - Detailed execution documentation
-   - Validation commands
-   - Troubleshooting guides
+3. **Follow the tutorial steps** in order (01 through 15)
+
+4. **Validate cluster health**:
+   ```powershell
+   .\scripts\validation\Validate-Cluster.ps1
+   ```
+
+## 🛠️ **New Tools and Utilities**
+
+### **Common Functions Library**
+```powershell
+# Import shared functions in your scripts
+. "$PSScriptRoot\..\common\Common-Functions.ps1"
+
+# Examples of available functions:
+New-UnixFile -Content $config -FilePath "/tmp/config.yaml"
+Invoke-CommandWithRetry -Command "az vm create ..." -Description "Creating VM"
+Get-VmPublicIP -ResourceGroup "kubernetes" -VmName "controller-0"
+Invoke-RemoteCommand -VmIP $ip -Command "sudo systemctl status etcd"
+New-RemoteConfigFile -VmIP $ip -Content $config -RemotePath "/etc/kubernetes/config.yaml"
+```
+
+### **Validation Scripts**
+```powershell
+# Comprehensive cluster validation
+.\scripts\validation\Validate-Cluster.ps1
+
+# Environment prerequisites check
+.\scripts\validation\Validate-Environment.ps1
+```
+
+### **Troubleshooting Tools**
+```powershell
+# Diagnose specific components
+.\scripts\troubleshooting\Repair-Cluster.ps1 -Component etcd
+.\scripts\troubleshooting\Repair-Cluster.ps1 -Component containerd
+.\scripts\troubleshooting\Repair-Cluster.ps1 -Component cgroups
+
+# Automatic repair mode
+.\scripts\troubleshooting\Repair-Cluster.ps1 -Component all -AutoFix
+```
 
 ## 📚 Tutorial Steps
 

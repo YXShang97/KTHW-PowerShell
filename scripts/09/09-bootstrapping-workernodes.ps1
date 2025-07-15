@@ -17,7 +17,7 @@ param(
     [string]$CriToolsVersion = "v1.26.1",
     [string]$RuncVersion = "v1.1.5",
     [string]$CniPluginsVersion = "v1.2.0",
-    [string]$ContainerdVersion = "v1.7.0"
+    [string]$ContainerdVersion = "1.6.20"
 )
 
 $workers = @("worker-0", "worker-1")
@@ -64,19 +64,17 @@ foreach ($worker in $workers) {
     $publicIP = Get-WorkerPublicIP $worker
     Write-Host "  Processing $worker ($publicIP)..." -ForegroundColor Cyan
     
-    # Download worker binaries
-    ssh kuberoot@$publicIP @"
-cd /tmp &&
-wget -q --https-only --timestamping \
-  https://github.com/kubernetes-sigs/cri-tools/releases/download/$CriToolsVersion/crictl-$CriToolsVersion-linux-amd64.tar.gz \
-  https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc \
-  https://github.com/opencontainers/runc/releases/download/$RuncVersion/runc.amd64 \
-  https://github.com/containernetworking/plugins/releases/download/$CniPluginsVersion/cni-plugins-linux-amd64-$CniPluginsVersion.tgz \
-  https://github.com/containerd/containerd/releases/download/$ContainerdVersion/containerd-$ContainerdVersion-linux-amd64.tar.gz \
-  https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kubectl \
-  https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kubelet
-"@
+    # Download worker binaries (split into batches to avoid command line length issues)
+    $downloadCmd1 = "cd /tmp && wget -q --https-only --timestamping https://github.com/kubernetes-sigs/cri-tools/releases/download/$CriToolsVersion/crictl-$CriToolsVersion-linux-amd64.tar.gz https://storage.googleapis.com/gvisor/releases/nightly/latest/runsc https://github.com/opencontainers/runc/releases/download/$RuncVersion/runc.amd64"
+    $downloadCmd2 = "cd /tmp && wget -q --https-only --timestamping https://github.com/containernetworking/plugins/releases/download/$CniPluginsVersion/cni-plugins-linux-amd64-$CniPluginsVersion.tgz https://github.com/containerd/containerd/releases/download/v$ContainerdVersion/containerd-$ContainerdVersion-linux-amd64.tar.gz"
+    $downloadCmd3 = "cd /tmp && wget -q --https-only --timestamping https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kubectl https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kube-proxy https://storage.googleapis.com/kubernetes-release/release/$KubernetesVersion/bin/linux/amd64/kubelet"
+    
+    ssh kuberoot@$publicIP $downloadCmd1
+    if ($LASTEXITCODE -ne 0) { Write-Host "    ❌ ${worker}: Binary download batch 1 failed" -ForegroundColor Red; exit 1 }
+    ssh kuberoot@$publicIP $downloadCmd2
+    if ($LASTEXITCODE -ne 0) { Write-Host "    ❌ ${worker}: Binary download batch 2 failed" -ForegroundColor Red; exit 1 }
+    ssh kuberoot@$publicIP $downloadCmd3
+    if ($LASTEXITCODE -ne 0) { Write-Host "    ❌ ${worker}: Binary download batch 3 failed" -ForegroundColor Red; exit 1 }
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "    ✅ ${worker}: Binaries downloaded" -ForegroundColor Green
@@ -86,18 +84,8 @@ wget -q --https-only --timestamping \
     }
     
     # Create installation directories and install binaries
-    ssh kuberoot@$publicIP @"
-sudo mkdir -p /etc/cni/net.d /opt/cni/bin /var/lib/kubelet /var/lib/kube-proxy /var/lib/kubernetes /var/run/kubernetes &&
-cd /tmp &&
-mkdir -p containerd &&
-sudo mv runc.amd64 runc &&
-chmod +x kubectl kube-proxy kubelet runc runsc &&
-sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/ &&
-sudo tar -xf crictl-$CriToolsVersion-linux-amd64.tar.gz -C /usr/local/bin/ 2>/dev/null &&
-sudo tar -xf cni-plugins-linux-amd64-$CniPluginsVersion.tgz -C /opt/cni/bin/ 2>/dev/null &&
-sudo tar -xf containerd-$ContainerdVersion-linux-amd64.tar.gz -C containerd 2>/dev/null &&
-sudo mv containerd/bin/* /bin/
-"@
+    $installCmd = "sudo mkdir -p /etc/cni/net.d /opt/cni/bin /var/lib/kubelet /var/lib/kube-proxy /var/lib/kubernetes /var/run/kubernetes && cd /tmp && mkdir -p containerd && sudo mv runc.amd64 runc && chmod +x kubectl kube-proxy kubelet runc runsc && sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/ && sudo tar -xf crictl-$CriToolsVersion-linux-amd64.tar.gz -C /usr/local/bin/ 2>/dev/null && sudo tar -xf cni-plugins-linux-amd64-$CniPluginsVersion.tgz -C /opt/cni/bin/ 2>/dev/null && sudo tar -xf containerd-$ContainerdVersion-linux-amd64.tar.gz -C containerd 2>/dev/null && sudo mv containerd/bin/* /bin/"
+    ssh kuberoot@$publicIP $installCmd
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "    ✅ ${worker}: Binaries installed" -ForegroundColor Green

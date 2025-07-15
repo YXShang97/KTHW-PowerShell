@@ -5,6 +5,20 @@ This repository contains PowerShell scripts for the "Kubernetes the Hard Way" tu
 
 ## Code Style and Conventions
 
+### Command Verification and Safety
+- **Verify Ambiguous Commands**: If you aren't sure about a command's impact or parameters, ask follow-up questions before executing
+- **Confirm Destructive Operations**: Always confirm before running commands that delete, modify, or restart services
+- **Validate Prerequisites**: Check that required resources exist before attempting operations
+- **Test in Safe Mode**: When uncertain, provide commands for testing/validation before full execution
+
+### Principle of Simplicity
+- **Always provide the most straightforward and minimalist solution possible**
+- **Solve problems with the least amount of code and complexity**
+- **Avoid premature optimization or over-engineering**
+- **Prioritize readability and maintainability over "clever" solutions**
+- **Focus on the core request without adding unnecessary features**
+- **Generate code that directly addresses the user's request**
+
 ### PowerShell Scripting Standards
 - Use PowerShell 5.1+ features and syntax
 - Follow verb-noun naming conventions for functions
@@ -36,6 +50,18 @@ This repository contains PowerShell scripts for the "Kubernetes the Hard Way" tu
 - Validate SSH connectivity before proceeding with remote operations
 - Use proper escaping for remote commands
 
+### Cross-Platform Considerations
+- **Always use Unix line endings (LF) for files that will be transferred to Linux systems**
+- **Use `[System.IO.File]::WriteAllText()` with explicit encoding for config files**
+- **Test PowerShell here-strings (`@"..."@`) carefully when content goes to Linux**
+- **Validate file encoding before SSH transfer operations**
+
+#### Line Ending Fix Pattern:
+```powershell
+$content = $content -replace "`r`n", "`n"  # Convert CRLF to LF
+[System.IO.File]::WriteAllText($path, $content, [System.Text.Encoding]::UTF8)
+```
+
 ## File Organization
 
 ### Script Structure
@@ -43,6 +69,15 @@ This repository contains PowerShell scripts for the "Kubernetes the Hard Way" tu
 - Include execution output files (*-execution-output.md) for documentation
 - Store temporary files in appropriate system temp directories
 - Clean up temporary files after use
+
+### Enhanced Repository Structure
+```
+scripts/
+├── common/           # Shared functions and utilities
+├── templates/        # PowerShell script templates
+├── validation/       # Standalone validation scripts
+└── troubleshooting/  # Diagnostic and repair scripts
+```
 
 ### Documentation Requirements
 - Every script must include a comprehensive header with .SYNOPSIS and .DESCRIPTION
