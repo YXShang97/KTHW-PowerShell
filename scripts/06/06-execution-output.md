@@ -365,3 +365,17 @@ foreach ($controller in $controllers) {
 - [x] Configuration file distributed to all 3 controller instances
 - [x] File transfers completed without errors
 - [x] AES-CBC encryption configured with identity fallback for compatibility
+
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Step 05: Kubernetes Configuration](../05/05-execution-output.md) | **Step 06: Data Encryption** | [➡️ Step 07: etcd Bootstrap](../07/07-execution-output.md) |
+
+### 📋 Tutorial Progress
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

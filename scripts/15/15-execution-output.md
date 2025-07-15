@@ -450,3 +450,24 @@ You have successfully completed the **Kubernetes the Hard Way** tutorial using P
 - Proper resource cleanup and cost management
 
 This knowledge provides a solid foundation for understanding how Kubernetes works internally and will help you in your journey as a Kubernetes administrator or developer.
+
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Step 14: Dashboard Setup](../14/14-execution-output.md) | **Step 15: Cleanup Resources** | 🎉 **Tutorial Complete!** |
+
+### 📋 Tutorial Progress
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)
+
+---
+
+### 🎯 Additional Resources
+- [Kubernetes Official Documentation](https://kubernetes.io/docs/)
+- [Azure Kubernetes Service (AKS)](https://docs.microsoft.com/en-us/azure/aks/)
+- [PowerShell for Azure](https://docs.microsoft.com/en-us/powershell/azure/)

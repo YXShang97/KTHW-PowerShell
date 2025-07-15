@@ -310,3 +310,17 @@ If kubectl proxy doesn't work, you can try:
 - Access token generated for authentication
 - Clear access instructions provided
 - Dashboard ready to use once worker nodes are available
+
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Step 13: Smoke Tests](../13/13-execution-output.md) | **Step 14: Dashboard Setup** | [➡️ Step 15: Cleanup Resources](../15/15-execution-output.md) |
+
+### 📋 Tutorial Progress
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

@@ -658,3 +658,17 @@ az vm update -g kubernetes -n worker-1 --set tags.podCidr=10.200.1.0/24
 **Script Status**: ✅ Successfully executed and validated  
 **Route Status**: ✅ Cross-node pod networking enabled  
 **Next Step**: Deploy DNS cluster add-on (Step 12) for service discovery
+
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Step 10: Configure kubectl](../10/10-execution-output.md) | **Step 11: Pod Network Routes** | [➡️ Step 12: DNS Cluster Add-on](../12/12-execution-output.md) |
+
+### 📋 Tutorial Progress
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

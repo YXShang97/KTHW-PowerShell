@@ -112,23 +112,31 @@ Test-AzureAuthentication
 
 ## 📚 Tutorial Steps
 
-| Step | Title | Description | Status |
-|------|-------|-------------|---------|
-| [01](scripts/01/) | [Prerequisites](scripts/01/01-execution-output.md) | Install and configure required tools | ✅ Ready |
-| [02](scripts/02/) | [Client Tools](scripts/02/02-execution-output.md) | Install kubectl, cfssl, and cfssljson | ✅ Ready |
-| [03](scripts/03/) | [Compute Resources](scripts/03/03-execution-output.md) | Provision Azure virtual machines and networking | ✅ Ready |
-| [04](scripts/04/) | [Certificate Authority](scripts/04/04-execution-output.md) | Generate CA and TLS certificates | ✅ Ready |
-| [05](scripts/05/) | [Kubernetes Configuration](scripts/05/05-execution-output.md) | Generate kubeconfig files | ✅ Ready |
-| [06](scripts/06/) | [Data Encryption](scripts/06/06-execution-output.md) | Generate encryption key for etcd | ✅ Ready |
-| [07](scripts/07/) | [etcd Cluster](scripts/07/07-execution-output.md) | Bootstrap etcd cluster | ✅ Ready |
-| [08](scripts/08/) | [Control Plane](scripts/08/08-execution-output.md) | Bootstrap Kubernetes control plane | ✅ Ready |
-| [09](scripts/09/) | [Worker Nodes](scripts/09/09-execution-output.md) | Bootstrap Kubernetes worker nodes | ✅ Ready |
-| [10](scripts/10/) | [kubectl Configuration](scripts/10/10-execution-output.md) | Configure kubectl for remote access | ✅ Ready |
-| [11](scripts/11/) | [Pod Network Routes](scripts/11/11-execution-output.md) | Provision pod network routes | ✅ Ready |
-| [12](scripts/12/) | [DNS Add-on](scripts/12/12-execution-output.md) | Deploy DNS cluster add-on | ✅ Ready |
-| [13](scripts/13/) | [Smoke Tests](scripts/13/13-execution-output.md) | Verify cluster functionality | ✅ Ready |
-| [14](scripts/14/) | [Dashboard](scripts/14/14-execution-output.md) | Configure Kubernetes dashboard | ✅ Ready |
-| [15](scripts/15/) | [Cleanup](scripts/15/15-execution-output.md) | Clean up all resources | ✅ Ready |
+Follow these steps in order for a complete Kubernetes cluster deployment:
+
+| Step | Title | Description | Links |
+|------|-------|-------------|-------|
+| [01](scripts/01/) | [Prerequisites](scripts/01/01-execution-output.md) | Install and configure required tools | [📄 Docs](scripts/01/01-execution-output.md) • [🔧 Script](scripts/01/01-prerequisites.ps1) |
+| [02](scripts/02/) | [Client Tools](scripts/02/02-execution-output.md) | Install kubectl, cfssl, and cfssljson | [📄 Docs](scripts/02/02-execution-output.md) • [🔧 Script](scripts/02/02-client-tools.ps1) |
+| [03](scripts/03/) | [Compute Resources](scripts/03/03-execution-output.md) | Provision Azure virtual machines and networking | [📄 Docs](scripts/03/03-execution-output.md) • [🔧 Script](scripts/03/03-compute-resources.ps1) |
+| [04](scripts/04/) | [Certificate Authority](scripts/04/04-execution-output.md) | Generate CA and TLS certificates | [📄 Docs](scripts/04/04-execution-output.md) • [🔧 Script](scripts/04/04-certificate-authority.ps1) |
+| [05](scripts/05/) | [Kubernetes Configuration](scripts/05/05-execution-output.md) | Generate kubeconfig files | [📄 Docs](scripts/05/05-execution-output.md) • [🔧 Script](scripts/05/05-generate-kub-config.ps1) |
+| [06](scripts/06/) | [Data Encryption](scripts/06/06-execution-output.md) | Generate encryption key for etcd | [📄 Docs](scripts/06/06-execution-output.md) • [🔧 Script](scripts/06/06-generate-encryption-key.ps1) |
+| [07](scripts/07/) | [etcd Cluster](scripts/07/07-execution-output.md) | Bootstrap etcd cluster | [📄 Docs](scripts/07/07-execution-output.md) • [🔧 Script](scripts/07/07-bootstrapping-etcd.ps1) |
+| [08](scripts/08/) | [Control Plane](scripts/08/08-execution-output.md) | Bootstrap Kubernetes control plane | [📄 Docs](scripts/08/08-execution-output.md) • [🔧 Script](scripts/08/08-bootstrapping-CP.ps1) |
+| [09](scripts/09/) | [Worker Nodes](scripts/09/09-execution-output.md) | Bootstrap Kubernetes worker nodes | [📄 Docs](scripts/09/09-execution-output.md) • [🔧 Script](scripts/09/09-bootstrapping-workernodes.ps1) |
+| [10](scripts/10/) | [kubectl Configuration](scripts/10/10-execution-output.md) | Configure kubectl for remote access | [📄 Docs](scripts/10/10-execution-output.md) • [🔧 Script](scripts/10/10-cofigure-kubectl.ps1) |
+| [11](scripts/11/) | [Pod Network Routes](scripts/11/11-execution-output.md) | Provision pod network routes | [📄 Docs](scripts/11/11-execution-output.md) • [🔧 Script](scripts/11/11-provision-pod-net-routes.ps1) |
+| [12](scripts/12/) | [DNS Add-on](scripts/12/12-execution-output.md) | Deploy DNS cluster add-on | [📄 Docs](scripts/12/12-execution-output.md) • [🔧 Script](scripts/12/12-deploy-dns.ps1) |
+| [13](scripts/13/) | [Smoke Tests](scripts/13/13-execution-output.md) | Verify cluster functionality | [📄 Docs](scripts/13/13-execution-output.md) • [🔧 Script](scripts/13/13-smoke-tests.ps1) |
+| [14](scripts/14/) | [Dashboard](scripts/14/14-execution-output.md) | Configure Kubernetes dashboard | [📄 Docs](scripts/14/14-execution-output.md) • [🔧 Script](scripts/14/14-configure-dashboad.ps1) |
+| [15](scripts/15/) | [Cleanup](scripts/15/15-execution-output.md) | Clean up all resources | [📄 Docs](scripts/15/15-execution-output.md) • [🔧 Script](scripts/15/15-cleanup.ps1) |
+
+### 🚀 Quick Start Guide
+1. **Begin here**: [Step 01 - Prerequisites](scripts/01/01-execution-output.md)
+2. **Follow sequentially**: Each step builds on the previous one
+3. **Use validation**: Run [cluster validation](scripts/validation/Validate-Cluster.ps1) after key steps
+4. **Get help**: Use [troubleshooting tools](scripts/troubleshooting/Repair-Cluster.ps1) if needed
 
 ## 🛠️ Usage Instructions
 

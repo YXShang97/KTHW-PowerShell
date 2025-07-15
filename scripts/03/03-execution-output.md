@@ -427,3 +427,17 @@ This step successfully provisions the complete Azure infrastructure for a Kubern
 - **Network Segmentation:** Dedicated pod CIDR ranges for each worker
 
 The infrastructure is now ready for Kubernetes component installation and configuration in the following tutorial steps.
+
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Step 02: Client Tools](../02/02-execution-output.md) | **Step 03: Compute Resources** | [➡️ Step 04: Certificate Authority](../04/04-execution-output.md) |
+
+### 📋 Tutorial Progress
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

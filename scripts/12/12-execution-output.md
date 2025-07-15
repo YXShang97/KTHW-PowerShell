@@ -581,3 +581,17 @@ The cluster now has fully functional DNS-based service discovery capabilities wi
 **Script Version**: 12-deploy-dns.ps1 (Modified)  
 **Execution Environment**: PowerShell 7.x on Windows  
 **Cluster Status**: DNS-Ready for Production Workloads
+
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Step 11: Pod Network Routes](../11/11-execution-output.md) | **Step 12: DNS Cluster Add-on** | [➡️ Step 13: Smoke Tests](../13/13-execution-output.md) |
+
+### 📋 Tutorial Progress
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

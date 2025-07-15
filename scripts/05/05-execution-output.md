@@ -359,3 +359,17 @@ foreach ($controller in $controllers) {
 - [x] All file transfers completed without errors
 - [x] kubeconfig files contain embedded certificates
 - [x] Proper server endpoints configured (external for workers, localhost for controllers)
+
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Step 04: Certificate Authority](../04/04-execution-output.md) | **Step 05: Kubernetes Configuration** | [➡️ Step 06: Data Encryption](../06/06-execution-output.md) |
+
+### 📋 Tutorial Progress
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

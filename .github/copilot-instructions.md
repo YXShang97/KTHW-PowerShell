@@ -70,13 +70,27 @@ $content = $content -replace "`r`n", "`n"  # Convert CRLF to LF
 - Store temporary files in appropriate system temp directories
 - Clean up temporary files after use
 
-### Enhanced Repository Structure (Simplified)
-```
-scripts/
-├── common/           # Essential shared functions
-├── templates/        # Simple script template
-├── validation/       # Basic cluster validation
-└── troubleshooting/  # Simple diagnostic tools
+### Repository Navigation Requirements
+- **All execution output files must include standardized navigation sections**
+- **Navigation should provide seamless browsing from README through all tutorial steps**
+- **Use consistent navigation table format with Previous/Current/Next links**
+- **Include tutorial progress section with links to main resources**
+
+#### Required Navigation Template:
+```markdown
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Step XX: Previous Title](../XX/XX-execution-output.md) | **Step YY: Current Title** | [➡️ Step ZZ: Next Title](../ZZ/ZZ-execution-output.md) |
+
+### 📋 Tutorial Progress
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)
 ```
 
 ### Simplicity Guidelines
@@ -91,6 +105,9 @@ scripts/
 - Include prerequisites section listing required previous steps
 - Document all parameters and their expected values
 - Provide troubleshooting guidance for common issues
+- **All execution output files must include the standardized navigation section**
+- **Navigation links must be tested and functional for GitHub repository browsing**
+- **Update navigation when adding, removing, or reordering tutorial steps**
 
 ## Security Practices
 - Never hardcode passwords or sensitive information
@@ -157,3 +174,6 @@ git push origin --tags
 - Document any infrastructure changes or new Azure resources in README.md
 - Keep EXECUTION-SUMMARY.md current with latest test results
 - Update troubleshooting sections based on encountered issues
+- **Maintain navigation consistency across all execution output files**
+- **Test navigation links when modifying or restructuring tutorial steps**
+- **Ensure README tutorial steps table remains synchronized with actual files**

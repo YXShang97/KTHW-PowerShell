@@ -309,3 +309,17 @@ This step successfully installs the three essential tools required for the Kuber
 - **kubectl**: For interacting with Kubernetes clusters
 
 All tools are now ready for use in subsequent tutorial steps. The cfssl tools are available in the local `cfssl` directory, while kubectl is installed system-wide via Chocolatey.
+
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Step 01: Prerequisites](../01/01-execution-output.md) | **Step 02: Client Tools** | [➡️ Step 03: Compute Resources](../03/03-execution-output.md) |
+
+### 📋 Tutorial Progress
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)
