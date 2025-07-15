@@ -1,0 +1,46 @@
+# Kubernetes the Hard Way - Generated Files and Directories
+
+# Certificate files - these are generated during the tutorial
+certs/*
+!certs/.gitkeep
+
+# CFSSL binaries - these are downloaded during step 02
+cfssl/*
+!cfssl/.gitkeep
+
+# Kubeconfig files - these are generated during the tutorial
+configs/*
+!configs/.gitkeep
+
+# PowerShell and system files
+*.log
+*.tmp
+*~
+
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Temporary files
+temp/
+*.temp

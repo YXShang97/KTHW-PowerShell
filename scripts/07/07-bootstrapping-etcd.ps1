@@ -117,9 +117,8 @@ foreach ($instance in $controllers) {
     $internalIP = ssh kuberoot@$publicIP $getIPCmd
     Write-Host "Internal IP for ${instance}: $internalIP" -ForegroundColor Cyan
     
-    # Create etcd systemd service file
-    $serviceContent = @"
-[Unit]
+    # Create etcd systemd service file using string concatenation for proper variable expansion
+    $serviceContent = "[Unit]
 Description=etcd
 Documentation=https://github.com/coreos
 
@@ -135,10 +134,10 @@ ExecStart=/usr/local/bin/etcd \
   --peer-trusted-ca-file=/etc/etcd/ca.pem \
   --peer-client-cert-auth \
   --client-cert-auth \
-  --initial-advertise-peer-urls https://$internalIP:2380 \
-  --listen-peer-urls https://$internalIP:2380 \
-  --listen-client-urls https://$internalIP:2379,https://127.0.0.1:2379 \
-  --advertise-client-urls https://$internalIP:2379 \
+  --initial-advertise-peer-urls https://$internalIP`:2380 \
+  --listen-peer-urls https://$internalIP`:2380 \
+  --listen-client-urls https://$internalIP`:2379,https://127.0.0.1:2379 \
+  --advertise-client-urls https://$internalIP`:2379 \
   --initial-cluster-token etcd-cluster-0 \
   --initial-cluster controller-0=https://10.240.0.10:2380,controller-1=https://10.240.0.11:2380,controller-2=https://10.240.0.12:2380 \
   --initial-cluster-state new \
@@ -147,8 +146,7 @@ Restart=on-failure
 RestartSec=5
 
 [Install]
-WantedBy=multi-user.target
-"@
+WantedBy=multi-user.target"
     
     # Write service file content to temporary local file
     $tempServiceFile = "$env:TEMP\etcd-$instance.service"
