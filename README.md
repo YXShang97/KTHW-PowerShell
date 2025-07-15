@@ -83,38 +83,30 @@ Before starting this tutorial, ensure you have:
    .\scripts\validation\Validate-Cluster.ps1
    ```
 
-## 🛠️ **New Tools and Utilities**
+## 🛠️ **Simplified Tools and Utilities**
 
-### **Common Functions Library**
+### **Essential Functions Library**
 ```powershell
-# Import shared functions in your scripts
+# Import essential functions in your scripts
 . "$PSScriptRoot\..\common\Common-Functions.ps1"
 
-# Examples of available functions:
+# Available simplified functions:
 New-UnixFile -Content $config -FilePath "/tmp/config.yaml"
-Invoke-CommandWithRetry -Command "az vm create ..." -Description "Creating VM"
 Get-VmPublicIP -ResourceGroup "kubernetes" -VmName "controller-0"
 Invoke-RemoteCommand -VmIP $ip -Command "sudo systemctl status etcd"
-New-RemoteConfigFile -VmIP $ip -Content $config -RemotePath "/etc/kubernetes/config.yaml"
+New-RemoteConfigFile -VmIP $ip -Content $config -RemotePath "/etc/config.yaml"
+Test-AzureAuthentication
 ```
 
-### **Validation Scripts**
+### **Simplified Validation & Troubleshooting**
 ```powershell
-# Comprehensive cluster validation
+# Essential cluster validation
 .\scripts\validation\Validate-Cluster.ps1
 
-# Environment prerequisites check
-.\scripts\validation\Validate-Environment.ps1
-```
+# Basic troubleshooting
+.\scripts\troubleshooting\Repair-Cluster.ps1 -Component all
 
-### **Troubleshooting Tools**
-```powershell
-# Diagnose specific components
-.\scripts\troubleshooting\Repair-Cluster.ps1 -Component etcd
-.\scripts\troubleshooting\Repair-Cluster.ps1 -Component containerd
-.\scripts\troubleshooting\Repair-Cluster.ps1 -Component cgroups
-
-# Automatic repair mode
+# Auto-fix common issues
 .\scripts\troubleshooting\Repair-Cluster.ps1 -Component all -AutoFix
 ```
 

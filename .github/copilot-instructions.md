@@ -70,14 +70,21 @@ $content = $content -replace "`r`n", "`n"  # Convert CRLF to LF
 - Store temporary files in appropriate system temp directories
 - Clean up temporary files after use
 
-### Enhanced Repository Structure
+### Enhanced Repository Structure (Simplified)
 ```
 scripts/
-├── common/           # Shared functions and utilities
-├── templates/        # PowerShell script templates
-├── validation/       # Standalone validation scripts
-└── troubleshooting/  # Diagnostic and repair scripts
+├── common/           # Essential shared functions
+├── templates/        # Simple script template
+├── validation/       # Basic cluster validation
+└── troubleshooting/  # Simple diagnostic tools
 ```
+
+### Simplicity Guidelines
+- **Keep functions simple and focused on single responsibilities**
+- **Avoid over-engineering with excessive error handling layers**
+- **Use clear, straightforward code over complex abstractions**
+- **Focus on essential functionality rather than comprehensive coverage**
+- **Prefer readable code over overly clever implementations**
 
 ### Documentation Requirements
 - Every script must include a comprehensive header with .SYNOPSIS and .DESCRIPTION
