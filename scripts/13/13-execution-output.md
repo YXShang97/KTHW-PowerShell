@@ -418,9 +418,3 @@ Both files are essential for validating your Kubernetes cluster deployment.
 | Previous | Current | Next |
 |----------|---------|------|
 | [⬅️ Step 12: DNS Cluster Add-on](../12/12-execution-output.md) | **Step 13: Smoke Tests** | [➡️ Step 14: Dashboard Setup](../14/14-execution-output.md) |
-
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

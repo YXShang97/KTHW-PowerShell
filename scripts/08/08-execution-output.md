@@ -572,11 +572,5 @@ The Kubernetes control plane is now ready to manage worker nodes and schedule wo
 |----------|---------|------|
 | [⬅️ Step 07: etcd Bootstrap](../07/07-execution-output.md) | **Step 08: Control Plane Bootstrap** | [➡️ Step 09: Worker Node Bootstrap](../09/09-execution-output.md) |
 
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)
-
 ---
 **Next Tutorial Step**: [09 - Bootstrapping the Kubernetes Worker Nodes](../09/09-bootstrapping-workernodes.ps1)

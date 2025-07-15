@@ -459,12 +459,6 @@ This knowledge provides a solid foundation for understanding how Kubernetes work
 |----------|---------|------|
 | [⬅️ Step 14: Dashboard Setup](../14/14-execution-output.md) | **Step 15: Cleanup Resources** | 🎉 **Tutorial Complete!** |
 
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)
-
 ---
 
 ### 🎯 Additional Resources

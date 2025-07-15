@@ -510,9 +510,3 @@ kubectl config view --minify
 | Previous | Current | Next |
 |----------|---------|------|
 | [⬅️ Step 09: Worker Node Bootstrap](../09/09-execution-output.md) | **Step 10: Configure kubectl** | [➡️ Step 11: Pod Network Routes](../11/11-execution-output.md) |
-
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

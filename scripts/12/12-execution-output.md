@@ -589,9 +589,3 @@ The cluster now has fully functional DNS-based service discovery capabilities wi
 | Previous | Current | Next |
 |----------|---------|------|
 | [⬅️ Step 11: Pod Network Routes](../11/11-execution-output.md) | **Step 12: DNS Cluster Add-on** | [➡️ Step 13: Smoke Tests](../13/13-execution-output.md) |
-
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

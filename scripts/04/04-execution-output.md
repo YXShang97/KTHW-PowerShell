@@ -52,9 +52,3 @@ openssl x509 -in ca.pem -text -noout | Select-String "Subject:"
 | Previous | Current | Next |
 |----------|---------|------|
 | [⬅️ Step 03: Compute Resources](../03/03-execution-output.md) | **Step 04: Certificate Authority** | [➡️ Step 05: Kubernetes Configuration](../05/05-execution-output.md) |
-
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

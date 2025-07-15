@@ -666,9 +666,3 @@ az vm update -g kubernetes -n worker-1 --set tags.podCidr=10.200.1.0/24
 | Previous | Current | Next |
 |----------|---------|------|
 | [⬅️ Step 10: Configure kubectl](../10/10-execution-output.md) | **Step 11: Pod Network Routes** | [➡️ Step 12: DNS Cluster Add-on](../12/12-execution-output.md) |
-
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

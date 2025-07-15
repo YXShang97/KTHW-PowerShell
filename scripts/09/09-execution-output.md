@@ -439,9 +439,3 @@ worker-1   Ready    <none>   45s   v1.26.3
 | Previous | Current | Next |
 |----------|---------|------|
 | [⬅️ Step 08: Control Plane Bootstrap](../08/08-execution-output.md) | **Step 09: Worker Node Bootstrap** | [➡️ Step 10: Configure kubectl](../10/10-execution-output.md) |
-
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

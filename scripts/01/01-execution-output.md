@@ -252,6 +252,14 @@ az group create --name kubernetes --location "West US 2"
 After completing this step successfully, proceed to:
 **[Step 02: Client Tools](../02/02-execution-output.md)**
 
+---
+
+## 🧭 Navigation
+
+| Previous | Current | Next |
+|----------|---------|------|
+| [⬅️ Main README](../../README.md) | **Step 01: Prerequisites** | [➡️ Step 02: Client Tools](../02/02-execution-output.md) |
+
 ## 📝 Summary
 
 Step 01 successfully:

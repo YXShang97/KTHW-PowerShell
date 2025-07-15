@@ -317,9 +317,3 @@ All tools are now ready for use in subsequent tutorial steps. The cfssl tools ar
 | Previous | Current | Next |
 |----------|---------|------|
 | [⬅️ Step 01: Prerequisites](../01/01-execution-output.md) | **Step 02: Client Tools** | [➡️ Step 03: Compute Resources](../03/03-execution-output.md) |
-
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)

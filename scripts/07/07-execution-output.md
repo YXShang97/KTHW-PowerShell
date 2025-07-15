@@ -456,11 +456,5 @@ The etcd cluster is now ready to serve as the backend for Kubernetes control pla
 |----------|---------|------|
 | [⬅️ Step 06: Data Encryption](../06/06-execution-output.md) | **Step 07: etcd Bootstrap** | [➡️ Step 08: Control Plane Bootstrap](../08/08-execution-output.md) |
 
-### 📋 Tutorial Progress
-- [🏠 Main README](../../README.md)
-- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
-- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
-- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)
-
 ---
 **Next Tutorial Step**: [08 - Bootstrapping the Kubernetes Control Plane](../08/08-bootstrapping-CP.ps1)
