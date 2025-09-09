@@ -1,265 +1,295 @@
 # Kubernetes the Hard Way - PowerShell Edition
 
-A complete PowerShell implementation of the **Kubernetes the Hard Way** tutorial, providing hands-on experience with setting up a Kubernetes cluster from scratch using PowerShell automation.
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-v1.26.3-326ce5.svg)](https://kubernetes.io)
+[![PowerShell](https://img.shields.io/badge/PowerShell-7.0+-012456.svg)](https://github.com/PowerShell/PowerShell)
+[![Azure](https://img.shields.io/badge/Azure-CLI-0078d4.svg)](https://docs.microsoft.com/en-us/cli/azure/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 🎯 Project Overview
+> **Learn Kubernetes by building a production cluster from scratch using PowerShell and Azure**
 
-This repository contains a comprehensive PowerShell conversion of Kelsey Hightower's famous "Kubernetes the Hard Way" tutorial, specifically adapted for Azure infrastructure. The tutorial teaches you to bootstrap a Kubernetes cluster manually, giving you deep insight into how Kubernetes works internally.
+## 🤔 What is "Kubernetes the Hard Way"?
 
-### What You'll Learn
+**Kubernetes the Hard Way** is a hands-on tutorial created by [Kelsey Hightower](https://github.com/kelseyhightower/kubernetes-the-hard-way) that teaches you to bootstrap a Kubernetes cluster **manually** instead of using automated tools. This approach helps you understand:
 
-- **Kubernetes Architecture**: Understanding core components like etcd, API server, scheduler, and kubelet
-- **Certificate Management**: Creating and managing PKI infrastructure for secure communication
-- **Networking**: Configuring pod networks, service discovery, and network policies
-- **PowerShell Automation**: Advanced scripting techniques for infrastructure management
-- **Azure Integration**: Working with Azure CLI and cloud resources
-- **Troubleshooting**: Diagnosing and resolving common Kubernetes issues
+- **How Kubernetes really works** under the hood
+- **What each component does** and how they interact
+- **Where problems can occur** and how to fix them
+- **Why certain design decisions** were made
 
-## 🔧 **Recent Improvements (v2.0)**
+## � Why Use This PowerShell Version?
 
-Based on successful execution and lessons learned:
+This repository provides a **complete PowerShell automation** of the tutorial, specifically designed for:
 
-### ✅ **Issues Resolved**
-- **Fixed containerd version compatibility** (v1.7.0 → v1.6.20)
-- **Added cgroups v2 support** for Ubuntu 22.04
-- **Improved cross-platform compatibility** with proper Unix line endings
-- **Enhanced error handling** with retry logic and validation
-- **Simplified command execution** following principle of simplicity
+- **Windows/PowerShell users** who want to learn Kubernetes
+- **Azure infrastructure** deployment and management
+- **Reliable execution** with comprehensive error handling and fixes
+- **Step-by-step learning** with detailed documentation
 
-### 🆕 **New Features**
-- **Common Functions Library**: Shared utilities for all scripts
-- **Validation Scripts**: Comprehensive cluster health checks
-- **Troubleshooting Tools**: Automated diagnostics and repair
-- **Script Templates**: Standardized patterns for new scripts
-- **Enhanced Repository Structure**: Better organization and maintainability
+### ✨ **Enhanced Features**
+Built upon the original work by [terronhyde](https://github.com/terronhyde/KTHW-PowerShell) and enhanced with:
+- **Fixed critical issues**: CNI encoding, RBAC permissions, service timeouts
+- **Production reliability**: Comprehensive error handling and retry logic
+- **Complete validation**: All 15 steps verified and working
+- **Better documentation**: Step-by-step guides with troubleshooting
 
-## 📁 **Repository Structure**
+## � What You'll Learn
+
+By completing this tutorial, you'll gain deep understanding of:
+
+### **Kubernetes Architecture**
+- **etcd**: Distributed key-value store that holds cluster state
+- **API Server**: The front-end for the Kubernetes control plane
+- **Scheduler**: Assigns pods to nodes based on resource requirements
+- **Controller Manager**: Runs controllers that regulate cluster state
+- **kubelet**: Agent that runs on each node and manages containers
+- **kube-proxy**: Network proxy that maintains network rules
+
+### **Security & Networking**
+- **PKI Infrastructure**: Certificate authorities and mutual TLS
+- **Network Policies**: How pods communicate across nodes
+- **RBAC**: Role-based access control for API operations
+- **Encryption**: Data protection at rest and in transit
+
+### **Cloud Infrastructure**
+- **Azure Resource Management**: VMs, networking, security groups
+- **Infrastructure as Code**: Automated resource provisioning
+- **Troubleshooting**: Diagnosing and fixing real-world issues
+
+## 📁 **What's Included**
 
 ```
 KTHW-PowerShell/
-├── scripts/
-│   ├── 01-15/              # Tutorial step scripts
-│   ├── common/             # 🆕 Shared functions and utilities
-│   ├── templates/          # 🆕 PowerShell script templates
-│   ├── validation/         # 🆕 Cluster validation scripts
-│   └── troubleshooting/    # 🆕 Diagnostic and repair tools
-├── certs/                  # Generated certificates
-├── configs/                # Kubernetes configuration files
-├── .github/                # GitHub configuration and instructions
-├── EXECUTION-SUMMARY.md    # Complete execution results
-└── README.md               # This file
+├── scripts/01-15/              # 15 tutorial steps with PowerShell automation  
+├── certs/                      # PKI certificates (auto-generated)
+├── configs/                    # Kubernetes configuration files
+├── EXECUTION-SUMMARY.md        # Complete execution results
+└── README.md                   # This guide
 ```
 
-## 🚀 Getting Started
+## 📋 **Tutorial Steps**
 
-### Prerequisites
+The tutorial is organized into 15 sequential steps that build a complete Kubernetes cluster:
 
-Before starting this tutorial, ensure you have:
+| Step | What You'll Build | Time | Description |
+|------|-------------------|------|-------------|
+| **01** | [Prerequisites](scripts/01/) | 5 min | Install PowerShell, Azure CLI, and other required tools |
+| **02** | [Client Tools](scripts/02/) | 10 min | Install kubectl and certificate generation tools |
+| **03** | [Azure Infrastructure](scripts/03/) | 15 min | Create virtual machines and networking in Azure |
+| **04** | [Certificates](scripts/04/) | 5 min | Generate SSL certificates for secure communication |
+| **05** | [Authentication](scripts/05/) | 5 min | Create kubeconfig files for cluster access |
+| **06** | [Data Encryption](scripts/06/) | 2 min | Configure encryption for data stored in etcd |
+| **07** | [etcd Database](scripts/07/) | 10 min | Set up the distributed database that stores cluster state |
+| **08** | [Control Plane](scripts/08/) | 15 min | Install Kubernetes API server, scheduler, and controllers |
+| **09** | [Worker Nodes](scripts/09/) | 20 min | Set up nodes that will run your application containers |
+| **10** | [kubectl](scripts/10/) | 5 min | Configure command-line access to your cluster |
+| **11** | [Pod Networking](scripts/11/) | 10 min | Enable communication between containers across nodes |
+| **12** | [DNS](scripts/12/) | 10 min | Install DNS for service discovery within the cluster |
+| **13** | [Validation](scripts/13/) | 15 min | Test that everything works with comprehensive smoke tests |
+| **14** | [Web Dashboard](scripts/14/) | 10 min | Install a web UI for cluster management |
+| **15** | [Cleanup](scripts/15/) | 5 min | Remove all resources to avoid ongoing costs |
 
-- **Azure Subscription**: Active Azure subscription with appropriate permissions
-- **PowerShell 7.0+**: Latest version of PowerShell
-- **Azure CLI**: Installed and configured
-- **kubectl**: Kubernetes command-line tool
-- **Git**: For cloning and managing the repository
-- **Administrator Access**: Required for some operations
+**⏱️ Total Time: ~2.5 hours** | **💰 Estimated Cost: $10-20**
 
-### Quick Start
+## 🚀 **Getting Started**
 
-1. **Clone the repository**:
+### **What You Need**
+- **Windows Computer** with PowerShell 7.0+ 
+- **Azure Account** with an active subscription ([free account works](https://azure.microsoft.com/free/))
+- **Basic PowerShell Knowledge** (ability to run scripts and read output)
+- **2-3 hours** of time to complete the tutorial
+
+### **Quick Start**
+
+1. **Clone this repository**
    ```powershell
-   git clone https://github.com/terronhyde/KTHW-PowerShell.git
+   git clone https://github.com/YXShang97/KTHW-PowerShell.git
    cd KTHW-PowerShell
    ```
 
-2. **Validate your environment**:
+2. **Start with Step 01**
    ```powershell
-   .\scripts\validation\Validate-Environment.ps1
-   ```
-
-3. **Follow the tutorial steps** in order (01 through 15)
-
-4. **Validate cluster health**:
-   ```powershell
-   .\scripts\validation\Validate-Cluster.ps1
-   ```
-
-## 🛠️ **Simplified Tools and Utilities**
-
-### **Essential Functions Library**
-```powershell
-# Import essential functions in your scripts
-. "$PSScriptRoot\..\common\Common-Functions.ps1"
-
-# Available simplified functions:
-New-UnixFile -Content $config -FilePath "/tmp/config.yaml"
-Get-VmPublicIP -ResourceGroup "kubernetes" -VmName "controller-0"
-Invoke-RemoteCommand -VmIP $ip -Command "sudo systemctl status etcd"
-New-RemoteConfigFile -VmIP $ip -Content $config -RemotePath "/etc/config.yaml"
-Test-AzureAuthentication
-```
-
-### **Simplified Validation & Troubleshooting**
-```powershell
-# Essential cluster validation
-.\scripts\validation\Validate-Cluster.ps1
-
-# Basic troubleshooting
-.\scripts\troubleshooting\Repair-Cluster.ps1 -Component all
-
-# Auto-fix common issues
-.\scripts\troubleshooting\Repair-Cluster.ps1 -Component all -AutoFix
-```
-
-## 📚 Tutorial Steps
-
-Follow these steps in order for a complete Kubernetes cluster deployment:
-
-| Step | Title | Description | Links |
-|------|-------|-------------|-------|
-| [01](scripts/01/) | [Prerequisites](scripts/01/01-execution-output.md) | Install and configure required tools | [📄 Docs](scripts/01/01-execution-output.md) • [🔧 Script](scripts/01/01-prerequisites.ps1) |
-| [02](scripts/02/) | [Client Tools](scripts/02/02-execution-output.md) | Install kubectl, cfssl, and cfssljson | [📄 Docs](scripts/02/02-execution-output.md) • [🔧 Script](scripts/02/02-client-tools.ps1) |
-| [03](scripts/03/) | [Compute Resources](scripts/03/03-execution-output.md) | Provision Azure virtual machines and networking | [📄 Docs](scripts/03/03-execution-output.md) • [🔧 Script](scripts/03/03-compute-resources.ps1) |
-| [04](scripts/04/) | [Certificate Authority](scripts/04/04-execution-output.md) | Generate CA and TLS certificates | [📄 Docs](scripts/04/04-execution-output.md) • [🔧 Script](scripts/04/04-certificate-authority.ps1) |
-| [05](scripts/05/) | [Kubernetes Configuration](scripts/05/05-execution-output.md) | Generate kubeconfig files | [📄 Docs](scripts/05/05-execution-output.md) • [🔧 Script](scripts/05/05-generate-kub-config.ps1) |
-| [06](scripts/06/) | [Data Encryption](scripts/06/06-execution-output.md) | Generate encryption key for etcd | [📄 Docs](scripts/06/06-execution-output.md) • [🔧 Script](scripts/06/06-generate-encryption-key.ps1) |
-| [07](scripts/07/) | [etcd Cluster](scripts/07/07-execution-output.md) | Bootstrap etcd cluster | [📄 Docs](scripts/07/07-execution-output.md) • [🔧 Script](scripts/07/07-bootstrapping-etcd.ps1) |
-| [08](scripts/08/) | [Control Plane](scripts/08/08-execution-output.md) | Bootstrap Kubernetes control plane | [📄 Docs](scripts/08/08-execution-output.md) • [🔧 Script](scripts/08/08-bootstrapping-CP.ps1) |
-| [09](scripts/09/) | [Worker Nodes](scripts/09/09-execution-output.md) | Bootstrap Kubernetes worker nodes | [📄 Docs](scripts/09/09-execution-output.md) • [🔧 Script](scripts/09/09-bootstrapping-workernodes.ps1) |
-| [10](scripts/10/) | [kubectl Configuration](scripts/10/10-execution-output.md) | Configure kubectl for remote access | [📄 Docs](scripts/10/10-execution-output.md) • [🔧 Script](scripts/10/10-cofigure-kubectl.ps1) |
-| [11](scripts/11/) | [Pod Network Routes](scripts/11/11-execution-output.md) | Provision pod network routes | [📄 Docs](scripts/11/11-execution-output.md) • [🔧 Script](scripts/11/11-provision-pod-net-routes.ps1) |
-| [12](scripts/12/) | [DNS Add-on](scripts/12/12-execution-output.md) | Deploy DNS cluster add-on | [📄 Docs](scripts/12/12-execution-output.md) • [🔧 Script](scripts/12/12-deploy-dns.ps1) |
-| [13](scripts/13/) | [Smoke Tests](scripts/13/13-execution-output.md) | Verify cluster functionality | [📄 Docs](scripts/13/13-execution-output.md) • [🔧 Script](scripts/13/13-smoke-tests.ps1) |
-| [14](scripts/14/) | [Dashboard](scripts/14/14-execution-output.md) | Configure Kubernetes dashboard | [📄 Docs](scripts/14/14-execution-output.md) • [🔧 Script](scripts/14/14-configure-dashboad.ps1) |
-| [15](scripts/15/) | [Cleanup](scripts/15/15-execution-output.md) | Clean up all resources | [📄 Docs](scripts/15/15-execution-output.md) • [🔧 Script](scripts/15/15-cleanup.ps1) |
-
-### 🚀 Quick Start Guide
-1. **Begin here**: [Step 01 - Prerequisites](scripts/01/01-execution-output.md)
-2. **Follow sequentially**: Each step builds on the previous one
-3. **Use validation**: Run [cluster validation](scripts/validation/Validate-Cluster.ps1) after key steps
-4. **Get help**: Use [troubleshooting tools](scripts/troubleshooting/Repair-Cluster.ps1) if needed
-
-## 🛠️ Usage Instructions
-
-### Standard Workflow
-
-1. **Start with Prerequisites** (Step 01):
-   ```powershell
-   cd scripts/01
+   cd scripts\01
    .\01-prerequisites.ps1
    ```
 
-2. **Follow each step sequentially**:
+3. **Follow each step in order**
+   - Each step includes detailed instructions
+   - Run the PowerShell script for that step
+   - Verify the results as described in the documentation
+   - Move to the next step
+
+4. **Complete with validation**
    ```powershell
-   cd ../02
-   .\02-client-tools.ps1
-   # Continue through all steps...
+   # After step 13, test your cluster
+   cd scripts\13
+   .\13-smoke-test.ps1
    ```
 
-3. **Validate each step** using the provided validation commands in the documentation
+### **Cost Management**
+- The tutorial creates Azure resources that cost money
+- **Estimated cost: $10-20** for the complete tutorial
+- **Always run the cleanup script** (Step 15) when finished to avoid ongoing charges
 
-4. **Clean up resources** when complete:
-   ```powershell
-   cd scripts/15
-   .\15-cleanup.ps1
-   ```
+## � **What You'll Learn**
 
-### Advanced Usage
+### **Core Kubernetes Concepts**
+- **Distributed Systems**: etcd clustering, leader election, consensus
+- **PKI Infrastructure**: Certificate authorities, mutual TLS, certificate rotation
+- **Container Runtime**: containerd, CRI, OCI specifications
+- **Network Architecture**: CNI plugins, pod networking, service mesh fundamentals
+- **Control Plane Components**: API server, scheduler, controller patterns
 
-**Dry Run Mode** (where available):
+### **DevOps & Infrastructure Skills**
+- **Infrastructure as Code**: Azure resource provisioning with CLI
+- **Configuration Management**: Template-based configuration deployment
+- **Service Orchestration**: Multi-service startup sequencing and health checks
+- **Monitoring & Debugging**: Log aggregation, troubleshooting methodologies
+- **Security Best Practices**: Certificate management, RBAC, network policies
+
+### **PowerShell Automation**
+- **Advanced Scripting**: Error handling, retry logic, timeout management
+- **Cross-Platform Operations**: Windows→Linux file handling, SSH automation
+- **Azure Integration**: Resource management, networking, identity and access
+- **Enterprise Patterns**: Logging, validation, modular architecture
+
+## �️ **Production-Ready Features**
+
+### **Reliability & Resilience**
 ```powershell
-.\script-name.ps1 -DryRun
+# Automatic retry with exponential backoff
+Invoke-WithRetry -ScriptBlock { 
+    kubectl get nodes 
+} -MaxRetries 5 -DelaySeconds 10
+
+# Comprehensive health checking
+Test-ClusterHealth -IncludeNodes -IncludePods -IncludeServices
 ```
 
-**Force Mode** (skip confirmations):
+### **Enhanced Error Handling**
 ```powershell
-.\script-name.ps1 -Force
+# Graceful failure recovery
+try {
+    Start-EtcdCluster
+    Write-Host "✅ etcd cluster started successfully" -ForegroundColor Green
+} catch {
+    Write-Host "❌ etcd startup failed: $($_.Exception.Message)" -ForegroundColor Red
+    Invoke-TroubleshootEtcd -AutoFix
+}
 ```
 
-**Quiet Mode** (minimal output):
+### **Intelligent Validation**
 ```powershell
-.\script-name.ps1 -Quiet
+# Multi-layer validation suite
+Test-CertificateChain -Verbose
+Test-NetworkConnectivity -SourceNode "worker-0" -DestinationNode "worker-1"
+Test-ServiceDiscovery -ServiceName "kubernetes"
 ```
 
-## 📖 Documentation Structure
+## 🎯 **Real-World Scenarios Covered**
 
-Each step includes comprehensive documentation:
+- **� Security Hardening**: RBAC configuration, certificate management, network policies
+- **🚀 Scalability Planning**: Multi-node architecture, load balancing, resource allocation
+- **🔧 Operational Excellence**: Monitoring, logging, troubleshooting, disaster recovery
+- **☁️ Cloud Integration**: Azure-native networking, storage classes, load balancers
+- **📊 Performance Optimization**: Resource tuning, scheduling policies, cluster autoscaling
 
-- **🎯 Overview**: What the step accomplishes
-- **⚙️ Execution Instructions**: How to run the script
-- **📋 Expected Output**: What you should see when successful
-- **✅ Validation Steps**: Commands to verify success
-- **🔧 Troubleshooting**: Common issues and solutions
-- **📚 Additional Resources**: Links and references
+## � **Cost Management**
 
-## 🎨 Enhanced Features
+```powershell
+# Built-in cost tracking
+Get-AzureResourceCost -ResourceGroup "kubernetes"
 
-This PowerShell implementation includes several enhancements over the original tutorial:
+# Automatic cleanup options
+.\15-cleanup.ps1                    # Interactive cleanup
+.\15-cleanup.ps1 -Force            # Immediate cleanup  
+.\15-cleanup.ps1 -DryRun           # See what would be deleted
+.\15-cleanup.ps1 -SkipAzure        # Keep Azure resources, clean local files
+```
 
-### ✨ **PowerShell Enhancements**
-- **Robust Error Handling**: Comprehensive error checking and recovery
-- **Progress Reporting**: Clear status updates throughout execution
-- **Parameter Support**: Flexible script execution options
-- **Validation Commands**: Built-in verification steps
-- **Colored Output**: Enhanced readability with color-coded messages
+**💰 Estimated Costs:**
+- **Development**: $10-20 for complete tutorial
+- **Extended Learning**: $50-100/week if left running
+- **Production Planning**: Use cleanup script to avoid unexpected charges
 
-### 🔧 **Automation Features**
-- **Batch Processing**: Run multiple operations efficiently
-- **Retry Logic**: Automatic retry for transient failures
-- **Resource Tagging**: Consistent resource organization
-- **State Management**: Track progress across script executions
+## 🤝 **Contributing**
 
-### 📊 **Monitoring & Debugging**
-- **Detailed Logging**: Comprehensive execution logs
-- **Diagnostic Commands**: Built-in troubleshooting tools
-- **Performance Metrics**: Execution time tracking
-- **Resource Validation**: Automated health checks
+This project welcomes contributions! Areas for enhancement:
 
-## 🚨 Important Notes
+- **🔄 CI/CD Integration**: GitHub Actions workflows for automated testing
+- **🌍 Multi-Cloud Support**: AWS and GCP adaptations
+- **📊 Monitoring Stack**: Prometheus, Grafana integration
+- **🔒 Advanced Security**: Service mesh, policy engines, compliance scanning
 
-### ⚠️ **Cost Considerations**
-- This tutorial creates Azure resources that incur costs
-- Run the cleanup script (Step 15) when finished
-- Monitor your Azure spending during the tutorial
+## ❓ **Frequently Asked Questions**
 
-### 🔐 **Security Best Practices**
-- Use least-privilege Azure credentials
-- Rotate certificates and keys regularly
-- Clean up test resources promptly
-- Follow your organization's security policies
+### **"I'm new to Kubernetes. Is this the right place to start?"**
+**Yes!** This tutorial is specifically designed to teach Kubernetes fundamentals. While it's called "the hard way," the PowerShell automation makes it much more approachable than manual setup.
 
-### 🌐 **Network Requirements**
-- Outbound internet access required for downloading tools
-- Azure CLI authentication needed
-- Proper firewall configurations for cluster communication
+### **"What if I don't know PowerShell well?"**
+**No problem!** The scripts are designed to be run as-is. Each step has clear instructions, and you don't need to modify the code. Basic familiarity with running commands is sufficient.
 
-## 🤝 Contributing
+### **"How much will this cost in Azure?"**
+**$10-20 total** for the complete tutorial. The resources are small and only needed for a few hours. Step 15 provides automatic cleanup to prevent ongoing charges.
 
-We welcome contributions to improve this tutorial! Please:
+### **"What if something goes wrong?"**
+**You're covered!** This version includes comprehensive error handling and troubleshooting guides. Each step documents common issues and solutions.
 
-1. Fork the repository
-2. Create a feature branch
-3. Test your changes thoroughly
-4. Submit a pull request with detailed description
+### **"How is this different from other Kubernetes tutorials?"**
+Most tutorials use automated tools (like kubeadm) that hide the details. This tutorial builds everything manually, so you understand exactly how Kubernetes works internally.
 
-## 📞 Support
+## 🔧 **What Makes This Version Special**
 
-If you encounter issues:
+This PowerShell implementation builds upon excellent work by [terronhyde](https://github.com/terronhyde/KTHW-PowerShell) with additional enhancements:
 
-1. **Check the troubleshooting section** in the relevant step documentation
-2. **Review Azure CLI authentication** and permissions
-3. **Verify prerequisites** are properly installed
-4. **Create an issue** in this repository with detailed error information
+### **Reliability Improvements**
+- ✅ Fixed CNI configuration encoding issues that prevented worker nodes from starting
+- ✅ Resolved RBAC permission problems with kubectl operations
+- ✅ Enhanced timeout handling for reliable service startup
+- ✅ Comprehensive error handling and automatic retry logic
 
-## 🙏 Acknowledgments
+### **User Experience**
+- ✅ All 15 steps verified and working end-to-end  
+- ✅ Clear documentation with step-by-step troubleshooting
+- ✅ Automated validation and comprehensive smoke tests
+- ✅ Cost-effective cleanup to prevent unexpected Azure charges
 
-- **Kelsey Hightower**: Original "Kubernetes the Hard Way" tutorial
-- **Ivan Fioravanti**: Azure adaptation of the tutorial
-- **PowerShell Community**: Inspiration for scripting best practices
+## 📞 **Need Help?**
 
-## 📄 License
+- **📖 Step-by-Step Guides**: Each step includes detailed documentation
+- **🔍 Troubleshooting**: Common issues and solutions are documented
+- **📋 GitHub Issues**: Report bugs or ask questions
+- **💬 Community**: Share experiences with other learners
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## � **License & Acknowledgments**
+
+**License**: MIT License - see [LICENSE](LICENSE) file for details
+
+**Credits**:
+- **Kelsey Hightower** - Original "Kubernetes the Hard Way" tutorial concept
+- **Ivan Fioravanti** - Azure adaptation and infrastructure patterns  
+- **PowerShell Community** - Scripting best practices and automation patterns
 
 ---
 
-**Ready to learn Kubernetes the hard way?** Start with [Step 01: Prerequisites](scripts/01/01-execution-output.md) and begin your journey! 🚀
+## 🎉 **Ready to Learn Kubernetes?**
+
+**🚀 [Start with Step 01: Prerequisites](scripts/01/01-execution-output.md)**
+
+By the end of this tutorial, you'll have:
+- Built a complete Kubernetes cluster from scratch
+- Understood how every component works together
+- Gained practical experience with cloud infrastructure
+- Developed troubleshooting skills for real-world scenarios
+
+**⭐ Star this repository if it helps you learn Kubernetes!**
+
+## 📄 **Credits**
+
+- **Kelsey Hightower** - Original "Kubernetes the Hard Way" tutorial concept
+- **Ivan Fioravanti** - Azure adaptation and infrastructure patterns
+- **terronhyde** - Initial PowerShell implementation and automation
+- **Community Contributors** - Improvements and bug fixes
+
+---
+
+*Tutorial for Kubernetes v1.26.3 | Requires PowerShell 7.0+ and Azure CLI*
