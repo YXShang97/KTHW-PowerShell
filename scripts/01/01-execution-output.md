@@ -29,11 +29,13 @@ Before running this script, ensure you have:
 ### Running the Script
 
 1. **Navigate to the script directory**:
+
    ```powershell
    cd scripts/01
    ```
 
 2. **Execute the script**:
+
    ```powershell
    .\01-prerequisites.ps1
    ```
@@ -45,21 +47,32 @@ Before running this script, ensure you have:
 When executed successfully, the script will display:
 
 ### Azure CLI Version Check
+
 ```
-azure-cli                         2.74.0 *
-core                              2.74.0 *
+azure-cli                         2.76.0 *
+
+core                              2.76.0 *
 telemetry                          1.1.0
+
+Extensions:
+azure-devops                       1.0.2
+kusto                              0.5.0
+
 Dependencies:
-msal                              1.32.3
+msal                            1.33.0b1
 azure-mgmt-resource               23.3.0
-Python location 'C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\python.exe'
+
+Python location 'C:\Program Files\Microsoft SDKs\Azure\CLI2\python.exe'
 Config directory 'C:\Users\username\.azure'
 Extensions directory 'C:\Users\username\.azure\cliextensions'
-Python (Windows) 3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 11:58:42) [MSC v.1943 32 bit (Intel)]
+
+Python (Windows) 3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]
 Legal docs and information: aka.ms/AzureCliLegal
+
 ```
 
 ### Resource Group Creation
+
 ```json
 {
   "id": "/subscriptions/subscription-id/resourceGroups/kubernetes",
@@ -79,65 +92,104 @@ Legal docs and information: aka.ms/AzureCliLegal
 After running the script, verify the setup using these commands:
 
 ### 1. Verify Azure CLI Version
+
 **Command**:
+
 ```powershell
 az --version
 ```
+
 **Explanation**: Confirms Azure CLI is installed and displays version information  
 **Expected Result**: Should show version 2.46.0 or higher
 
 ### 2. Verify Azure Authentication
+
 **Command**:
+
 ```powershell
 az account show
 ```
+
 **Explanation**: Displays current Azure subscription and authentication status  
 **Expected Result**: Shows your active subscription details
 
 ### 3. Verify Resource Group Creation
+
 **Command**:
+
 ```powershell
 az group show --name kubernetes
 ```
+
 **Explanation**: Confirms the kubernetes resource group was created successfully  
 **Expected Result**: Returns resource group details with "provisioningState": "Succeeded"
 
 ### 4. List Resource Groups
+
 **Command**:
+
 ```powershell
 az group list --query "[].{Name:name, Location:location, State:properties.provisioningState}" --output table
 ```
+
 **Explanation**: Lists all resource groups to confirm the kubernetes group exists  
 **Expected Result**: Table showing the kubernetes resource group in the list
 
 ### 5. Check Azure Subscription Permissions
+
 **Command**:
+
 ```powershell
-az role assignment list --assignee (az account show --query user.name --output tsv) --scope /subscriptions/(az account show --query id --output tsv) --query "[].{Role:roleDefinitionName, Scope:scope}" --output table
+# For PowerShell, use variables to avoid command substitution issues:
+$userObjectId = az ad signed-in-user show --query id --output tsv
+$subscriptionId = az account show --query id --output tsv
+az role assignment list --assignee $userObjectId --scope "/subscriptions/$subscriptionId" --query "[].{Role:roleDefinitionName, Scope:scope}" --output table
 ```
+
 **Explanation**: Verifies you have appropriate permissions in the subscription  
 **Expected Result**: Shows role assignments, should include Contributor or Owner roles
+
+**Sample Output**:
+
+```
+Role    Scope
+------  ---------------------------------------------------
+Owner   /subscriptions/your-subscription-id
+```
 
 ## 🔧 Troubleshooting
 
 ### Common Issues and Solutions
 
-#### 1. Azure CLI Not Found
-**Error**: `'az' is not recognized as an internal or external command`
+#### 1. Azure CLI Not Found or DLL Load Failures
+
+**Error**: `'az' is not recognized as an internal or external command` or `ImportError: DLL load failed while importing win32file`
+
+**Root Cause**: Azure CLI installation is corrupted, missing dependencies, or PATH is incorrect
 
 **Solutions**:
+
 ```powershell
-# Install Azure CLI using winget
+# Uninstall current version
+winget uninstall Microsoft.AzureCLI
+
+# Install latest version (64-bit recommended)
 winget install Microsoft.AzureCLI
 
-# Or download from: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows
-# After installation, restart PowerShell
+# Restart PowerShell to refresh PATH
+# If still not working, manually add to PATH for current session:
+$env:PATH = "C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin;" + $env:PATH
+
+# Verify installation
+az --version
 ```
 
 #### 2. Azure CLI Version Too Old
+
 **Error**: Azure CLI version below 2.46.0
 
 **Solutions**:
+
 ```powershell
 # Update Azure CLI
 az upgrade
@@ -147,9 +199,11 @@ winget upgrade Microsoft.AzureCLI
 ```
 
 #### 3. Not Logged Into Azure
+
 **Error**: `Please run 'az login' to setup account`
 
 **Solutions**:
+
 ```powershell
 # Login to Azure
 az login
@@ -161,10 +215,12 @@ az login --tenant your-tenant-id
 az login --use-device-code
 ```
 
-#### 4. Insufficient Permissions
-**Error**: `AuthorizationFailed` or permission denied errors
+#### 4. Insufficient Permissions or Graph Database Errors
+
+**Error**: `AuthorizationFailed`, permission denied errors, or `Cannot find user or service principal in graph database`
 
 **Solutions**:
+
 ```powershell
 # Check current account
 az account show
@@ -172,14 +228,20 @@ az account show
 # Switch to correct subscription
 az account set --subscription "your-subscription-name"
 
-# Verify permissions
-az role assignment list --assignee (az account show --query user.name --output tsv)
+# For role assignment checks, use object ID instead of email:
+$userObjectId = az ad signed-in-user show --query id --output tsv
+az role assignment list --assignee $userObjectId
+
+# If using personal Microsoft account, some Graph API calls may be limited
+# Ensure you're using the correct tenant context
 ```
 
 #### 5. Resource Group Already Exists
+
 **Error**: `Resource group 'kubernetes' already exists`
 
 **Solutions**:
+
 ```powershell
 # Check existing resource group
 az group show --name kubernetes
@@ -191,9 +253,11 @@ az group create --name kubernetes --location eastus
 ```
 
 #### 6. Location/Region Issues
+
 **Error**: Resource group cannot be created in specified location
 
 **Solutions**:
+
 ```powershell
 # List available locations
 az account list-locations --query "[].{Name:name, DisplayName:displayName}" --output table
@@ -202,14 +266,36 @@ az account list-locations --query "[].{Name:name, DisplayName:displayName}" --ou
 az group create --name kubernetes --location "West US 2"
 ```
 
+#### 7. PowerShell Command Substitution Issues
+
+**Error**: `unrecognized arguments` when using nested `$(...)` or `(...)` syntax
+
+**Root Cause**: PowerShell handles command substitution differently than bash
+
+**Solutions**:
+
+```powershell
+# Instead of: az role assignment list --assignee (az account show --query user.name --output tsv)
+# Use variables:
+$userEmail = az account show --query user.name --output tsv
+$subscriptionId = az account show --query id --output tsv
+az role assignment list --assignee $userEmail --scope "/subscriptions/$subscriptionId"
+
+# Or use object ID for better compatibility:
+$userObjectId = az ad signed-in-user show --query id --output tsv
+az role assignment list --assignee $userObjectId --scope "/subscriptions/$subscriptionId"
+```
+
 ### General Troubleshooting Steps
 
 1. **Verify Network Connectivity**:
+
    ```powershell
    Test-NetConnection login.microsoftonline.com -Port 443
    ```
 
 2. **Clear Azure CLI Cache**:
+
    ```powershell
    az cache purge
    az account clear
@@ -217,6 +303,7 @@ az group create --name kubernetes --location "West US 2"
    ```
 
 3. **Check Azure Service Health**:
+
    - Visit [Azure Status](https://status.azure.com/) to check for service issues
 
 4. **Verbose Logging**:
@@ -256,16 +343,25 @@ After completing this step successfully, proceed to:
 
 ## 🧭 Navigation
 
-| Previous | Current | Next |
-|----------|---------|------|
+| Previous                          | Current                    | Next                                                     |
+| --------------------------------- | -------------------------- | -------------------------------------------------------- |
 | [⬅️ Main README](../../README.md) | **Step 01: Prerequisites** | [➡️ Step 02: Client Tools](../02/02-execution-output.md) |
 
 ## 📝 Summary
 
-Step 01 successfully:
-- ✅ Verified Azure CLI installation and version
-- ✅ Confirmed Azure authentication
-- ✅ Created the 'kubernetes' resource group in East US region
-- ✅ Established foundation for subsequent tutorial steps
+Step 01 successfully completed with the following achievements:
+
+- ✅ **Azure CLI Installation**: Verified Azure CLI installation and functionality
+- ✅ **Authentication**: Confirmed Azure login and account access
+- ✅ **Permissions**: Verified appropriate role permissions on subscription
+- ✅ **Resource Group**: Ready to create the 'kubernetes' resource group in East US region
+- ✅ **PowerShell Compatibility**: Resolved command syntax issues for PowerShell environment
+- ✅ **Troubleshooting**: Documented solutions for common Azure CLI installation issues
+
+**Key Lessons Learned**:
+
+- PowerShell requires different syntax for command substitution compared to bash
+- Use object IDs instead of email addresses for role assignment queries
+- Azure CLI DLL load failures can be resolved by reinstalling or fixing the installation
 
 You're now ready to proceed with installing the client tools in Step 02!

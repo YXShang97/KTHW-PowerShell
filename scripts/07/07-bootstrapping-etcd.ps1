@@ -14,9 +14,9 @@
     Original URL: https://github.com/ivanfioravanti/kubernetes-the-hard-way-on-azure/blob/master/docs/07-bootstrapping-etcd.md
     
     Prerequisites:
-    - Controller VMs deployed and accessible via SSH
-    - Certificates generated and distributed from previous steps
-    - This script coordinates etcd installation across all controller nodes
+    - Controller VMs deployed and accessible via SSH (Step 03)
+    - Certificates generated and distributed to controllers (Step 04)
+    - This script moves certificates to /etc/etcd/ and installs etcd cluster
 #>
 
 Write-Host "======================================" -ForegroundColor Cyan
@@ -96,19 +96,31 @@ foreach ($instance in $controllers) {
 }
 
 Write-Host ""
-Write-Host "Step 2: Configuring etcd servers on all controller nodes..." -ForegroundColor Cyan
+Write-Host "Step 2: Setting up etcd certificates on all controller nodes..." -ForegroundColor Cyan
+
+foreach ($instance in $controllers) {
+    Write-Host ""
+    Write-Host "Setting up certificates on $instance..." -ForegroundColor Yellow
+    
+    # Create etcd directory and move certificates (certificates were copied by step 04)
+    $certSetupCmd = "sudo mkdir -p /etc/etcd && sudo cp ~/ca.pem ~/kubernetes.pem ~/kubernetes-key.pem /etc/etcd/ && sudo chmod 600 /etc/etcd/*.pem && sudo chown root:root /etc/etcd/*.pem"
+    Invoke-RemoteCommand -Instance $instance -Command $certSetupCmd -Description "Setting up etcd certificates"
+    
+    # Verify certificates are in place
+    $verifyCerts = "sudo ls -la /etc/etcd/"
+    Invoke-RemoteCommand -Instance $instance -Command $verifyCerts -Description "Verifying certificate setup"
+}
+
+Write-Host ""
+Write-Host "Step 3: Configuring etcd servers on all controller nodes..." -ForegroundColor Cyan
 
 foreach ($instance in $controllers) {
     Write-Host ""
     Write-Host "Configuring etcd on $instance..." -ForegroundColor White
     
-    # Create etcd directories
-    $mkdirCmd = 'sudo mkdir -p /etc/etcd /var/lib/etcd && sudo chmod 700 /var/lib/etcd'
-    Invoke-RemoteCommand -Instance $instance -Command $mkdirCmd -Description "Creating etcd directories"
-    
-    # Copy certificates to etcd directory
-    $copyCertsCmd = 'sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/'
-    Invoke-RemoteCommand -Instance $instance -Command $copyCertsCmd -Description "Copying certificates to etcd directory"
+    # Create etcd data directory (/etc/etcd already created in Step 2 for certificates)
+    $mkdirCmd = 'sudo mkdir -p /var/lib/etcd && sudo chmod 700 /var/lib/etcd'
+    Invoke-RemoteCommand -Instance $instance -Command $mkdirCmd -Description "Creating etcd data directory"
     
     # Get internal IP address
     $getIPCmd = "ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'"
@@ -164,11 +176,12 @@ WantedBy=multi-user.target"
 }
 
 Write-Host ""
-Write-Host "Step 3: Starting etcd services on all controller nodes..." -ForegroundColor Cyan
+Write-Host "Step 4: Starting etcd services on all controller nodes..." -ForegroundColor Cyan
 
+# First, reload systemd daemon and enable services on all nodes
 foreach ($instance in $controllers) {
     Write-Host ""
-    Write-Host "Starting etcd service on $instance..." -ForegroundColor White
+    Write-Host "Preparing etcd service on $instance..." -ForegroundColor White
     
     # Reload systemd daemon
     Invoke-RemoteCommand -Instance $instance -Command "sudo systemctl daemon-reload" -Description "Reloading systemd daemon"
@@ -176,19 +189,48 @@ foreach ($instance in $controllers) {
     # Enable etcd service
     Invoke-RemoteCommand -Instance $instance -Command "sudo systemctl enable etcd" -Description "Enabling etcd service"
     
-    # Start etcd service
-    Invoke-RemoteCommand -Instance $instance -Command "sudo systemctl start etcd" -Description "Starting etcd service"
-    
-    # Check etcd service status
-    Invoke-RemoteCommand -Instance $instance -Command "sudo systemctl is-active etcd" -Description "Checking etcd service status"
+    # Stop any existing etcd service to ensure clean start
+    Invoke-RemoteCommand -Instance $instance -Command "sudo systemctl stop etcd" -Description "Stopping existing etcd service"
 }
 
 Write-Host ""
-Write-Host "Step 4: Verifying etcd cluster..." -ForegroundColor Cyan
+Write-Host "Starting all etcd services simultaneously for proper cluster formation..." -ForegroundColor Yellow
 
-# Wait a moment for cluster to stabilize
-Write-Host "Waiting 10 seconds for etcd cluster to stabilize..." -ForegroundColor Yellow
-Start-Sleep -Seconds 10
+# Start all etcd services simultaneously using PowerShell jobs
+$jobs = @()
+foreach ($instance in $controllers) {
+    $publicIP = az network public-ip show -g kubernetes -n "$instance-pip" --query "ipAddress" -o tsv
+    Write-Host "Initiating etcd startup on $instance ($publicIP)..." -ForegroundColor Cyan
+    
+    $job = Start-Job -ScriptBlock {
+        param($ip, $instanceName)
+        ssh "kuberoot@$ip" "sudo systemctl start etcd"
+        return @{Instance = $instanceName; IP = $ip; ExitCode = $LASTEXITCODE}
+    } -ArgumentList $publicIP, $instance
+    
+    $jobs += $job
+}
+
+# Wait for all services to start
+Write-Host "Waiting for all etcd services to start..." -ForegroundColor Gray
+$results = $jobs | Wait-Job -Timeout 60 | Receive-Job
+$jobs | Remove-Job -Force
+
+# Check results
+foreach ($result in $results) {
+    if ($result.ExitCode -eq 0) {
+        Write-Host "✅ etcd started successfully on $($result.Instance)" -ForegroundColor Green
+    } else {
+        Write-Host "❌ etcd startup failed on $($result.Instance)" -ForegroundColor Red
+    }
+}
+
+Write-Host ""
+Write-Host "Step 5: Verifying etcd cluster..." -ForegroundColor Cyan
+
+# Wait longer for cluster to stabilize after simultaneous startup
+Write-Host "Waiting 15 seconds for etcd cluster to stabilize..." -ForegroundColor Yellow
+Start-Sleep -Seconds 15
 
 # Verify cluster from controller-0
 $verificationInstance = "controller-0"
@@ -210,6 +252,31 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "❌ etcd cluster verification failed" -ForegroundColor Red
     Write-Host "Error output: $clusterMembers" -ForegroundColor Red
+    
+    Write-Host ""
+    Write-Host "Troubleshooting - checking individual node status:" -ForegroundColor Yellow
+    foreach ($instance in $controllers) {
+        $ip = az network public-ip show -g kubernetes -n "$instance-pip" --query "ipAddress" -o tsv
+        Write-Host "Checking $instance ($ip):" -ForegroundColor Cyan
+        
+        # Check service status
+        $status = ssh kuberoot@$ip "sudo systemctl is-active etcd" 2>/dev/null
+        Write-Host "  Service status: $status" -ForegroundColor White
+        
+        # Check if certificates exist
+        $certCheck = ssh kuberoot@$ip "sudo ls -la /etc/etcd/*.pem" 2>/dev/null
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "  ✅ Certificates present" -ForegroundColor Green
+        } else {
+            Write-Host "  ❌ Certificates missing" -ForegroundColor Red
+        }
+    }
+    
+    Write-Host ""
+    Write-Host "If etcd cluster formation failed, you can:" -ForegroundColor Yellow
+    Write-Host "1. Check logs: ssh kuberoot@<controller-ip> 'sudo journalctl -u etcd -f'" -ForegroundColor White
+    Write-Host "2. Re-run the fix script: .\07-fix-etcd-quick.ps1" -ForegroundColor White
+    Write-Host "3. Verify certificates are in /etc/etcd/ on all controllers" -ForegroundColor White
 }
 
 Write-Host ""

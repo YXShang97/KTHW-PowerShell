@@ -28,11 +28,50 @@ param(
     [string]$CriToolsVersion = "v1.26.1", 
     [string]$RuncVersion = "v1.1.5",
     [string]$CniPluginsVersion = "v1.2.0",
-    [string]$ContainerdVersion = "1.6.20"  # Fixed to working version
+    [string]$ContainerdVersion = "1.6.20",  # Fixed to working version
+    [int]$SshTimeoutSeconds = 30,           # SSH timeout for operations
+    [int]$LongTimeoutSeconds = 120          # Longer timeout for downloads
 )
 
 # Import common functions
 . "$PSScriptRoot\..\common\Common-Functions.ps1"
+
+# Wrapper function for long-running operations with timeout
+function Invoke-RemoteCommandWithTimeout {
+    param(
+        [string]$VmIP,
+        [string]$Command,
+        [string]$Description = "",
+        [int]$TimeoutSeconds = $SshTimeoutSeconds
+    )
+    
+    if ($Description) {
+        Write-Host "        $Description" -ForegroundColor Gray
+    }
+    
+    # Use Start-Job for timeout capability
+    $job = Start-Job -ScriptBlock {
+        param($ip, $cmd)
+        $result = ssh -o ConnectTimeout=10 -o ServerAliveInterval=5 -o ServerAliveCountMax=2 -o StrictHostKeyChecking=no "kuberoot@$ip" $cmd 2>$null
+        return @{ Output = $result; ExitCode = $LASTEXITCODE }
+    } -ArgumentList $VmIP, $Command
+    
+    $completed = Wait-Job $job -Timeout $TimeoutSeconds
+    if (-not $completed) {
+        Stop-Job $job
+        Remove-Job $job
+        throw "Command timed out after $TimeoutSeconds seconds: $Command"
+    }
+    
+    $result = Receive-Job $job
+    Remove-Job $job
+    
+    if ($result.ExitCode -ne 0) {
+        throw "SSH command failed with exit code $($result.ExitCode): $Command"
+    }
+    
+    return $result.Output
+}
 
 Write-Host "=============================================" -ForegroundColor Cyan
 Write-Host "Tutorial Step 09: Kubernetes Worker Nodes" -ForegroundColor Cyan
@@ -40,7 +79,19 @@ Write-Host "=============================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Kubernetes Version: $KubernetesVersion" -ForegroundColor Cyan
 Write-Host "containerd Version: $ContainerdVersion (known working version)" -ForegroundColor Cyan
+Write-Host "SSH Timeout: $SshTimeoutSeconds seconds" -ForegroundColor Cyan
+Write-Host "Long Operation Timeout: $LongTimeoutSeconds seconds" -ForegroundColor Cyan
 Write-Host ""
+
+# Progress tracking
+$script:CurrentStep = 0
+$script:TotalSteps = 7
+
+function Write-StepProgress {
+    param([string]$StepName)
+    $script:CurrentStep++
+    Write-Host "[$script:CurrentStep/$script:TotalSteps] $StepName" -ForegroundColor Magenta
+}
 
 #region Prerequisites Validation
 
@@ -50,12 +101,12 @@ try {
     Test-AzureAuthentication
     
     # Check if certificates exist
-    if (!(Test-Path "certs\ca.pem")) {
+    if (!(Test-Path "..\..\certs\ca.pem")) {
         throw "CA certificate not found. Run script 04 first."
     }
     
     # Check if worker kubeconfigs exist
-    if (!(Test-Path "configs\worker-0.kubeconfig") -or !(Test-Path "configs\worker-1.kubeconfig")) {
+    if (!(Test-Path "..\..\configs\worker-0.kubeconfig") -or !(Test-Path "..\..\configs\worker-1.kubeconfig")) {
         throw "Worker kubeconfig files not found. Run script 05 first."
     }
     
@@ -74,29 +125,30 @@ $workers = @("worker-0", "worker-1")
 
 # Step 1: Install OS Dependencies
 Write-Host ""
-Write-Host "Step 1: Installing OS dependencies..." -ForegroundColor Yellow
+Write-StepProgress "Installing OS dependencies"
 
 foreach ($worker in $workers) {
     try {
         $ip = Get-VmPublicIP -ResourceGroup "kubernetes" -VmName $worker
         Write-Host "  Processing $worker ($ip)..." -ForegroundColor Cyan
         
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo apt-get update >/dev/null 2>&1 && sudo apt-get -y install socat conntrack ipset >/dev/null 2>&1" -Description "Installing OS dependencies"
+        # Install OS dependencies with timeout
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo apt-get update >/dev/null 2>&1 && sudo apt-get -y install socat conntrack ipset >/dev/null 2>&1" -Description "Installing OS dependencies" -TimeoutSeconds $LongTimeoutSeconds
         
         # Disable swap (required for kubelet)
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo swapoff -a" -Description "Disabling swap"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo swapoff -a" -Description "Disabling swap"
         
         Write-Host "    ✅ OS dependencies installed on $worker" -ForegroundColor Green
     }
     catch {
-        Write-Host "    ❌ Failed to install dependencies on $worker: $_" -ForegroundColor Red
+        Write-Host "    ❌ Failed to install dependencies on $worker - $_" -ForegroundColor Red
         throw
     }
 }
 
 # Step 2: Download and Install Worker Binaries
 Write-Host ""
-Write-Host "Step 2: Downloading and installing worker binaries..." -ForegroundColor Yellow
+Write-StepProgress "Downloading and installing worker binaries"
 
 foreach ($worker in $workers) {
     try {
@@ -116,25 +168,25 @@ foreach ($worker in $workers) {
         )
         
         foreach ($cmd in $downloadCommands) {
-            Invoke-RemoteCommand -VmIP $ip -Command $cmd -Description "Downloading binaries"
+            Invoke-RemoteCommandWithTimeout -VmIP $ip -Command $cmd -Description "Downloading binaries" -TimeoutSeconds $LongTimeoutSeconds
         }
         
         # Install binaries
         $installCmd = "sudo mkdir -p /etc/cni/net.d /opt/cni/bin /var/lib/kubelet /var/lib/kube-proxy /var/lib/kubernetes /var/run/kubernetes && cd /tmp && mkdir -p containerd && sudo mv runc.amd64 runc && chmod +x kubectl kube-proxy kubelet runc runsc && sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/ && sudo tar -xf crictl-$CriToolsVersion-linux-amd64.tar.gz -C /usr/local/bin/ && sudo tar -xf cni-plugins-linux-amd64-$CniPluginsVersion.tgz -C /opt/cni/bin/ && sudo tar -xf containerd-$ContainerdVersion-linux-amd64.tar.gz -C containerd && sudo mv containerd/bin/* /bin/"
         
-        Invoke-RemoteCommand -VmIP $ip -Command $installCmd -Description "Installing binaries"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command $installCmd -Description "Installing binaries" -TimeoutSeconds $LongTimeoutSeconds
         
         Write-Host "    ✅ Binaries installed on $worker" -ForegroundColor Green
     }
     catch {
-        Write-Host "    ❌ Failed to install binaries on $worker: $_" -ForegroundColor Red
+        Write-Host "    ❌ Failed to install binaries on $worker - $_" -ForegroundColor Red
         throw
     }
 }
 
 # Step 3: Configure CNI Networking
 Write-Host ""
-Write-Host "Step 3: Configuring CNI networking..." -ForegroundColor Yellow
+Write-StepProgress "Configuring CNI networking"
 
 foreach ($worker in $workers) {
     try {
@@ -142,7 +194,7 @@ foreach ($worker in $workers) {
         Write-Host "  Configuring CNI on $worker..." -ForegroundColor Cyan
         
         # Get POD_CIDR for this worker
-        $podCidr = Invoke-RemoteCommand -VmIP $ip -Command "curl --silent -H Metadata:true 'http://169.254.169.254/metadata/instance/compute/tags?api-version=2017-08-01&format=text' | sed 's/\;/\n/g' | grep pod-cidr | cut -d : -f2" -Description "Getting pod CIDR"
+        $podCidr = Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "curl --silent -H Metadata:true 'http://169.254.169.254/metadata/instance/compute/tags?api-version=2017-08-01&format=text' | sed 's/\;/\n/g' | grep pod-cidr | cut -d : -f2" -Description "Getting pod CIDR"
         
         # Create bridge network configuration with proper formatting
         $bridgeConfig = @"
@@ -172,20 +224,25 @@ foreach ($worker in $workers) {
 }
 "@
         
-        New-RemoteConfigFile -VmIP $ip -Content $bridgeConfig -RemotePath "/etc/cni/net.d/10-bridge.conf"
-        New-RemoteConfigFile -VmIP $ip -Content $loopbackConfig -RemotePath "/etc/cni/net.d/99-loopback.conf"
+        # Copy CNI config files to temp location first, then move with sudo
+        New-RemoteConfigFile -VmIP $ip -Content $bridgeConfig -RemotePath "/tmp/10-bridge.conf"
+        New-RemoteConfigFile -VmIP $ip -Content $loopbackConfig -RemotePath "/tmp/99-loopback.conf"
+        
+        # Move files to correct locations with proper permissions
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mv /tmp/10-bridge.conf /etc/cni/net.d/10-bridge.conf" -Description "Moving bridge config"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mv /tmp/99-loopback.conf /etc/cni/net.d/99-loopback.conf" -Description "Moving loopback config"
         
         Write-Host "    ✅ CNI configured on $worker" -ForegroundColor Green
     }
     catch {
-        Write-Host "    ❌ Failed to configure CNI on $worker: $_" -ForegroundColor Red
+        Write-Host "    ❌ Failed to configure CNI on $worker - $_" -ForegroundColor Red
         throw
     }
 }
 
 # Step 4: Configure containerd with cgroups v2 support
 Write-Host ""
-Write-Host "Step 4: Configuring containerd with cgroups v2 support..." -ForegroundColor Yellow
+Write-StepProgress "Configuring containerd with cgroups v2 support"
 
 foreach ($worker in $workers) {
     try {
@@ -193,11 +250,11 @@ foreach ($worker in $workers) {
         Write-Host "  Configuring containerd on $worker..." -ForegroundColor Cyan
         
         # Create containerd directories
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo mkdir -p /etc/containerd/" -Description "Creating containerd directories"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mkdir -p /etc/containerd/" -Description "Creating containerd directories"
         
         # Generate default containerd configuration and enable systemd cgroups
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo containerd config default | sudo tee /etc/containerd/config.toml" -Description "Generating containerd config"
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml" -Description "Enabling systemd cgroups"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo containerd config default | sudo tee /etc/containerd/config.toml" -Description "Generating containerd config"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml" -Description "Enabling systemd cgroups"
         
         # Create containerd systemd service
         $containerdService = "ExecStartPre=/sbin/modprobe overlay
@@ -224,30 +281,49 @@ After=network.target
 $containerdService
 "@
         
-        New-RemoteConfigFile -VmIP $ip -Content $serviceContent -RemotePath "/etc/systemd/system/containerd.service"
+        # Copy service file to temp location first, then move with sudo
+        New-RemoteConfigFile -VmIP $ip -Content $serviceContent -RemotePath "/tmp/containerd.service"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mv /tmp/containerd.service /etc/systemd/system/containerd.service" -Description "Moving containerd service"
         
         Write-Host "    ✅ containerd configured on $worker" -ForegroundColor Green
     }
     catch {
-        Write-Host "    ❌ Failed to configure containerd on $worker: $_" -ForegroundColor Red
+        Write-Host "    ❌ Failed to configure containerd on $worker - $_" -ForegroundColor Red
         throw
     }
 }
 
 # Step 5: Configure Kubelet with systemd cgroups
 Write-Host ""
-Write-Host "Step 5: Configuring Kubelet..." -ForegroundColor Yellow
+Write-StepProgress "Configuring Kubelet"
 
 foreach ($worker in $workers) {
     try {
         $ip = Get-VmPublicIP -ResourceGroup "kubernetes" -VmName $worker
         Write-Host "  Configuring Kubelet on $worker..." -ForegroundColor Cyan
         
-        # Move certificates and kubeconfig
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo mv $worker-key.pem $worker.pem /var/lib/kubelet/ && sudo mv $worker.kubeconfig /var/lib/kubelet/kubeconfig && sudo mv ca.pem /var/lib/kubernetes/" -Description "Moving certificates and kubeconfig"
+        # Create required directories first
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mkdir -p /var/lib/kubelet /var/lib/kubernetes" -Description "Creating kubelet directories"
+        
+        # Copy certificates and kubeconfig files to the worker node
+        Write-Host "    Copying certificates and kubeconfig..." -ForegroundColor Gray
+        scp -o ConnectTimeout=10 -o StrictHostKeyChecking=no "..\..\certs\ca.pem" "kuberoot@${ip}:~/" 2>$null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to copy ca.pem to $worker" }
+        
+        scp -o ConnectTimeout=10 -o StrictHostKeyChecking=no "..\..\certs\$worker-key.pem" "kuberoot@${ip}:~/" 2>$null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to copy $worker-key.pem to $worker" }
+        
+        scp -o ConnectTimeout=10 -o StrictHostKeyChecking=no "..\..\certs\$worker.pem" "kuberoot@${ip}:~/" 2>$null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to copy $worker.pem to $worker" }
+        
+        scp -o ConnectTimeout=10 -o StrictHostKeyChecking=no "..\..\configs\$worker.kubeconfig" "kuberoot@${ip}:~/" 2>$null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to copy $worker.kubeconfig to $worker" }
+        
+        # Move certificates and kubeconfig to proper locations
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mv $worker-key.pem $worker.pem /var/lib/kubelet/ && sudo mv $worker.kubeconfig /var/lib/kubelet/kubeconfig && sudo mv ca.pem /var/lib/kubernetes/" -Description "Moving certificates and kubeconfig"
         
         # Get POD_CIDR for this worker
-        $podCidr = Invoke-RemoteCommand -VmIP $ip -Command "curl --silent -H Metadata:true 'http://169.254.169.254/metadata/instance/compute/tags?api-version=2017-08-01&format=text' | sed 's/\;/\n/g' | grep pod-cidr | cut -d : -f2" -Description "Getting pod CIDR"
+        $podCidr = Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "curl --silent -H Metadata:true 'http://169.254.169.254/metadata/instance/compute/tags?api-version=2017-08-01&format=text' | sed 's/\;/\n/g' | grep pod-cidr | cut -d : -f2" -Description "Getting pod CIDR"
         
         # Create kubelet configuration with systemd cgroup driver
         $kubeletConfig = @"
@@ -296,28 +372,41 @@ RestartSec=5
 WantedBy=multi-user.target
 "@
         
-        New-RemoteConfigFile -VmIP $ip -Content $kubeletConfig -RemotePath "/var/lib/kubelet/kubelet-config.yaml"
-        New-RemoteConfigFile -VmIP $ip -Content $kubeletService -RemotePath "/etc/systemd/system/kubelet.service"
+        # Copy config files to temp location first, then move with sudo
+        New-RemoteConfigFile -VmIP $ip -Content $kubeletConfig -RemotePath "/tmp/kubelet-config.yaml"
+        New-RemoteConfigFile -VmIP $ip -Content $kubeletService -RemotePath "/tmp/kubelet.service"
+        
+        # Move files to correct locations with proper permissions
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mv /tmp/kubelet-config.yaml /var/lib/kubelet/kubelet-config.yaml" -Description "Moving kubelet config"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mv /tmp/kubelet.service /etc/systemd/system/kubelet.service" -Description "Moving kubelet service"
         
         Write-Host "    ✅ Kubelet configured on $worker" -ForegroundColor Green
     }
     catch {
-        Write-Host "    ❌ Failed to configure Kubelet on $worker: $_" -ForegroundColor Red
+        Write-Host "    ❌ Failed to configure Kubelet on $worker - $_" -ForegroundColor Red
         throw
     }
 }
 
 # Step 6: Configure Kube-Proxy
 Write-Host ""
-Write-Host "Step 6: Configuring Kube-Proxy..." -ForegroundColor Yellow
+Write-StepProgress "Configuring Kube-Proxy"
 
 foreach ($worker in $workers) {
     try {
         $ip = Get-VmPublicIP -ResourceGroup "kubernetes" -VmName $worker
         Write-Host "  Configuring Kube-Proxy on $worker..." -ForegroundColor Cyan
         
-        # Move kube-proxy kubeconfig
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig" -Description "Moving kube-proxy kubeconfig"
+        # Create kube-proxy directory
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mkdir -p /var/lib/kube-proxy" -Description "Creating kube-proxy directory"
+        
+        # Copy kube-proxy kubeconfig to the worker node
+        Write-Host "    Copying kube-proxy kubeconfig..." -ForegroundColor Gray
+        scp -o ConnectTimeout=10 -o StrictHostKeyChecking=no "..\..\configs\kube-proxy.kubeconfig" "kuberoot@${ip}:~/" 2>$null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to copy kube-proxy.kubeconfig to $worker" }
+        
+        # Move kube-proxy kubeconfig to proper location
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig" -Description "Moving kube-proxy kubeconfig"
         
         # Create kube-proxy configuration
         $kubeProxyConfig = @"
@@ -345,20 +434,25 @@ RestartSec=5
 WantedBy=multi-user.target
 "@
         
-        New-RemoteConfigFile -VmIP $ip -Content $kubeProxyConfig -RemotePath "/var/lib/kube-proxy/kube-proxy-config.yaml"
-        New-RemoteConfigFile -VmIP $ip -Content $kubeProxyService -RemotePath "/etc/systemd/system/kube-proxy.service"
+        # Copy config files to temp location first, then move with sudo
+        New-RemoteConfigFile -VmIP $ip -Content $kubeProxyConfig -RemotePath "/tmp/kube-proxy-config.yaml"
+        New-RemoteConfigFile -VmIP $ip -Content $kubeProxyService -RemotePath "/tmp/kube-proxy.service"
+        
+        # Move files to correct locations with proper permissions
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mv /tmp/kube-proxy-config.yaml /var/lib/kube-proxy/kube-proxy-config.yaml" -Description "Moving kube-proxy config"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo mv /tmp/kube-proxy.service /etc/systemd/system/kube-proxy.service" -Description "Moving kube-proxy service"
         
         Write-Host "    ✅ Kube-Proxy configured on $worker" -ForegroundColor Green
     }
     catch {
-        Write-Host "    ❌ Failed to configure Kube-Proxy on $worker: $_" -ForegroundColor Red
+        Write-Host "    ❌ Failed to configure Kube-Proxy on $worker - $_" -ForegroundColor Red
         throw
     }
 }
 
 # Step 7: Start Worker Services
 Write-Host ""
-Write-Host "Step 7: Starting worker services..." -ForegroundColor Yellow
+Write-StepProgress "Starting worker services"
 
 foreach ($worker in $workers) {
     try {
@@ -366,9 +460,9 @@ foreach ($worker in $workers) {
         Write-Host "  Starting services on $worker..." -ForegroundColor Cyan
         
         # Reload systemd and start services
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo systemctl daemon-reload" -Description "Reloading systemd"
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo systemctl enable containerd kubelet kube-proxy" -Description "Enabling services"
-        Invoke-RemoteCommand -VmIP $ip -Command "sudo systemctl start containerd kubelet kube-proxy" -Description "Starting services"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo systemctl daemon-reload" -Description "Reloading systemd"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo systemctl enable containerd kubelet kube-proxy" -Description "Enabling services"
+        Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo systemctl start containerd kubelet kube-proxy" -Description "Starting services" -TimeoutSeconds $LongTimeoutSeconds
         
         # Wait for services to initialize
         Start-Sleep -Seconds 10
@@ -376,18 +470,18 @@ foreach ($worker in $workers) {
         # Verify services are running
         $services = @("containerd", "kubelet", "kube-proxy")
         foreach ($service in $services) {
-            $status = Invoke-RemoteCommand -VmIP $ip -Command "sudo systemctl is-active $service" -Description "Checking $service status"
+            $status = Invoke-RemoteCommandWithTimeout -VmIP $ip -Command "sudo systemctl is-active $service" -Description "Checking $service status"
             if ($status -eq "active") {
                 Write-Host "    ✅ $service is running on $worker" -ForegroundColor Green
             } else {
-                Write-Host "    ⚠️ $service status on $worker: $status" -ForegroundColor Yellow
+                Write-Host "    ⚠️ $service status on $worker - $status" -ForegroundColor Yellow
             }
         }
         
         Write-Host "    ✅ Services started on $worker" -ForegroundColor Green
     }
     catch {
-        Write-Host "    ❌ Failed to start services on $worker: $_" -ForegroundColor Red
+        Write-Host "    ❌ Failed to start services on $worker - $_" -ForegroundColor Red
         throw
     }
 }

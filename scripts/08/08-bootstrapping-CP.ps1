@@ -16,6 +16,11 @@
 # - Kubernetes configuration files generated (Step 05)
 # - Data encryption config created (Step 06)
 # - etcd cluster bootstrapped (Step 07)
+#
+# FIXES IMPLEMENTED:
+# - Used single-line ExecStart format to avoid PowerShell here-document escaping issues
+# - Removed unnecessary line continuation backslashes that caused systemd parsing errors
+# - Fixed service-account-issuer URL format to use HTTPS with correct controller IP
 
 param(
     [string]$KubernetesVersion = "v1.26.3"

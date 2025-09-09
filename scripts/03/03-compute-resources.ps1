@@ -130,6 +130,7 @@ try {
             --availability-set controller-as `
             --admin-username 'kuberoot' `
             --generate-ssh-keys `
+            --size Standard_B2s `
             --location $location | Out-Null
     }
     
@@ -172,6 +173,7 @@ try {
             --availability-set worker-as `
             --generate-ssh-keys `
             --admin-username 'kuberoot' `
+            --size Standard_B2s `
             --location $location | Out-Null
     }
     

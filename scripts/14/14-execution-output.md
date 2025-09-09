@@ -38,19 +38,8 @@ deployment.apps/dashboard-metrics-scraper created
 
 Step 2: Waiting for dashboard pods to start...
 This may take a few minutes...
-Dashboard pods: 0/2 running (10s elapsed)
-Dashboard pods: 0/2 running (20s elapsed)
-Dashboard pods: 0/2 running (30s elapsed)
-Dashboard pods: 0/2 running (40s elapsed)
-Dashboard pods: 0/2 running (50s elapsed)
-Dashboard pods: 0/2 running (60s elapsed)
-Dashboard pods: 0/2 running (70s elapsed)
-Dashboard pods: 0/2 running (80s elapsed)
-Dashboard pods: 0/2 running (90s elapsed)
-Dashboard pods: 0/2 running (100s elapsed)
-Dashboard pods: 0/2 running (110s elapsed)
-Dashboard pods: 0/2 running (120s elapsed)
-⚠️ Timeout waiting for pods, continuing anyway...
+Dashboard pods: 2/2 running (10s elapsed)
+✅ All dashboard pods are running
 
 Step 3: Creating dashboard admin service account...
 Created dashboard-adminuser.yaml
@@ -67,7 +56,7 @@ Step 5: Generating access token...
 ==================================================
 DASHBOARD ACCESS TOKEN:
 ==================================================
-eyJhbGciOiJSUzI1NiIsImtpZCI6ImFSUzNlWWh4LWZBMkVUcVUzb2t2bjJ4SmJuNDlkbXg3bS1JZFo1b3RoblUifQ.eyJhdWQiOlsiaHR0cHM6Ly8iXSwiZXhwIjoxNzUyNTI2NjI1LCJpYXQiOjE3NTI1MjMwMjUsImlzcyI6Imh0dHBzOi8vIiwiay5rdWJlcm5ldGVzLmlvIjp7Im5hbWVzcGFjZSI6Imt1YmVybmV0ZXMtZGFzaGJvYXJkIiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImFkbWluLXVzZXIiLCJ1aWQiOiI1YTAzYWNmNy05ODg1LTQzMmEtYThjOS05MDNiOTc4YzNkYTIifX0sIm5iZiI6MTc1MjUyMzAyNSwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmVybmV0ZXMtZGFzaGJvYXJkOmFkbWluLXVzZXIifQ.DjHnyqOlWzRvnAd32-Q7pI8gX9zmOAuZwMFqvZXMylEGQ9xQ9dfqY-vM6mnWHVvc7bVhf-Ep894m6NZr3VzzRNqc1X_xSIrQjXdCdjrKK4MUPcpHdIJw9xJ-B9VgHynMWVx4YnUdZOsvOIHGP4fEBTRi1Kt9qHA1NQb5v_eAZOtha_dKxlnujEdOyVm6L3SDql7rojyv9yCJznJ2EjkKCCpzlDbKwaKt_-RYKHDb03wiuTZliqgxoKA_QyjfvxWahDcCRc9vUcS-tuuEdZ5xph6T_hU82NFXWcbpPwUYWGR7TDj-XWNTS43DokZwaGkoaBsNntRafq-Iwa1Zw2KE833w
+eyJhbGciOiJSUzI1NiIsImtpZCI6ImwyZWk3dmZPS2dvTVp1bUN5dFJ1NmhMZnBGbE9GdjlzdWVCTkZSNnlBUlkifQ.eyJhdWQiOlsiaHR0cHM6Ly8iXSwiZXhwIjoxNzU3NDMxMTc3LCJpYXQiOjE3NTc0Mjc1NzcsImlzcyI6Imh0dHBzOi8vIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJhZG1pbi11c2VyIiwidWlkIjoiYWQyYWEwM2QtNjcyMi00OGNhLThiYjgtYTRmMzQ5MTUzM2JkIn19LCJuYmYiOjE3NTc0Mjc1NzcsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlcm5ldGVzLWRhc2hib2FyZDphZG1pbi11c2VyIn0.KcJj6nWbHcNsM-lseEEnBX20KNna2lZwkPDHeOFcDQRk7Jw8JkdKw5OvifIuuq0CkjKVPVJnw0ISbVAM1BPHeOg1wB9KByONXx0XgIX2t_ozCaRDgyIQp1leIQxOiw6OvXspIHDol9cW6LC41eqo62zAsxUOsCw0yVeMCXWHOW24WEE_ymvPh6t6KDcf4CSHNP98X6GC9AjlLqVnxyqaT1sgvxgZc7Q0GEALGAz4Xz_nXxK0mCVfpF-Fan7it75XhhopCC8iy11Om9PaOAwKvJ2qFJmxRgAP3hgczJuWCRTbn7mYGMl9o8FqZ4zu1ZX_5UkEt7gFiwpuW1NWs_e4yA
 ==================================================
 Token saved to dashboard-token.txt
 
@@ -82,24 +71,63 @@ Step 6: Dashboard access instructions
 
 Final Status Check:
 Dashboard pods:
-NAME                                        READY   STATUS    RESTARTS   AGE
-dashboard-metrics-scraper-7bc864c59-vr56z   0/1     Pending   0          2m12s
-kubernetes-dashboard-6c7ccbcf87-ffg5w       0/1     Pending   0          2m13s
+NAME                                        READY   STATUS    RESTARTS        AGE
+dashboard-metrics-scraper-7bc864c59-xt6fn   1/1     Running   0               2m58s
+kubernetes-dashboard-6c7ccbcf87-x4thg       1/1     Running   1 (2m52s ago)   2m58s
 
 Dashboard services:
-NAME                        TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
-dashboard-metrics-scraper   ClusterIP   10.32.0.53   <none>        8000/TCP   2m13s
-kubernetes-dashboard        ClusterIP   10.32.0.37   <none>        443/TCP    2m15s
+NAME                        TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+dashboard-metrics-scraper   ClusterIP   10.32.0.55    <none>        8000/TCP   2m59s
+kubernetes-dashboard        ClusterIP   10.32.0.146   <none>        443/TCP    3m2s
 
 Service account:
 NAME         SECRETS   AGE
-admin-user   0         7s
+admin-user   0         2m38s
 
 ✅ Dashboard configuration completed successfully!
 Files created:
 - dashboard-adminuser.yaml
 - dashboard-token.txt
 ```
+
+## Key Improvements Made
+
+### Script Enhancements
+
+- **Resource Existence Check**: Added logic to handle existing cluster role bindings gracefully
+- **Better Error Handling**: Improved error messages and continues execution when resources already exist
+- **Token Refresh**: Generates fresh access token on each run
+
+### Successful Outcomes
+
+- ✅ **Dashboard Deployed**: Kubernetes Dashboard v2.7.0 running with 2/2 pods
+- ✅ **Authentication Ready**: Admin service account with cluster-admin privileges
+- ✅ **Access Token Generated**: Fresh token saved to `dashboard-token.txt`
+- ✅ **Services Running**: Both dashboard and metrics-scraper services operational
+
+### Dashboard Access Information
+
+- **URL**: `http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/`
+- **Authentication**: Token-based (token saved in `dashboard-token.txt`)
+- **Access Method**: `kubectl proxy` + browser
+
+---
+
+## 🧭 Navigation
+
+| Previous                                               | Current                              | Next                                                |
+| ------------------------------------------------------ | ------------------------------------ | --------------------------------------------------- |
+| [⬅️ Step 13: Smoke Test](../13/13-execution-output.md) | **Step 14: Dashboard Configuration** | [➡️ Step 15: Cleanup](../15/15-execution-output.md) |
+
+### 📋 Tutorial Progress
+
+- [🏠 Main README](../../README.md)
+- [📖 All Tutorial Steps](../../README.md#-tutorial-steps)
+- [🔧 Troubleshooting](../troubleshooting/Repair-Cluster.ps1)
+- [✅ Cluster Validation](../validation/Validate-Cluster.ps1)
+- dashboard-token.txt
+
+````
 
 ## What the Script Does
 
@@ -139,7 +167,7 @@ Files created:
 The script executed successfully with the following observations:
 
 - ✅ **Dashboard manifests deployed**: All Kubernetes resources created successfully
-- ✅ **Service account configured**: Admin user created with cluster-admin privileges  
+- ✅ **Service account configured**: Admin user created with cluster-admin privileges
 - ✅ **Access token generated**: Authentication token created and saved
 - ⚠️ **Pods pending**: Dashboard pods are in "Pending" status due to no available worker nodes
 
@@ -157,9 +185,10 @@ Run these PowerShell commands to verify the dashboard configuration:
 ### Check Dashboard Namespace
 ```powershell
 kubectl get namespace kubernetes-dashboard
-```
+````
 
 ### Verify Dashboard Resources
+
 ```powershell
 # Check all dashboard resources
 kubectl get all -n kubernetes-dashboard
@@ -172,6 +201,7 @@ kubectl get clusterrolebinding dashboard-admin
 ```
 
 ### Monitor Pod Status
+
 ```powershell
 # Watch pod status (will show Pending until worker nodes are ready)
 kubectl get pods -n kubernetes-dashboard -w
@@ -181,6 +211,7 @@ kubectl describe pods -n kubernetes-dashboard
 ```
 
 ### Test Token Generation
+
 ```powershell
 # Generate a new token (tokens expire after 1 hour by default)
 kubectl -n kubernetes-dashboard create token admin-user
@@ -190,6 +221,7 @@ Get-Content dashboard-token.txt
 ```
 
 ### Verify Dashboard Service
+
 ```powershell
 # Check dashboard service details
 kubectl get service kubernetes-dashboard -n kubernetes-dashboard -o wide
@@ -203,11 +235,13 @@ kubectl get endpoints -n kubernetes-dashboard
 Once worker nodes are available and dashboard pods are running:
 
 1. **Start kubectl proxy**:
+
    ```powershell
    kubectl proxy
    ```
 
 2. **Open dashboard URL**:
+
    ```
    http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
    ```
@@ -222,45 +256,55 @@ Once worker nodes are available and dashboard pods are running:
 ### Common Issues and Solutions
 
 #### 1. Pods Stuck in Pending Status
+
 **Cause**: No worker nodes available for scheduling
 
 **Solution**: Complete Step 9 (Bootstrapping Worker Nodes) to add worker nodes to the cluster
 
 **Verification**:
+
 ```powershell
 kubectl get nodes
 kubectl describe nodes
 ```
 
 #### 2. Token Authentication Fails
+
 **Cause**: Token may have expired (default 1-hour expiration)
 
 **Solution**: Generate a new token
+
 ```powershell
 kubectl -n kubernetes-dashboard create token admin-user
 ```
 
 #### 3. Cannot Access Dashboard URL
+
 **Cause**: kubectl proxy not running or wrong URL
 
-**Solution**: 
+**Solution**:
+
 - Ensure kubectl proxy is running: `kubectl proxy`
 - Verify the exact URL format
 - Check if port 8001 is available
 
 #### 4. Dashboard Shows Limited Permissions
+
 **Cause**: Service account may not have proper cluster role binding
 
 **Solution**: Verify cluster role binding exists
+
 ```powershell
 kubectl get clusterrolebinding dashboard-admin
 kubectl describe clusterrolebinding dashboard-admin
 ```
 
 #### 5. Missing Dependencies
+
 **Issue**: kubectl not found or cluster not accessible
 
 **Solution**:
+
 - Verify kubectl installation: `kubectl version --client`
 - Check cluster connectivity: `kubectl cluster-info`
 - Ensure kubeconfig is properly configured
@@ -270,6 +314,7 @@ kubectl describe clusterrolebinding dashboard-admin
 If kubectl proxy doesn't work, you can try:
 
 1. **NodePort Service** (when worker nodes are available):
+
    ```powershell
    kubectl patch service kubernetes-dashboard -n kubernetes-dashboard -p '{"spec":{"type":"NodePort"}}'
    kubectl get service kubernetes-dashboard -n kubernetes-dashboard
@@ -305,6 +350,7 @@ If kubectl proxy doesn't work, you can try:
 ## Summary
 
 ✅ **Dashboard Configuration Successful**
+
 - Kubernetes Dashboard v2.7.0 deployed
 - Admin service account created with cluster-admin privileges
 - Access token generated for authentication
@@ -315,6 +361,6 @@ If kubectl proxy doesn't work, you can try:
 
 ## 🧭 Navigation
 
-| Previous | Current | Next |
-|----------|---------|------|
+| Previous                                                | Current                      | Next                                                          |
+| ------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------- |
 | [⬅️ Step 13: Smoke Tests](../13/13-execution-output.md) | **Step 14: Dashboard Setup** | [➡️ Step 15: Cleanup Resources](../15/15-execution-output.md) |

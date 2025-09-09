@@ -85,14 +85,20 @@ try {
 Write-Host "`nStep 4: Creating cluster role binding..." -ForegroundColor Yellow
 
 try {
-    kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin --serviceaccount=kubernetes-dashboard:admin-user
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "✅ Cluster role binding created successfully" -ForegroundColor Green
+    # Check if cluster role binding already exists
+    $existingBinding = kubectl get clusterrolebinding dashboard-admin --ignore-not-found 2>$null
+    if ($existingBinding) {
+        Write-Host "✅ Cluster role binding already exists" -ForegroundColor Green
     } else {
-        throw "Failed to create cluster role binding"
+        kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin --serviceaccount=kubernetes-dashboard:admin-user
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Cluster role binding created successfully" -ForegroundColor Green
+        } else {
+            throw "Failed to create cluster role binding"
+        }
     }
 } catch {
-    Write-Host "❌ Error creating cluster role binding: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "❌ Error with cluster role binding: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
 

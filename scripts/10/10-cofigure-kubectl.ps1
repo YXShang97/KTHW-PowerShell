@@ -8,10 +8,13 @@ Write-Host "===============================================" -ForegroundColor Gr
 Write-Host ""
 
 # Ensure we're in the correct directory (where certificates are located)
-$certsPath = "c:\repos\kthw\certs"
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$certsPath = Join-Path (Split-Path (Split-Path $scriptDir -Parent) -Parent) "certs"
+
 if (!(Test-Path $certsPath)) {
     Write-Error "Certificates directory not found at $certsPath"
     Write-Error "Please ensure you've completed the previous steps and certificates exist"
+    Write-Host "Looking for certificates in: $certsPath" -ForegroundColor Yellow
     exit 1
 }
 
